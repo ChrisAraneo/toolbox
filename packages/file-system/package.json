@@ -1,6 +1,6 @@
 {
-  "name": "@chris.araneo/names",
-  "version": "1.2.0",
+  "name": "@chris.araneo/file-system",
+  "version": "0.0.1",
   "description": "",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -14,9 +14,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-  },
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "18.16.9",
     "typescript": "~5.5.2"
