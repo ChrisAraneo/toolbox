@@ -10,13 +10,23 @@
   ],
   "scripts": {
     "build": "tsc --build tsconfig.lib.json",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "lint": "eslint \"src/**/*.{ts,json,js,mjs}\" \"*{.js,.mjs,.json,.ts}\" --fix",
+    "format": "prettier --write \"**/*.{ts,js,mjs,json}\"",
+    "chores": "npm run lint && npm run format"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "18.16.9",
-    "typescript": "~5.5.2"
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jsonc": "^2.18.2",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "prettier": "^3.4.2",
+    "typescript": "~5.5.2",
+    "typescript-eslint": "^8.18.1"
   }
 }

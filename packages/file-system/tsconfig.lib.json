@@ -1,22 +1,15 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "rootDir": ".",
-    "jsx": "react-jsx",
     "allowJs": true,
-    "outDir": "dist",
-    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
+    "baseUrl": ".",
+    "declaration": true,
     "emitDeclarationOnly": false,
-    "types": [
-      "node"
-    ],
-    "declaration": true
+    "jsx": "react-jsx",
+    "outDir": "dist",
+    "rootDir": ".",
+    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
+    "types": ["node"]
   },
-  "include": [
-    "**/*.ts"
-  ],
-  "references": [],
   "exclude": [
     "dist",
     "src/**/*.test.ts",
@@ -27,5 +20,8 @@
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx"
-  ]
+  ],
+  "extends": "../../tsconfig.base.json",
+  "include": ["**/*.ts"],
+  "references": []
 }

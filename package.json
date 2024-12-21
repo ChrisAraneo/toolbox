@@ -1,5 +1,5 @@
 {
-  "name": "@chris.araneo/source",
+  "name": "@chris.araneo/toolbox",
   "workspaces": [
     "packages/*"
   ],
@@ -11,9 +11,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "nx": "20.3.0",
     "tslib": "^2.8.0",
-    "typescript": "~5.5.2",
-    "nx": "20.3.0"
-  },
-  "dependencies": {}
+    "typescript": "~5.5.2"
+  }
 }
