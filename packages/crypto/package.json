@@ -1,7 +1,7 @@
 {
-  "name": "@chris.araneo/file-system",
+  "name": "@chris.araneo/crypto",
   "version": "0.0.1",
-  "description": "",
+  "description": "Crypto wrappers intended for encrypting and decrypting files.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -16,11 +16,10 @@
     "chores": "npm run lint && npm run format"
   },
   "keywords": [],
-  "author": "",
+  "author": "Krzysztof Pająk (Chris Araneo) <chris.araneo@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "find": "^0.3.0",
-    "lodash": "^4.17.21",
-    "md5": "^2.3.0"
+    "crypto-js": "^4.2.0",
+    "rxjs": "^7.8.1"
   }
 }

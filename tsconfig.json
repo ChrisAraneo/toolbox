@@ -1,8 +1,11 @@
 {
-  "extends": "./tsconfig.base.json",
   "compileOnSave": false,
+  "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
+    {
+      "path": "./packages/crypto"
+    },
     {
       "path": "./packages/file-system"
     }
