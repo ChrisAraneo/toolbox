@@ -6,7 +6,8 @@ import {
   TextFileWriter,
 } from '@chris.araneo/file-system';
 import { filter, map, Observable } from 'rxjs';
-import { FileEncryptor } from 'src/file-encryptor.class';
+
+import { FileEncryptor } from '../file-encryptor.class';
 
 export class EncryptedFile extends TextFile {
   protected override textFileWriter: TextFileWriter;

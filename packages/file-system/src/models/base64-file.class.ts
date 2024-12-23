@@ -1,8 +1,8 @@
 import { filter, map, Observable } from 'rxjs';
-import { Base64FileReader } from 'src/file-reader/base64-file-reader.class';
-import { FileSystem } from 'src/file-system/file-system.class';
-import { Base64FileWriter } from 'src/file-writer/base64-file-writer.class';
 
+import { Base64FileReader } from '../file-reader/base64-file-reader.class';
+import { FileSystem } from '../file-system/file-system.class';
+import { Base64FileWriter } from '../file-writer/base64-file-writer.class';
 import { TextFile } from './text-file.class';
 
 export class Base64File extends TextFile {

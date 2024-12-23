@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
-import { FileSystem } from 'src/file-system/file-system.class';
-import { TextFileWriter } from 'src/file-writer/text-file-writer.class';
 
+import { FileSystem } from '../file-system/file-system.class';
+import { TextFileWriter } from '../file-writer/text-file-writer.class';
 import { File } from './file.class';
 
 export class TextFile extends File<string> {

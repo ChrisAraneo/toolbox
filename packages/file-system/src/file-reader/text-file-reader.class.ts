@@ -1,6 +1,6 @@
 import { catchError, map, Observable, of } from 'rxjs';
-import { TextFile } from 'src/models/text-file.class';
 
+import { TextFile } from '../models/text-file.class';
 import { FileReader } from './file-reader.class';
 import { ReadFileError } from './read-file-error.type';
 import { ReadFileResult } from './read-file-result.type';

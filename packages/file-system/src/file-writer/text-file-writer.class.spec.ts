@@ -1,3 +1,4 @@
+import { NoParamCallback, PathOrFileDescriptor, WriteFileOptions } from 'fs';
 import { lastValueFrom } from 'rxjs';
 
 import { FileSystem } from '../file-system/file-system.class';
@@ -66,7 +67,12 @@ describe('TextFileWriter', () => {
 });
 
 class FileWriteErrorMock extends FileSystemMock {
-  async writeFile(_path, _data, _options, _callback): Promise<void> {
-    _callback('Error');
+  override async writeFile(
+    _file: PathOrFileDescriptor,
+    _data: string | NodeJS.ArrayBufferView,
+    _options: WriteFileOptions,
+    _callback: NoParamCallback,
+  ): Promise<void> {
+    _callback('Error' as unknown as NodeJS.ErrnoException);
   }
 }

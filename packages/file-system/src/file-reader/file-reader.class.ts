@@ -1,7 +1,7 @@
 import { forkJoin, Observable } from 'rxjs';
-import { File } from 'src/models/file.class';
 
 import { FileSystem } from '../file-system/file-system.class';
+import { File } from '../models/file.class';
 import {
   FILE_CONTENT_READING_ERROR_MESSAGE,
   FILE_METADATA_READING_ERROR_MESSAGE,

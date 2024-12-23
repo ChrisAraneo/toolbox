@@ -3,12 +3,7 @@ build/
 out/
 dist/
 tsconfig.tsbuildinfo
-
-
-
 .nx/cache
 .nx/workspace-data
-
-
-
 **/**/.stryker-tmp
+coverage
