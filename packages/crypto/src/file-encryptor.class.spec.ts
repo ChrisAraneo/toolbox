@@ -42,6 +42,6 @@ describe('FileEncryptor', () => {
   it('#encryptBase64File should throw error when provided incorrect file', async () => {
     expect(() =>
       FileEncryptor.encryptBase64File(null as unknown as Base64File, 'secret'),
-    ).toThrowError();
+    ).toThrow();
   });
 });

@@ -52,6 +52,6 @@ describe('FileDecryptor', () => {
         null as unknown as EncryptedFile,
         'secret',
       ),
-    ).toThrowError();
+    ).toThrow();
   });
 });
