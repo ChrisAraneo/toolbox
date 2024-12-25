@@ -8,4 +8,5 @@ module.exports = {
   moduleNameMapper: {
     "^@chris.araneo/(.*)$": "<rootDir>/packages/$1/",
   },
+  modulePathIgnorePatterns: ["dist", ".stryker-tmp"]
 };
