@@ -2,6 +2,9 @@
   "name": "@chris.araneo/crypto",
   "version": "0.0.1",
   "description": "Crypto wrappers intended for encrypting and decrypting files.",
+  "keywords": [],
+  "license": "MIT",
+  "author": "Krzysztof Pająk (Chris Araneo) <chris.araneo@gmail.com>",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -10,14 +13,12 @@
   ],
   "scripts": {
     "build": "tsc --build tsconfig.lib.json",
-    "typecheck": "tsc",
-    "lint": "eslint \"src/**/*.{ts,json,js,mjs}\" \"*{.js,.mjs,.json,.ts}\" --fix",
-    "format": "prettier --write \"**/*.{ts,js,mjs,json}\"",
-    "chores": "npm run lint && npm run format"
+    "chores": "npm run lint && npm run format",
+    "format": "prettier --write \"**/*.{ts,js,mjs,json}\" && sort-package-json \"package.json\"",
+    "lint": "eslint \"src/**/*.{ts,js,mjs,json}\" \"*.{ts,js,mjs,json}\" --fix",
+    "test": "cd ../../ && npm run test -- ./packages/crypto --collectCoverage=false",
+    "typecheck": "tsc"
   },
-  "keywords": [],
-  "author": "Krzysztof Pająk (Chris Araneo) <chris.araneo@gmail.com>",
-  "license": "MIT",
   "dependencies": {
     "crypto-js": "^4.2.0",
     "rxjs": "^7.8.1"

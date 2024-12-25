@@ -2,6 +2,9 @@
   "name": "@chris.araneo/file-system",
   "version": "0.0.1",
   "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -10,14 +13,12 @@
   ],
   "scripts": {
     "build": "tsc --build tsconfig.lib.json",
-    "typecheck": "tsc",
+    "chores": "npm run lint && npm run format",
+    "format": "prettier --write \"**/*.{ts,js,mjs,json}\" && sort-package-json \"package.json\"",
     "lint": "eslint \"src/**/*.{ts,json,js,mjs}\" \"*{.js,.mjs,.json,.ts}\" --fix",
-    "format": "prettier --write \"**/*.{ts,js,mjs,json}\"",
-    "chores": "npm run lint && npm run format"
+    "test": "cd ../../ && npm run test -- ./packages/file-system --collectCoverage=false",
+    "typecheck": "tsc"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "find": "^0.3.0",
     "lodash": "^4.17.21",
