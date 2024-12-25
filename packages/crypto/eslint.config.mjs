@@ -1,4 +1,3 @@
-// @ts-check
 import eslint from '@eslint/js';
 import eslintPluginJsonc from 'eslint-plugin-jsonc';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
@@ -20,12 +19,12 @@ export default tseslint.config(
       'jsonc/sort-keys': 'error',
     },
     ignores: [
-      '**/node_modules/',
+      'node_modules/',
       '.git/',
-      'package.json',
-      'package-lock.json',
       'reports/',
       '.stryker-tmp/',
+      'package.json',
+      'package-lock.json',
     ],
   },
 );
