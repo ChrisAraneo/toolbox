@@ -2,7 +2,7 @@ import { Base64File } from '@chris.araneo/file-system';
 import CryptoJS from 'crypto-js';
 import CryptoAES from 'crypto-js/aes';
 
-import { EncryptionResult } from './models/encryption-result.type';
+import { EncryptionResult } from './encryption-result.type';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class FileEncryptor {
