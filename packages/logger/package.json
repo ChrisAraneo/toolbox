@@ -1,0 +1,25 @@
+{
+  "name": "@chris.araneo/logger",
+  "version": "0.0.1",
+  "description": "Winston wrapper",
+  "keywords": [],
+  "license": "MIT",
+  "author": "Krzysztof Pająk (Chris Araneo) <chris.araneo@gmail.com>",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc --build tsconfig.lib.json",
+    "chores": "npm run lint && npm run format",
+    "format": "prettier --write \"**/*.{ts,js,mjs,json}\" && sort-package-json \"package.json\"",
+    "lint": "eslint \"src/**/*.{ts,js,mjs,json}\" \"*.{ts,js,mjs,json}\" --fix",
+    "test": "cd ../../ && npm run test -- ./packages/logger --collectCoverage=false",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "winston": "^3.17.0"
+  }
+}
