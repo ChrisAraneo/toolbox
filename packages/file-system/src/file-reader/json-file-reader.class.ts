@@ -1,17 +1,21 @@
 import { catchError, map, Observable, of } from 'rxjs';
+import { JsonFile } from 'src/file/json-file.class';
 
-import { TextFile } from '../file/text-file.class';
 import { FileReader } from './file-reader.class';
 import { ReadFileError } from './read-file-error.type';
 import { ReadFileResult } from './read-file-result.type';
 import { ReadFileResultStatus } from './read-file-result-status.enum';
 
-export class TextFileReader extends FileReader<TextFile | ReadFileError> {
-  readFile(path: string): Observable<TextFile | ReadFileError> {
+export class JsonFileReader extends FileReader<JsonFile | ReadFileError> {
+  readFile(path: string): Observable<JsonFile | ReadFileError> {
     return this._readFile(path, 'utf-8').pipe(
       map((result: ReadFileResult) => {
         if (result.status === ReadFileResultStatus.Success) {
-          return new TextFile(result.path, result.data, result.modifiedDate);
+          return new JsonFile(
+            result.path,
+            JSON.parse(result.data),
+            result.modifiedDate,
+          );
         } else {
           return result;
         }

@@ -8,6 +8,9 @@
     },
     {
       "path": "./packages/file-system"
+    },
+    {
+      "path": "./packages/logger"
     }
   ]
 }

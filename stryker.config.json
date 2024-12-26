@@ -14,6 +14,7 @@
   "mutate": [
     "packages/crypto/**/*.ts",
     "packages/file-system/**/*.ts",
+    "packages/logger/**/*.ts",
     "!**/**/*.spec.ts"
   ],
   "ignorePatterns": ["**/**/*.spec.ts"]

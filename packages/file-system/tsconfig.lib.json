@@ -23,5 +23,9 @@
   ],
   "extends": "../../tsconfig.base.json",
   "include": ["**/*.ts"],
-  "references": []
+  "references": [
+    {
+      "path": "../logger/tsconfig.lib.json"
+    }
+  ]
 }
