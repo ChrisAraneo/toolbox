@@ -1,6 +1,6 @@
 import { catchError, map, Observable, of } from 'rxjs';
-import { JsonFile } from 'src/file/json-file.class';
 
+import { JsonFile } from '../file/json-file.class';
 import { FileReader } from './file-reader.class';
 import { ReadFileError } from './read-file-error.type';
 import { ReadFileResult } from './read-file-result.type';

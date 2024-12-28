@@ -1,9 +1,9 @@
 import { NoParamCallback, PathOrFileDescriptor, WriteFileOptions } from 'fs';
 import { lastValueFrom } from 'rxjs';
 
+import { TextFile } from '../file/text-file.class';
 import { FileSystem } from '../file-system/file-system.class';
 import { FileSystemMock } from '../file-system/file-system.mock.class';
-import { TextFile } from '../models/text-file.class';
 import { TextFileWriter } from './text-file-writer.class';
 
 let fileSystem: FileSystem;
