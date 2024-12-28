@@ -94,7 +94,7 @@ describe('DirectoryCreator', () => {
 });
 
 class CreateDirectoryCallbackErrorFileSystemMock extends FileSystemMock {
-  mkdirSync(
+  override mkdirSync(
     path: PathLike,
     options?: MakeDirectoryOptions & { recursive: true },
     callback?: (err: NodeJS.ErrnoException | null, path?: string) => void,
@@ -114,7 +114,7 @@ class CreateDirectoryCallbackErrorFileSystemMock extends FileSystemMock {
 }
 
 class CreateDirectoryNoCallbackPathFileSystemMock extends FileSystemMock {
-  mkdirSync(
+  override mkdirSync(
     path: PathLike,
     options?: MakeDirectoryOptions & { recursive: true },
     callback?: (err: NodeJS.ErrnoException | null, path?: string) => void,

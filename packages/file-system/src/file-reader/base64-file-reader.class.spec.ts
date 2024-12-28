@@ -62,7 +62,7 @@ describe('Base64FileReader', () => {
 });
 
 class ReadFileErrorMock extends FileSystemMock {
-  readFile(
+  override readFile(
     path: string,
     _options: any,
     callback: (error: any, data?: any) => any,
@@ -72,7 +72,7 @@ class ReadFileErrorMock extends FileSystemMock {
 }
 
 class StatErrorMock extends FileSystemMock {
-  stat(path: string, callback: (error: any, data?: any) => any): void {
+  override stat(path: string, callback: (error: any, data?: any) => any): void {
     callback('error');
   }
 }

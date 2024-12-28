@@ -62,7 +62,7 @@ describe('JsonFileReader', () => {
 });
 
 class ReadFileErrorMock extends FileSystemMock {
-  readFile(
+  override readFile(
     path: PathOrFileDescriptor,
     options:
       | ({
@@ -77,7 +77,7 @@ class ReadFileErrorMock extends FileSystemMock {
 }
 
 class StatErrorMock extends FileSystemMock {
-  stat(
+  override stat(
     path: string,
     callback: (err: NodeJS.ErrnoException | null, stats: Stats) => void,
   ): void {

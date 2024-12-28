@@ -37,7 +37,7 @@ describe('DirectoryInfo', () => {
 });
 
 export class ReadDirectoryErrorFileSystemMock extends FileSystemMock {
-  readdir(
+  override readdir(
     _path: PathLike,
     callback: (err: NodeJS.ErrnoException | null, files: string[]) => void,
   ): void {
