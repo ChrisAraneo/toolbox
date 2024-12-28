@@ -2,8 +2,8 @@ import { FileSystem } from '@chris.araneo/file-system';
 import { FileSystemMock } from '@chris.araneo/file-system';
 import { lastValueFrom } from 'rxjs';
 
+import { EncryptedFile } from '../encrypted-file/encrypted-file.class';
 import { FileDecryptor } from './file-decryptor.class';
-import { EncryptedFile } from './models/encrypted-file.class';
 
 let fileSystem: FileSystem;
 
