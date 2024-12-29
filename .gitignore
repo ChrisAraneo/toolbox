@@ -5,6 +5,7 @@ dist/
 tsconfig.tsbuildinfo
 .nx/cache
 .nx/workspace-data
-**/**/.stryker-tmp
+.stryker-tmp
+strykerTmp
 reports
 coverage
