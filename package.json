@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "chores": "npm run lint && npm run format",
-    "format": "prettier --write \"**/*.{ts,js,mjs,json}\" && sort-package-json \"**/package.json\"",
+    "format": "node scripts/format",
     "lint": "eslint \"packages/**/*.{ts,js,mjs,json}\" \"*.{ts,js,mjs,json}\" --fix",
     "stryker": "npx rimraf strykerTmp && npx stryker run",
     "test": "npx rimraf strykerTmp && jest"
