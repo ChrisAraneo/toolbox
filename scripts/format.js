@@ -1,8 +1,33 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-require-imports */
+
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
-const { readdir } = require('node:fs/promises');
+const { readdir, readFile, writeFile } = require('node:fs/promises');
+
+const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
+
+const JSON_FILES = [
+  '.vscode/*.json',
+  '.prettierrc',
+  'nx.json',
+  'stryker.config.json',
+  'tsconfig.base.json',
+  'tsconfig.json',
+  'package.json',
+];
+
+const JS_FILES = ['scripts/*.js', '*.{mjs,cjs}'];
+
+async function readPrettierVersion() {
+  const data = await readFile(normalize(`${__filename}/../../package.json`), {
+    encoding: 'utf8',
+  });
+
+  const json = JSON.parse(data);
+
+  return json && json['devDependencies'] && json['devDependencies']['prettier'];
+}
 
 async function getDirectories(source) {
   return (await readdir(source, { withFileTypes: true }))
@@ -10,22 +35,54 @@ async function getDirectories(source) {
     .map((dirent) => dirent.name);
 }
 
-async function main() {
-  const packagesPath = normalize(`${__filename}/../../packages/`);
-
-  (await getDirectories(packagesPath)).forEach((directory) => {
-    exec(
-      `cd ${normalize(`${packagesPath}${directory}`)} && npm run format`,
-      (error, stdout) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          return;
-        }
-
-        console.log(stdout);
-      },
-    );
+async function sortGitignore(path) {
+  const data = await readFile(normalize(path), {
+    encoding: 'utf8',
   });
+
+  const result = data
+    .replaceAll('\r', '\n')
+    .split('\n')
+    .filter((line) => line)
+    .map((line) => ({
+      line,
+      normalized: normalize(`${__filename}/../../${line}`),
+    }));
+
+  result.sort((a, b) => a.normalized.localeCompare(b.normalized));
+
+  return writeFile(
+    normalize(path),
+    result.map((item) => item.line.trim()).join('\n'),
+  );
+}
+
+function print(error, stdout) {
+  if (error) {
+    console.error(`exec error: ${error}`);
+    return;
+  }
+
+  if (stdout.length && stdout.trim().length) {
+    console.log(stdout);
+  }
+}
+
+async function main() {
+  const prettierVersion = (await readPrettierVersion()) || 'latest';
+
+  exec(
+    `npx prettier@${prettierVersion} --write ${[...JSON_FILES, ...JS_FILES].map((file) => `"${file}"`).join(' ')}`.trimEnd(),
+    print,
+  );
+
+  sortGitignore(normalize(`${__filename}/../../.gitignore`));
+
+  (await getDirectories(PACKAGES_PATH))
+    .map((directory) => normalize(`${PACKAGES_PATH}${directory}`))
+    .forEach((directory) => {
+      exec(`cd ${directory} && npm run format`, print);
+    });
 }
 
 main();
