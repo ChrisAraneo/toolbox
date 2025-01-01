@@ -3,11 +3,7 @@
 
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
-const {
-  readdir,
-  readFile,
-  writeFile,
-} = require('node:fs/promises');
+const { readdir, readFile, writeFile } = require('node:fs/promises');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
@@ -23,14 +19,14 @@ const JSON_FILES = [
 
 const JS_FILES = ['scripts/*.js', '*.{mjs,cjs}'];
 
-async function readPrettierVersion() {
+async function readDevDependencyVersion(name) {
   const data = await readFile(normalize(`${__filename}/../../package.json`), {
     encoding: 'utf8',
   });
 
   const json = JSON.parse(data);
 
-  return json && json['devDependencies'] && json['devDependencies']['prettier'];
+  return json && json['devDependencies'] && json['devDependencies'][name];
 }
 
 async function getDirectories(source) {
@@ -83,12 +79,17 @@ function print(error, stdout) {
 }
 
 async function main() {
-  const prettierVersion = (await readPrettierVersion()) || 'latest';
+  const prettierVersion =
+    (await readDevDependencyVersion('prettier')) || 'latest';
+  const sortPackageJsonVersion =
+    (await readDevDependencyVersion('sort-package-json')) || 'latest';
 
   exec(
     `npx prettier@${prettierVersion} --write ${[...JSON_FILES, ...JS_FILES].map((file) => `"${file}"`).join(' ')}`.trimEnd(),
     print,
   );
+
+  exec(`npx sort-package-json@${sortPackageJsonVersion} "package.json"`, print);
 
   sortPatterns(normalize(`${__filename}/../../.gitignore`));
 
