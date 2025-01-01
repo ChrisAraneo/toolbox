@@ -1,12 +1,12 @@
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
+  preset: 'ts-jest',
+  testEnvironment: 'node',
   collectCoverage: true,
-  coverageDirectory: "coverage",
-  collectCoverageFrom: ["packages/**/*.{ts,js}"],
-  coveragePathIgnorePatterns: ["jest.config.js", "/node_modules/", "/dist/"],
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: ['packages/**/*.{ts,js}'],
+  coveragePathIgnorePatterns: ['jest.config.js', '/node_modules/', '/dist/'],
   moduleNameMapper: {
-    "^@chris.araneo/(.*)$": "<rootDir>/packages/$1/",
+    '^@chris.araneo/(.*)$': '<rootDir>/packages/$1/',
   },
-  modulePathIgnorePatterns: ["dist", ".stryker-tmp"]
+  modulePathIgnorePatterns: ['dist', '.stryker-tmp'],
 };
