@@ -3,7 +3,11 @@
 
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
-const { readdir, readFile, writeFile } = require('node:fs/promises');
+const {
+  readdir,
+  readFile,
+  writeFile,
+} = require('node:fs/promises');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
@@ -35,10 +39,20 @@ async function getDirectories(source) {
     .map((dirent) => dirent.name);
 }
 
-async function sortGitignore(path) {
-  const data = await readFile(normalize(path), {
-    encoding: 'utf8',
-  });
+async function sortPatterns(path) {
+  let data;
+
+  try {
+    data = await readFile(normalize(path), {
+      encoding: 'utf8',
+    });
+  } catch {
+    data = null;
+  }
+
+  if (data === null) {
+    return;
+  }
 
   const result = data
     .replaceAll('\r', '\n')
@@ -53,7 +67,7 @@ async function sortGitignore(path) {
 
   return writeFile(
     normalize(path),
-    result.map((item) => item.line.trim()).join('\n'),
+    result.map((item) => item.line.trim()).join('\n') + '\n',
   );
 }
 
@@ -76,12 +90,14 @@ async function main() {
     print,
   );
 
-  sortGitignore(normalize(`${__filename}/../../.gitignore`));
+  sortPatterns(normalize(`${__filename}/../../.gitignore`));
 
   (await getDirectories(PACKAGES_PATH))
     .map((directory) => normalize(`${PACKAGES_PATH}${directory}`))
     .forEach((directory) => {
       exec(`cd ${directory} && npm run format`, print);
+
+      sortPatterns(normalize(`${directory}/.prettierignore`));
     });
 }
 
