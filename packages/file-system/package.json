@@ -14,7 +14,7 @@
   "scripts": {
     "build": "tsc --build tsconfig.lib.json",
     "chores": "npm run lint && npm run format",
-    "format": "prettier --write \"**/*.{ts,js,mjs,json}\" && sort-package-json \"package.json\"",
+    "format": "cd ../../ && node scripts/format-package file-system",
     "lint": "eslint \"src/**/*.{ts,json,js,mjs}\" \"*{.js,.mjs,.json,.ts}\" --fix",
     "test": "cd ../../ && npm run test -- ./packages/file-system --collectCoverage=false",
     "typecheck": "tsc"
