@@ -19,7 +19,7 @@ const JSON_FILES = [
   'package.json',
 ];
 
-const JS_FILES = ['scripts/*.js', '*.{ts,js,mjs,cjs}'];
+const SOURCE_FILES = ['scripts/*.js', '*.{ts,js,mjs,cjs}'];
 
 async function readDevDependencyVersion(name) {
   const data = await readFile(normalize(`${__filename}/../../package.json`), {
@@ -49,7 +49,7 @@ function print(error, stdout) {
 }
 
 async function formatAll(prettierVersion, sortPackageJsonVersion) {
-  const prettierCommand = `npx prettier@${prettierVersion} --write ${[...JSON_FILES, ...JS_FILES].map((pattern) => `"${pattern}"`).join(' ')}`;
+  const prettierCommand = `npx prettier@${prettierVersion} --write ${[...JSON_FILES, ...SOURCE_FILES].map((pattern) => `"${pattern}"`).join(' ')}`;
   const sortPackageJsonCommand = `npx sort-package-json@${sortPackageJsonVersion} "package.json"`;
 
   exec(`${sortPackageJsonCommand} && ${prettierCommand}`, print);
