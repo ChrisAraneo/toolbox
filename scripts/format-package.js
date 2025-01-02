@@ -9,7 +9,6 @@ const { sortPatternsFile } = require('./sort-patterns-file');
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
 const JSON_FILES = [
-  '.prettierrc',
   'tsconfig.lib.json',
   'tsconfig.json',
   'package.json',
