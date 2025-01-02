@@ -56,17 +56,17 @@ async function formatPackage(prettierVersion, sortPackageJsonVersion, package) {
 async function main(packages) {
   if (!packages.length) {
     return;
-  } else {
-    const prettierVersion =
-      (await readDevDependencyVersion('prettier')) || 'latest';
-
-    const sortPackageJsonVersion =
-      (await readDevDependencyVersion('sort-package-json')) || 'latest';
-
-    packages.forEach((package) =>
-      formatPackage(prettierVersion, sortPackageJsonVersion, package),
-    );
   }
+
+  const prettierVersion =
+    (await readDevDependencyVersion('prettier')) || 'latest';
+
+  const sortPackageJsonVersion =
+    (await readDevDependencyVersion('sort-package-json')) || 'latest';
+
+  packages.forEach((package) =>
+    formatPackage(prettierVersion, sortPackageJsonVersion, package),
+  );
 }
 
 let packages = [];

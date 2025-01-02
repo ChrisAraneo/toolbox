@@ -15,12 +15,11 @@ const JSON_FILES = [
   'nx.json',
   'stryker.config.json',
   'tsconfig.base.json',
-  'tsconfig.lib.json',
   'tsconfig.json',
   'package.json',
 ];
 
-const JS_FILES = ['scripts/*.js', '*.{ts,js,mjs,cjs}', 'src/**/*.ts'];
+const JS_FILES = ['scripts/*.js', '*.{ts,js,mjs,cjs}'];
 
 async function readDevDependencyVersion(name) {
   const data = await readFile(normalize(`${__filename}/../../package.json`), {
@@ -50,8 +49,7 @@ function print(error, stdout) {
 }
 
 async function formatAll(prettierVersion, sortPackageJsonVersion) {
-  const prettierCommand =
-    `npx prettier@${prettierVersion} --write ${[...JSON_FILES, ...JS_FILES].map((pattern) => `"${normalize(directory + '/' + pattern)}"`).join(' ')}`.trimEnd();
+  const prettierCommand = `npx prettier@${prettierVersion} --write ${[...JSON_FILES, ...JS_FILES].map((pattern) => `"${pattern}"`).join(' ')}`;
   const sortPackageJsonCommand = `npx sort-package-json@${sortPackageJsonVersion} "package.json"`;
 
   exec(`${sortPackageJsonCommand} && ${prettierCommand}`, print);
@@ -59,11 +57,19 @@ async function formatAll(prettierVersion, sortPackageJsonVersion) {
   sortPatternsFile(normalize(`${__filename}/../../.gitignore`));
 
   (await getDirectories(PACKAGES_PATH)).map((directory) =>
-    formatPackage(directory),
+    formatPackage(prettierVersion, sortPackageJsonVersion, directory),
   );
 }
 
-async function main(packages) {
+async function main() {
+  let packages = [];
+
+  process.argv.forEach(function (value, index) {
+    if (index >= 2 && value) {
+      packages.push(value);
+    }
+  });
+
   const prettierVersion =
     (await readDevDependencyVersion('prettier')) || 'latest';
 
@@ -79,12 +85,4 @@ async function main(packages) {
   }
 }
 
-let packages = [];
-
-process.argv.forEach(function (value, index) {
-  if (index >= 2) {
-    packages.push(value);
-  }
-});
-
-main(packages);
+main();
