@@ -5,23 +5,13 @@ const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
 const { readVersion } = require('./utils/read-version');
 const { sortPatternsFile } = require('./sort-patterns-file');
+const { print } = require('./utils/print');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
 const JSON_FILES = ['tsconfig.lib.json', 'tsconfig.json', 'package.json'];
 
 const SOURCE_FILES = ['*.{ts,js,mjs,cjs}', 'src/**/*.ts'];
-
-function print(error, stdout) {
-  if (error) {
-    console.error(`exec error: ${error}`);
-    return;
-  }
-
-  if (stdout.length && stdout.trim().length) {
-    console.log(stdout);
-  }
-}
 
 async function formatPackage(prettierVersion, sortPackageJsonVersion, package) {
   const directory = normalize(`${PACKAGES_PATH}${package}`);

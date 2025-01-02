@@ -7,6 +7,7 @@ const { readdir } = require('node:fs/promises');
 const { sortPatternsFile } = require('./sort-patterns-file');
 const { formatPackage } = require('./format-package');
 const { readVersion } = require('./utils/read-version');
+const { print } = require('./utils/print');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
@@ -26,17 +27,6 @@ async function getDirectories(source) {
   return (await readdir(source, { withFileTypes: true }))
     .filter((dirent) => dirent.isDirectory())
     .map((dirent) => dirent.name);
-}
-
-function print(error, stdout) {
-  if (error) {
-    console.error(`exec error: ${error}`);
-    return;
-  }
-
-  if (stdout.length && stdout.trim().length) {
-    console.log(stdout);
-  }
 }
 
 async function formatAll(prettierVersion, sortPackageJsonVersion) {
