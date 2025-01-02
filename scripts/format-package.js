@@ -3,28 +3,14 @@
 
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
-const { readFile } = require('node:fs/promises');
+const { readVersion } = require('./utils/read-version');
 const { sortPatternsFile } = require('./sort-patterns-file');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
-const JSON_FILES = [
-  'tsconfig.lib.json',
-  'tsconfig.json',
-  'package.json',
-];
+const JSON_FILES = ['tsconfig.lib.json', 'tsconfig.json', 'package.json'];
 
 const SOURCE_FILES = ['*.{ts,js,mjs,cjs}', 'src/**/*.ts'];
-
-async function readDevDependencyVersion(name) {
-  const data = await readFile(normalize(`${__filename}/../../package.json`), {
-    encoding: 'utf8',
-  });
-
-  const json = JSON.parse(data);
-
-  return json && json['devDependencies'] && json['devDependencies'][name];
-}
 
 function print(error, stdout) {
   if (error) {
@@ -57,11 +43,8 @@ async function main(packages) {
     return;
   }
 
-  const prettierVersion =
-    (await readDevDependencyVersion('prettier')) || 'latest';
-
-  const sortPackageJsonVersion =
-    (await readDevDependencyVersion('sort-package-json')) || 'latest';
+  const prettierVersion = await readVersion('prettier');
+  const sortPackageJsonVersion = await readVersion('sort-package-json');
 
   packages.forEach((package) =>
     formatPackage(prettierVersion, sortPackageJsonVersion, package),

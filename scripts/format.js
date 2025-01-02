@@ -3,9 +3,10 @@
 
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
-const { readdir, readFile } = require('node:fs/promises');
+const { readdir } = require('node:fs/promises');
 const { sortPatternsFile } = require('./sort-patterns-file');
 const { formatPackage } = require('./format-package');
+const { readVersion } = require('./utils/read-version');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
@@ -19,17 +20,7 @@ const JSON_FILES = [
   'package.json',
 ];
 
-const SOURCE_FILES = ['scripts/*.js', '*.{ts,js,mjs,cjs}'];
-
-async function readDevDependencyVersion(name) {
-  const data = await readFile(normalize(`${__filename}/../../package.json`), {
-    encoding: 'utf8',
-  });
-
-  const json = JSON.parse(data);
-
-  return json && json['devDependencies'] && json['devDependencies'][name];
-}
+const SOURCE_FILES = ['scripts/**/*.js', '*.{ts,js,mjs,cjs}'];
 
 async function getDirectories(source) {
   return (await readdir(source, { withFileTypes: true }))
@@ -70,11 +61,8 @@ async function main() {
     }
   });
 
-  const prettierVersion =
-    (await readDevDependencyVersion('prettier')) || 'latest';
-
-  const sortPackageJsonVersion =
-    (await readDevDependencyVersion('sort-package-json')) || 'latest';
+  const prettierVersion = await readVersion('prettier');
+  const sortPackageJsonVersion = await readVersion('sort-package-json');
 
   if (!packages.length) {
     formatAll(prettierVersion, sortPackageJsonVersion);
