@@ -21,8 +21,9 @@ async function formatPackage(prettierVersion, sortPackageJsonVersion, package) {
 
   const sortPackageJsonCommand = `npx sort-package-json@${sortPackageJsonVersion} "./packages/${package}/package.json"`;
   const prettierCommand = `npx prettier@${prettierVersion} --write ${patterns}`;
+  const command = `${sortPackageJsonCommand} && ${prettierCommand}`;
 
-  exec(`${sortPackageJsonCommand} && ${prettierCommand}`, print);
+  exec(command, (error, stdout, stderr) => print(error, stdout, stderr));
 
   sortPatternsFile(normalize(`${directory}/.prettierignore`));
   sortPatternsFile(normalize(`${directory}/.gitignore`));

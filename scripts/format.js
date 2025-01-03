@@ -32,8 +32,9 @@ async function getDirectories(source) {
 async function formatAll(prettierVersion, sortPackageJsonVersion) {
   const prettierCommand = `npx prettier@${prettierVersion} --write ${[...JSON_FILES, ...SOURCE_FILES].map((pattern) => `"${pattern}"`).join(' ')}`;
   const sortPackageJsonCommand = `npx sort-package-json@${sortPackageJsonVersion} "package.json"`;
+  const command = `${sortPackageJsonCommand} && ${prettierCommand}`;
 
-  exec(`${sortPackageJsonCommand} && ${prettierCommand}`, print);
+  exec(command, (error, stdout, stderr) => print(error, stdout, stderr));
 
   sortPatternsFile(normalize(`${__filename}/../../.gitignore`));
 

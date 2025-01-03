@@ -6,6 +6,7 @@ const { exec } = require('node:child_process');
 const { readdir } = require('node:fs/promises');
 const { lintPackage } = require('./lint-package');
 const { readVersion } = require('./utils/read-version');
+const { print } = require('./utils/print');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
@@ -28,17 +29,9 @@ async function getDirectories(source) {
 
 async function lintAll(eslintVersion) {
   const patterns = `${[...JSON_FILES, ...SOURCE_FILES].map((pattern) => `"${pattern}"`).join(' ')}`;
-  const eslintCommand = `npx eslint@${eslintVersion} ${patterns} --fix`;
+  const command = `npx eslint@${eslintVersion} ${patterns} --fix`;
 
-  exec(`${eslintCommand}`, (err, stdout, stderr) => {
-    if (err) {
-      console.error(err);
-    }
-
-    console.log(stdout);
-
-    console.log(stderr);
-  });
+  exec(command, (error, stdout, stderr) => print(error, stdout, stderr, true));
 
   (await getDirectories(PACKAGES_PATH)).map((directory) =>
     lintPackage(eslintVersion, directory),
