@@ -13,7 +13,7 @@ const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
 const JSON_FILES = [
   '.vscode/*.json',
-  '.prettierrc',
+  '.prettierrc.json',
   'nx.json',
   'stryker.config.json',
   'tsconfig.base.json',
