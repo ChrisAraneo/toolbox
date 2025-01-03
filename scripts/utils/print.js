@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-require-imports */
 
 function print(error, stdout) {
   if (error) {
