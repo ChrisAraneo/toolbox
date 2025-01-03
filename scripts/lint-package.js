@@ -7,7 +7,7 @@ const { readVersion } = require('./utils/read-version');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
-const JSON_FILES = ['tsconfig.lib.json', 'tsconfig.json', 'package.json'];
+const JSON_FILES = ['tsconfig.lib.json', 'tsconfig.json'];
 
 const SOURCE_FILES = ['*.{ts,js,mjs,cjs}', 'src/**/*.ts'];
 
@@ -34,7 +34,15 @@ async function lintPackage(eslintVersion, package) {
   });
 }
 
-async function main(packages) {
+async function main() {
+  let packages = [];
+
+  process.argv.forEach(function (value, index) {
+    if (index >= 2) {
+      packages.push(value);
+    }
+  });
+
   if (!packages.length) {
     return;
   }
@@ -44,15 +52,7 @@ async function main(packages) {
   packages.forEach((package) => lintPackage(eslintVersion, package));
 }
 
-let packages = [];
-
-process.argv.forEach(function (value, index) {
-  if (index >= 2) {
-    packages.push(value);
-  }
-});
-
-main(packages);
+main();
 
 module.exports = {
   lintPackage: lintPackage,

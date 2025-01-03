@@ -16,7 +16,6 @@ const JSON_FILES = [
   'stryker.config.json',
   'tsconfig.base.json',
   'tsconfig.json',
-  'package.json',
 ];
 
 const SOURCE_FILES = ['scripts/**/*.js', '*.{ts,js,mjs,cjs}'];

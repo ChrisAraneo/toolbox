@@ -28,7 +28,15 @@ async function formatPackage(prettierVersion, sortPackageJsonVersion, package) {
   sortPatternsFile(normalize(`${directory}/.gitignore`));
 }
 
-async function main(packages) {
+async function main() {
+  let packages = [];
+
+  process.argv.forEach(function (value, index) {
+    if (index >= 2) {
+      packages.push(value);
+    }
+  });
+
   if (!packages.length) {
     return;
   }
@@ -41,15 +49,7 @@ async function main(packages) {
   );
 }
 
-let packages = [];
-
-process.argv.forEach(function (value, index) {
-  if (index >= 2) {
-    packages.push(value);
-  }
-});
-
-main(packages);
+main();
 
 module.exports = {
   formatPackage: formatPackage,
