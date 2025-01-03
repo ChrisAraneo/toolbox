@@ -15,7 +15,7 @@
     "build": "tsc --build tsconfig.lib.json",
     "chores": "npm run lint && npm run format",
     "format": "cd ../../ && node scripts/format-package crypto",
-    "lint": "eslint \"src/**/*.{ts,js,mjs,json}\" \"*.{ts,js,mjs,json}\" --fix",
+    "lint": "cd ../../ && node scripts/lint-package crypto",
     "test": "cd ../../ && npm run test -- ./packages/crypto --collectCoverage=false",
     "typecheck": "tsc"
   },

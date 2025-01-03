@@ -15,7 +15,7 @@
     "build": "tsc --build tsconfig.lib.json",
     "chores": "npm run lint && npm run format",
     "format": "cd ../../ && node scripts/format-package file-system",
-    "lint": "eslint \"src/**/*.{ts,json,js,mjs}\" \"*{.js,.mjs,.json,.ts}\" --fix",
+    "lint": "cd ../../ && node scripts/lint-package file-system",
     "test": "cd ../../ && npm run test -- ./packages/file-system --collectCoverage=false",
     "typecheck": "tsc"
   },
