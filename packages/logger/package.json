@@ -1,7 +1,7 @@
 {
   "name": "@chris.araneo/logger",
-  "version": "0.0.1",
-  "description": "Winston wrapper",
+  "version": "0.0.2",
+  "description": "Logger that uses Winston under the hood",
   "keywords": [],
   "license": "MIT",
   "author": "Krzysztof Pająk (Chris Araneo) <chris.araneo@gmail.com>",
