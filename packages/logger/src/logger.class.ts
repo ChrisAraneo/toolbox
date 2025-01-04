@@ -59,10 +59,12 @@ export class Logger {
         printf((msg) => {
           const message = msg.message;
           const splat = msg[Symbol.for('splat')];
+          const iso = new Date().toISOString();
+          const parts = iso.split('.');
 
           return colorize().colorize(
             msg.level,
-            `[${msg.timestamp}] [${msg.level.toLocaleUpperCase()}] - ${message}${
+            `[${parts[0].replace('T', ' ')}] [${msg.level.toLocaleUpperCase()}] - ${message}${
               splat ? ' ' + JSON.stringify(splat) : ''
             }`,
           );
