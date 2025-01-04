@@ -27,6 +27,8 @@ export default tseslint.config(
       '.stryker-tmp/',
       'package.json',
       'package-lock.json',
+      'packages/**/package.json',
+      'packages/**/package-lock.json',
     ],
   },
 );
