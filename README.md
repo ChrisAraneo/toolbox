@@ -1,6 +1,6 @@
 # ⚒️ Toolbox
 
-Monorepo of reactive abstractions, wrappers and utility functions shared as [NPM packages](https://www.npmjs.com/settings/chris.araneo/packages).
+Monorepo of reactive abstractions, wrappers and utility functions shared as [NPM packages](https://www.npmjs.com/~chris.araneo).
 
 ## ❓ Motivation
 
