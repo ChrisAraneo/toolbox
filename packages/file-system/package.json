@@ -1,0 +1,27 @@
+{
+  "name": "@chris.araneo/file-system",
+  "version": "0.0.2",
+  "description": "Reactive file system abstractions and wrappers",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc --build tsconfig.lib.json",
+    "chores": "npm run lint && npm run format",
+    "format": "cd ../../ && node scripts/format-package file-system",
+    "lint": "cd ../../ && node scripts/lint-package file-system",
+    "test": "cd ../../ && npm run test -- ./packages/file-system --collectCoverage=false",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "find": "^0.3.0",
+    "lodash": "^4.17.21",
+    "md5": "^2.3.0"
+  }
+}

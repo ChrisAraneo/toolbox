@@ -1,18 +1,22 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "master",
+  "plugins": [
+    {
+      "options": {
+        "targetName": "test"
+      },
+      "plugin": "@nx/jest/plugin"
+    }
+  ],
   "targetDefaults": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "{projectRoot}/dist"
-      ],
-      "cache": true
+      "cache": true,
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"]
     },
     "typecheck": {
       "cache": true
     }
-  },
-  "defaultBase": "master"
+  }
 }

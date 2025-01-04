@@ -1,16 +1,19 @@
 {
-  "extends": "./tsconfig.base.json",
   "compileOnSave": false,
+  "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
     {
-      "path": "./packages/animals"
+      "path": "./packages/crypto"
     },
     {
-      "path": "./packages/names"
+      "path": "./packages/file-system"
     },
     {
-      "path": "./packages/zoo"
+      "path": "./packages/logger"
+    },
+    {
+      "path": "./packages/ftp"
     }
   ]
 }
