@@ -1,4 +1,5 @@
 export * from './src/current-directory/current-directory.class';
+export * from './src/current-directory/current-directory.mock.class';
 export * from './src/directory-creator/directory-creator.class';
 export * from './src/directory-info/directory-info.class';
 export * from './src/file/base64-file.class';
