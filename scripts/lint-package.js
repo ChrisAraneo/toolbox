@@ -3,8 +3,8 @@
 
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
-const { readVersion } = require('./utils/read-version');
-const { print } = require('./utils/print');
+const { print } = require('./print');
+const packageJson = require('../package.json');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
@@ -12,7 +12,8 @@ const JSON_FILES = ['tsconfig.lib.json', 'tsconfig.json'];
 
 const SOURCE_FILES = ['*.{ts,js,mjs,cjs}', 'src/**/*.ts'];
 
-async function lintPackage(eslintVersion, package) {
+async function lintPackage(package) {
+  const eslintVersion = packageJson.devDependencies.eslint;
   const directory = normalize(`${PACKAGES_PATH}${package}`);
 
   const patterns =
@@ -36,9 +37,7 @@ async function main() {
     return;
   }
 
-  const eslintVersion = await readVersion('eslint');
-
-  packages.forEach((package) => lintPackage(eslintVersion, package));
+  packages.forEach((package) => lintPackage(package));
 }
 
 main();

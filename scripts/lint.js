@@ -5,8 +5,8 @@ const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
 const { readdir } = require('node:fs/promises');
 const { lintPackage } = require('./lint-package');
-const { readVersion } = require('./utils/read-version');
-const { print } = require('./utils/print');
+const { print } = require('./print');
+const packageJson = require('../package.json');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
@@ -27,14 +27,16 @@ async function getDirectories(source) {
     .map((dirent) => dirent.name);
 }
 
-async function lintAll(eslintVersion) {
+async function lintAll() {
+  const eslintVersion = packageJson.devDependencies.eslint;
+
   const patterns = `${[...JSON_FILES, ...SOURCE_FILES].map((pattern) => `"${pattern}"`).join(' ')}`;
   const command = `npx eslint@${eslintVersion} ${patterns} --fix`;
 
   exec(command, (error, stdout, stderr) => print(error, stdout, stderr, true));
 
   (await getDirectories(PACKAGES_PATH)).map((directory) =>
-    lintPackage(eslintVersion, directory),
+    lintPackage(directory),
   );
 }
 
@@ -47,12 +49,10 @@ async function main() {
     }
   });
 
-  const eslintVersion = await readVersion('eslint');
-
   if (!packages.length) {
-    lintAll(eslintVersion);
+    lintAll();
   } else {
-    packages.forEach((package) => lintPackage(eslintVersion, package));
+    packages.forEach((package) => lintPackage(package));
   }
 }
 
