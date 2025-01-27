@@ -13,6 +13,7 @@ I found myself reusing code across multiple projects. I decided to put it in a s
 - @chris.araneo/crypto - Easy encrypting and decrypting files.
 - @chris.araneo/ftp - Upload directory to FTP in RxJS way.
 - @chris.araneo/logger - Logger that uses Winston under the hood.
+- @chris.araneo/health-check - Simple health check service.
 
 ## 💿 Installing dependencies
 
