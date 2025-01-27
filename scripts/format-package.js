@@ -3,9 +3,9 @@
 
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
-const { readVersion } = require('./utils/read-version');
 const { sortPatternsFile } = require('./sort-patterns-file');
-const { print } = require('./utils/print');
+const { print } = require('./print');
+const packageJson = require('../package.json');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
@@ -13,7 +13,11 @@ const JSON_FILES = ['tsconfig.lib.json', 'tsconfig.json', 'package.json'];
 
 const SOURCE_FILES = ['*.{ts,js,mjs,cjs}', 'src/**/*.ts'];
 
-async function formatPackage(prettierVersion, sortPackageJsonVersion, package) {
+async function formatPackage(package) {
+  const prettierVersion = packageJson.devDependencies.prettier;
+  const sortPackageJsonVersion =
+    packageJson.devDependencies['sort-package-json'];
+
   const directory = normalize(`${PACKAGES_PATH}${package}`);
 
   const patterns =
@@ -42,12 +46,7 @@ async function main() {
     return;
   }
 
-  const prettierVersion = await readVersion('prettier');
-  const sortPackageJsonVersion = await readVersion('sort-package-json');
-
-  packages.forEach((package) =>
-    formatPackage(prettierVersion, sortPackageJsonVersion, package),
-  );
+  packages.forEach((package) => formatPackage(package));
 }
 
 main();

@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/file-system",
-  "version": "0.0.2",
+  "version": "0.0.32",
   "description": "Reactive file system abstractions and wrappers",
   "keywords": [],
   "license": "MIT",
@@ -20,6 +20,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "app-root-path": "^3.1.0",
     "find": "^0.3.0",
     "lodash": "^4.17.21",
     "md5": "^2.3.0"

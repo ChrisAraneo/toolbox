@@ -6,8 +6,8 @@ const { exec } = require('node:child_process');
 const { readdir } = require('node:fs/promises');
 const { sortPatternsFile } = require('./sort-patterns-file');
 const { formatPackage } = require('./format-package');
-const { readVersion } = require('./utils/read-version');
-const { print } = require('./utils/print');
+const { print } = require('./print');
+const packageJson = require('../package.json');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
@@ -29,7 +29,11 @@ async function getDirectories(source) {
     .map((dirent) => dirent.name);
 }
 
-async function formatAll(prettierVersion, sortPackageJsonVersion) {
+async function formatAll() {
+  const prettierVersion = packageJson.devDependencies.prettier;
+  const sortPackageJsonVersion =
+    packageJson.devDependencies['sort-package-json'];
+
   const prettierCommand = `npx prettier@${prettierVersion} --write ${[...JSON_FILES, ...SOURCE_FILES].map((pattern) => `"${pattern}"`).join(' ')}`;
   const sortPackageJsonCommand = `npx sort-package-json@${sortPackageJsonVersion} "package.json"`;
   const command = `${sortPackageJsonCommand} && ${prettierCommand}`;
@@ -39,7 +43,7 @@ async function formatAll(prettierVersion, sortPackageJsonVersion) {
   sortPatternsFile(normalize(`${__filename}/../../.gitignore`));
 
   (await getDirectories(PACKAGES_PATH)).map((directory) =>
-    formatPackage(prettierVersion, sortPackageJsonVersion, directory),
+    formatPackage(directory),
   );
 }
 
@@ -52,15 +56,10 @@ async function main() {
     }
   });
 
-  const prettierVersion = await readVersion('prettier');
-  const sortPackageJsonVersion = await readVersion('sort-package-json');
-
   if (!packages.length) {
-    formatAll(prettierVersion, sortPackageJsonVersion);
+    formatAll();
   } else {
-    packages.forEach((package) =>
-      formatPackage(prettierVersion, sortPackageJsonVersion, package),
-    );
+    packages.forEach((package) => formatPackage(package));
   }
 }
 
