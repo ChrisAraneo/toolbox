@@ -1,1 +1,1 @@
-export * from 'src/health-check-service.class';
+export * from './src/health-check-service.class';
