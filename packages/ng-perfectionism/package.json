@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/ng-perfectionism",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -20,5 +20,8 @@
     "start": "npm run build && node dist/index.js",
     "test": "cd ../../ && npm run test -- ./packages/ng-perfectionism --collectCoverage=false",
     "typecheck": "tsc"
+  },
+  "dependencies": {
+    "ts-morph": "^25.0.1"
   }
 }
