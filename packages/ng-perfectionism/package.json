@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/ng-perfectionism",
-  "version": "0.0.4",
+  "version": "0.0.9",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -24,6 +24,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@chris.araneo/file-system": "0.0.35",
     "ts-morph": "^25.0.1"
   }
 }
