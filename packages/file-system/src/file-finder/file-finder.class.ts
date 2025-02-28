@@ -113,7 +113,6 @@ export class FileFinder {
             item.length,
           )
           .replace(new RegExp('/i$'), '')
-          .replace('\\', ''),
       ),
       message: input.message,
     };
