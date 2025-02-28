@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/ng-perfectionism",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -8,7 +8,9 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
-  "bin": "./dist/index.js",
+  "bin": {
+    "ng-perfectionism": "./dist/index.js"
+  },
   "files": [
     "dist/**"
   ],
