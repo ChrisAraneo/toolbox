@@ -13,5 +13,6 @@ export * from './src/file-reader/json-file-reader.class';
 export * from './src/file-reader/read-file-result-status.enum';
 export * from './src/file-reader/text-file-reader.class';
 export * from './src/file-system/file-system.class';
+export * from './src/file-system/file-system.mock.class';
 export * from './src/file-writer/base64-file-writer.class';
 export * from './src/file-writer/text-file-writer.class';
