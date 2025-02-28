@@ -112,7 +112,7 @@ export class FileFinder {
             item.indexOf('/i') === item.length - 2 ? 1 : 0,
             item.length,
           )
-          .replace(new RegExp('/i$'), '')
+          .replace(new RegExp('/i$'), ''),
       ),
       message: input.message,
     };
