@@ -1,3 +1,5 @@
+import { normalize } from 'node:path';
+
 import { Logger } from '@chris.araneo/logger';
 import { isString } from 'lodash';
 import { catchError, forkJoin, Observable, of } from 'rxjs';
@@ -93,28 +95,49 @@ export class FileFinder {
     message: string | null;
   }): FindFileResult {
     const _pattern = input.pattern.toString();
+    const pattern = input.pattern
+      .toString()
+      .substring(
+        _pattern.indexOf('/i') === _pattern.length - 2 ? 1 : 0,
+        _pattern.length,
+      )
+      .replace(new RegExp('/i$'), '');
+
+    const root = normalize(input.root);
+
+    const result = input.result.map((item) => {
+      const path = item
+        .toString()
+        .substring(item.indexOf('/i') === item.length - 2 ? 1 : 0, item.length)
+        .replace(new RegExp('/i$'), '');
+
+      return this.fixIncorrectResultPathPrefix(path, root);
+    });
 
     return {
       success: input.success,
-      pattern: input.pattern
-        .toString()
-        .substring(
-          _pattern.indexOf('/i') === _pattern.length - 2 ? 1 : 0,
-          _pattern.length,
-        )
-        .replace(new RegExp('/i$'), '')
-        .replace('\\', ''),
-      root: input.root,
-      result: input.result.map((item) =>
-        item
-          .toString()
-          .substring(
-            item.indexOf('/i') === item.length - 2 ? 1 : 0,
-            item.length,
-          )
-          .replace(new RegExp('/i$'), ''),
-      ),
+      pattern: pattern,
+      root: root,
+      result: result,
       message: input.message,
     };
+  }
+
+  private fixIncorrectResultPathPrefix(path: string, root: string): string {
+    if (path.startsWith(root)) {
+      return path;
+    } else {
+      const rootParts = root.split('\\');
+      const pathParts = path.split('\\');
+
+      if (pathParts[0].startsWith(rootParts[0] + rootParts[1])) {
+        pathParts[0] = rootParts[1];
+        pathParts.unshift(rootParts[0]);
+
+        return pathParts.join('\\');
+      }
+
+      return path;
+    }
   }
 }

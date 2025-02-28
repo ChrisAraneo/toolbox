@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/file-system",
-  "version": "0.0.33",
+  "version": "0.0.35",
   "description": "Reactive file system abstractions and wrappers",
   "keywords": [],
   "license": "MIT",
