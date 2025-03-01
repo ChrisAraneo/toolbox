@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@chris.araneo/file-system": "0.0.35",
+    "rxjs": "^7.8.1",
     "ts-morph": "^25.0.1"
   }
 }
