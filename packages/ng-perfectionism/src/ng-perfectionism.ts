@@ -21,7 +21,7 @@ const COMPONENT_PROPERTIES_ORDER = [
 ];
 
 export class NgPerfectionism {
-  organizeComponentMetadataObject(sourceFile: SourceFile): SourceFile {
+  organizeComponentMetadataObject(sourceFile: SourceFile): void {
     const classes = sourceFile.getClasses();
 
     if (classes.length === 0) {
@@ -43,7 +43,9 @@ export class NgPerfectionism {
     const metadata = componentDecorator.getArguments()[0];
 
     if (!metadata) {
-      return sourceFile;
+      sourceFile.formatText();
+
+      return;
     }
 
     const metadataObject = metadata.asKindOrThrow(
@@ -58,8 +60,6 @@ export class NgPerfectionism {
     this.renameTemporaryProperties(metadataObject);
 
     sourceFile.formatText();
-
-    return sourceFile;
   }
 
   private sortProperties(properties: ObjectLiteralElementLike[]): void {
