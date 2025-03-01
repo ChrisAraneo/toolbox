@@ -1,4 +1,4 @@
-import { buildTestData } from '../utils/build-test-data.function';
+import { buildTestData } from '../../utils/build-test-data.function';
 
 export const UNSORTED_IMPORTS = buildTestData(
   `

@@ -3,6 +3,8 @@ import { FindFileResult } from '@chris.araneo/file-system/src/file-finder/find-f
 import { catchError, finalize, first, of } from 'rxjs';
 import {
   ArrayLiteralExpression,
+  ClassDeclaration,
+  Decorator,
   ObjectLiteralElementLike,
   ObjectLiteralExpression,
   PropertyAssignment,
@@ -21,6 +23,13 @@ const COMPONENT_PROPERTIES_ORDER = [
   'styles',
   'styleUrl',
   'styleUrls',
+];
+
+const MODULE_PROPERTIES_ORDER = [
+  'imports',
+  'declarations',
+  'providers',
+  'exports',
 ];
 
 export class NgPerfectionism {
@@ -53,30 +62,15 @@ export class NgPerfectionism {
   }
 
   organizeComponentMetadataObject(sourceFile: SourceFile): void {
-    const classes = sourceFile.getClasses();
-
-    if (classes.length === 0) {
-      throw new Error('File has no component class defined');
-    }
-
-    if (classes.length > 1) {
-      throw new Error('File has more than one class');
-    }
-
-    const componentDecorator = sourceFile
-      .getClasses()[0]
-      ?.getDecorator('Component');
-
-    if (!componentDecorator) {
-      throw new Error("Class doesn't have Component decorator");
-    }
-
-    const metadata = componentDecorator.getArguments()[0];
+    const classDeclaration = this.getSingleClassOrThrow(sourceFile);
+    const moduleDecorator = this.getDecoratorOrThrow(
+      classDeclaration,
+      'Component',
+    );
+    const metadata = moduleDecorator.getArguments()[0];
 
     if (!metadata) {
-      sourceFile.formatText();
-
-      return;
+      return sourceFile.formatText();
     }
 
     const metadataObject = metadata.asKindOrThrow(
@@ -85,7 +79,7 @@ export class NgPerfectionism {
 
     const properties = metadataObject.getProperties();
 
-    this.sortProperties(properties);
+    this.sortProperties(properties, COMPONENT_PROPERTIES_ORDER);
     this.addTemporaryPropertiesWithOrganizedValues(properties, metadataObject);
     this.removeSourceProperties(metadataObject);
     this.renameTemporaryProperties(metadataObject);
@@ -93,14 +87,74 @@ export class NgPerfectionism {
     sourceFile.formatText();
   }
 
-  private sortProperties(properties: ObjectLiteralElementLike[]): void {
+  organizeModuleMetadataObject(sourceFile: SourceFile): void {
+    const classDeclaration = this.getSingleClassOrThrow(sourceFile);
+    const moduleDecorator = this.getDecoratorOrThrow(
+      classDeclaration,
+      'NgModule',
+    );
+    const metadata = moduleDecorator.getArguments()[0];
+
+    if (!metadata) {
+      return sourceFile.formatText();
+    }
+
+    const metadataObject = metadata.asKindOrThrow(
+      SyntaxKind.ObjectLiteralExpression,
+    );
+
+    const properties = metadataObject.getProperties();
+
+    this.sortProperties(properties, MODULE_PROPERTIES_ORDER);
+    this.addTemporaryPropertiesWithOrganizedValues(properties, metadataObject);
+    this.removeSourceProperties(metadataObject);
+    this.renameTemporaryProperties(metadataObject);
+
+    sourceFile.formatText();
+  }
+
+  private getSingleClassOrThrow(sourceFile: SourceFile): ClassDeclaration {
+    const classes = sourceFile.getClasses();
+
+    if (classes.length === 0) {
+      if (sourceFile.getFullText().trim().length === 0) {
+        throw new Error('File is empty');
+      }
+
+      throw new Error('File has no class defined');
+    }
+
+    if (classes.length > 1) {
+      throw new Error('File has more than one class');
+    }
+
+    return classes[0];
+  }
+
+  private getDecoratorOrThrow(
+    classDeclaration: ClassDeclaration,
+    name: 'Component' | 'NgModule',
+  ): Decorator {
+    const decorator = classDeclaration?.getDecorator(name);
+
+    if (!decorator) {
+      throw new Error(`Class doesn't have ${name} decorator`);
+    }
+
+    return decorator;
+  }
+
+  private sortProperties(
+    properties: ObjectLiteralElementLike[],
+    order: string[],
+  ): void {
     properties.sort((a, b) => {
       if (a instanceof PropertyAssignment && b instanceof PropertyAssignment) {
         const aKey = a.getName();
         const bKey = b.getName();
 
-        const aOrder = COMPONENT_PROPERTIES_ORDER.indexOf(aKey);
-        const bOrder = COMPONENT_PROPERTIES_ORDER.indexOf(bKey);
+        const aOrder = order.indexOf(aKey);
+        const bOrder = order.indexOf(bKey);
 
         if (aOrder !== -1 && bOrder !== -1) {
           return aOrder - bOrder;

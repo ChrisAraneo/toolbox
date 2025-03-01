@@ -1,10 +1,10 @@
 import { NgPerfectionism } from '../src/ng-perfectionism';
-import { EMPTY_SOURCE_FILE } from './data/empty-source-file';
-import { MULTIPLE_CLASSES } from './data/multiple-classes';
-import { NO_CLASS } from './data/no-class';
-import { NO_COMPONENT_DECORATOR } from './data/no-component-decorator';
-import { UNSORTED_IMPORTS } from './data/unsorted-imports';
-import { UNSORTED_PROPERTIES } from './data/unsorted-properties';
+import { MULTIPLE_CLASSES } from './data/components/multiple-classes';
+import { NO_COMPONENT_DECORATOR } from './data/components/no-component-decorator';
+import { UNSORTED_IMPORTS } from './data/components/unsorted-imports';
+import { UNSORTED_PROPERTIES } from './data/components/unsorted-properties';
+import { EMPTY_SOURCE_FILE } from './data/general/empty-source-file';
+import { NO_CLASS } from './data/general/no-class';
 
 describe('NgPerfectionism', () => {
   let ngPerfectionism: NgPerfectionism;
@@ -19,7 +19,7 @@ describe('NgPerfectionism', () => {
 
       expect(() =>
         ngPerfectionism.organizeComponentMetadataObject(input),
-      ).toThrow('File has no component class defined');
+      ).toThrow('File is empty');
     });
 
     it('should throw error when no component class is present', () => {
@@ -27,7 +27,7 @@ describe('NgPerfectionism', () => {
 
       expect(() =>
         ngPerfectionism.organizeComponentMetadataObject(input),
-      ).toThrow('File has no component class defined');
+      ).toThrow('File has no class defined');
     });
 
     it('should throw error when more than one class is defined', () => {
