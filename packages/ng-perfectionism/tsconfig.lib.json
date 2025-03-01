@@ -9,7 +9,7 @@
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "types": ["node"]
   },
-  "exclude": ["dist", "test/**/*.spec.ts"],
+  "exclude": ["dist", "test"],
   "extends": "../../tsconfig.base.json",
   "include": ["**/*.ts"],
   "references": [
