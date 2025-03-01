@@ -1,3 +1,6 @@
+import { CurrentDirectory, FileFinder } from '@chris.araneo/file-system';
+import { FindFileResult } from '@chris.araneo/file-system/src/file-finder/find-file-result.type';
+import { catchError, finalize, first, of } from 'rxjs';
 import {
   ArrayLiteralExpression,
   ObjectLiteralElementLike,
@@ -21,6 +24,34 @@ const COMPONENT_PROPERTIES_ORDER = [
 ];
 
 export class NgPerfectionism {
+  findFiles(workingDirectory?: string): Promise<FindFileResult> {
+    const fileFinder = new FileFinder();
+    const directory =
+      workingDirectory || new CurrentDirectory().getCurrentDirectory();
+    let result: FindFileResult;
+
+    return new Promise((resolve, reject) => {
+      fileFinder
+        .findFile(/\.component\.ts$/, directory)
+        .pipe(
+          first(),
+          catchError((error: unknown) => {
+            reject(error);
+
+            return of(null);
+          }),
+          finalize(() => {
+            resolve(result);
+          }),
+        )
+        .subscribe((data) => {
+          if (data) {
+            result = data;
+          }
+        });
+    });
+  }
+
   organizeComponentMetadataObject(sourceFile: SourceFile): void {
     const classes = sourceFile.getClasses();
 
