@@ -3,6 +3,8 @@ import express from 'express';
 import Mustache from 'mustache';
 import Mailjet, { Client } from 'node-mailjet';
 
+import { EnvVarKey } from './env-var-key.type';
+
 export class EmailService {
   private env: Record<string, string | undefined>;
 
@@ -13,7 +15,7 @@ export class EmailService {
   ) {
     this.env = { ...process.env };
 
-    this.logger.info('Email Service v0.0.2');
+    this.logger.info('Email Service v0.0.3');
 
     this.logger.debug(
       `Environmental variables: ${JSON.stringify({ ...this.env, ['MJ_APIKEY_PRIVATE']: undefined })}`,
@@ -24,25 +26,17 @@ export class EmailService {
     const {
       MJ_APIKEY_PUBLIC,
       MJ_APIKEY_PRIVATE,
-      SENDER,
-      NAME,
-      SUBJECT,
-      RECEIVER,
       TEXT_TEMPLATE,
       HTML_TEMPLATE,
-    } = this.env;
+      SENDER,
+      NAME,
+      RECEIVER,
+      SUBJECT,
+    } = this.getEnvironmentVariablesOrThrow();
 
     const app = express();
 
     let mailjet: Client;
-
-    if (!MJ_APIKEY_PUBLIC) {
-      return this.logger.error(`MJ_APIKEY_PUBLIC is undefined`);
-    }
-
-    if (!MJ_APIKEY_PRIVATE) {
-      return this.logger.error(`MJ_APIKEY_PRIVATE is undefined`);
-    }
 
     try {
       mailjet = Mailjet.apiConnect(MJ_APIKEY_PUBLIC, MJ_APIKEY_PRIVATE);
@@ -100,5 +94,32 @@ export class EmailService {
     app.listen(this.port);
 
     this.logger.info(`Server running at port ${this.port}`);
+  }
+
+  private getEnvironmentVariablesOrThrow(): Record<EnvVarKey, string> {
+    const result: Record<EnvVarKey, string> = {
+      MJ_APIKEY_PUBLIC: '',
+      MJ_APIKEY_PRIVATE: '',
+      SENDER: '',
+      NAME: '',
+      SUBJECT: '',
+      RECEIVER: '',
+      TEXT_TEMPLATE: '',
+      HTML_TEMPLATE: '',
+    };
+
+    (Object.keys(result) as EnvVarKey[]).forEach((key: EnvVarKey) => {
+      const value = this.env[key];
+
+      if (!value) {
+        throw new Error(
+          `${key} environment variable is undefined but it is required`,
+        );
+      }
+
+      result[key] = value;
+    });
+
+    return result;
   }
 }
