@@ -6,17 +6,21 @@ import Mailjet, { Client } from 'node-mailjet';
 export class EmailService {
   private env: Record<string, string | undefined>;
 
-  constructor(private readonly logger: Logger) {
+  constructor(
+    private readonly endpoint: string,
+    private readonly port: number,
+    private readonly logger: Logger,
+  ) {
     this.env = { ...process.env };
 
-    this.logger.info('Email Service v0.0.1');
+    this.logger.info('Email Service v0.0.2');
 
     this.logger.debug(
       `Environmental variables: ${JSON.stringify({ ...this.env, ['MJ_APIKEY_PRIVATE']: undefined })}`,
     );
   }
 
-  listen(port: number): void {
+  listen(): void {
     const {
       MJ_APIKEY_PUBLIC,
       MJ_APIKEY_PRIVATE,
@@ -46,7 +50,7 @@ export class EmailService {
       this.logger.error('Mailjet API connect error: ' + JSON.stringify(error));
     }
 
-    app.get('/', (request, respone) => {
+    app.get(this.endpoint, (request, respone) => {
       const body = request.body;
 
       if (!TEXT_TEMPLATE) {
@@ -93,8 +97,8 @@ export class EmailService {
         });
     });
 
-    app.listen(port);
+    app.listen(this.port);
 
-    this.logger.info(`Server running at port ${port}`);
+    this.logger.info(`Server running at port ${this.port}`);
   }
 }

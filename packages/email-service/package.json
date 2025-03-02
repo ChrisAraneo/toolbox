@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/email-service",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -22,8 +22,7 @@
   "dependencies": {
     "express": "^4.21.2",
     "mustache": "^4.2.0",
-    "node-mailjet": "^6.0.6",
-    "winston": "^3.17.0"
+    "node-mailjet": "^6.0.6"
   },
   "devDependencies": {
     "@types/mustache": "^4.2.5"
