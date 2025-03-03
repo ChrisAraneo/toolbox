@@ -1,102 +1,100 @@
 import { Logger } from '@chris.araneo/logger';
 import express from 'express';
+import { ParamsDictionary, Request, Response } from 'express-serve-static-core';
 import Mustache from 'mustache';
 import Mailjet, { Client } from 'node-mailjet';
+import { ParsedQs } from 'qs';
 
 import { EnvVarKey } from './env-var-key.type';
 
 export class EmailService {
-  private env: Record<string, string | undefined>;
+  private env?: Record<string, string | undefined>;
+  private mailjet?: Client;
 
-  constructor(
-    private readonly endpoint: string,
-    private readonly port: number,
-    private readonly logger: Logger,
-  ) {
-    this.env = { ...process.env };
-
-    this.logger.info('Email Service v0.0.3');
+  constructor(private readonly logger: Logger) {
+    this.logger.info('Email Service v0.0.5');
 
     this.logger.debug(
-      `Environmental variables: ${JSON.stringify({ ...this.env, ['MJ_APIKEY_PRIVATE']: undefined })}`,
+      `Environmental variables: ${JSON.stringify({ ...process.env, ['MJ_APIKEY_PRIVATE']: undefined })}`,
     );
-  }
 
-  listen(): void {
-    const {
-      MJ_APIKEY_PUBLIC,
-      MJ_APIKEY_PRIVATE,
-      TEXT_TEMPLATE,
-      HTML_TEMPLATE,
-      SENDER,
-      NAME,
-      RECEIVER,
-      SUBJECT,
-    } = this.getEnvironmentVariablesOrThrow();
-
-    const app = express();
-
-    let mailjet: Client;
+    const { MJ_APIKEY_PUBLIC, MJ_APIKEY_PRIVATE } =
+      this.getEnvironmentVariablesOrThrow();
 
     try {
-      mailjet = Mailjet.apiConnect(MJ_APIKEY_PUBLIC, MJ_APIKEY_PRIVATE);
+      this.mailjet = Mailjet.apiConnect(MJ_APIKEY_PUBLIC, MJ_APIKEY_PRIVATE);
     } catch (error: unknown) {
       this.logger.error('Mailjet API connect error: ' + JSON.stringify(error));
     }
+  }
 
-    app.get(this.endpoint, (request, respone) => {
-      const body = request.body;
+  listen(endpoint: string, port: number): void {
+    const app = express();
 
-      if (!TEXT_TEMPLATE) {
-        return this.logger.error(`TEXT_TEMPLATE is undefined`);
-      }
+    app.get(endpoint, (request, respone) => {
+      this.logger.info(`GET ${endpoint}`);
 
-      const text = Mustache.render(TEXT_TEMPLATE, body);
-
-      if (!HTML_TEMPLATE) {
-        return this.logger.error(`HTML_TEMPLATE is undefined`);
-      }
-
-      const html = Mustache.render(HTML_TEMPLATE, body);
-
-      mailjet
-        .post('send', { version: 'v3.1' })
-        .request({
-          Messages: [
-            {
-              From: {
-                Email: SENDER,
-                Name: NAME,
-              },
-              To: [
-                {
-                  Email: RECEIVER,
-                },
-              ],
-              Subject: SUBJECT,
-              TextPart: text,
-              HTMLPart: html,
-            },
-          ],
-        })
-        .then((result) => {
-          this.logger.info(`Result: ${result.body}`);
-
-          respone.send({ status: 'success' });
-        })
-        .catch((error) => {
-          this.logger.error(`Result: ${JSON.stringify(error)}`);
-
-          respone.send({ status: 'error', message: error });
-        });
+      this.handleRequest(request, respone);
     });
 
-    app.listen(this.port);
+    app.listen(port);
 
-    this.logger.info(`Server running at port ${this.port}`);
+    this.logger.info(`Email service running at port ${port}`);
+  }
+
+  handleRequest(
+    request: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
+    respone: Response<any, Record<string, any>, number>,
+  ): void {
+    const { TEXT_TEMPLATE, HTML_TEMPLATE, SENDER, NAME, RECEIVER, SUBJECT } =
+      this.getEnvironmentVariablesOrThrow();
+
+    const body = request.body;
+
+    const text = Mustache.render(TEXT_TEMPLATE, body);
+    const html = Mustache.render(HTML_TEMPLATE, body);
+
+    if (!this.mailjet) {
+      return this.logger.error(`Mailjet is undefined`);
+    }
+
+    this.mailjet
+      .post('send', { version: 'v3.1' })
+      .request({
+        Messages: [
+          {
+            From: {
+              Email: SENDER,
+              Name: NAME,
+            },
+            To: [
+              {
+                Email: RECEIVER,
+              },
+            ],
+            Subject: SUBJECT,
+            TextPart: text,
+            HTMLPart: html,
+          },
+        ],
+      })
+      .then((result) => {
+        this.logger.info(`Result: ${result.body}`);
+
+        respone.send({ status: 'success' });
+      })
+      .catch((error) => {
+        this.logger.error(`Result: ${JSON.stringify(error)}`);
+
+        respone.send({ status: 'error', message: error });
+      });
   }
 
   private getEnvironmentVariablesOrThrow(): Record<EnvVarKey, string> {
+    if (!this.env) {
+      this.env = { ...process.env };
+    }
+
     const result: Record<EnvVarKey, string> = {
       MJ_APIKEY_PUBLIC: '',
       MJ_APIKEY_PRIVATE: '',
@@ -109,7 +107,7 @@ export class EmailService {
     };
 
     (Object.keys(result) as EnvVarKey[]).forEach((key: EnvVarKey) => {
-      const value = this.env[key];
+      const value = this.env?.[key];
 
       if (!value) {
         throw new Error(
