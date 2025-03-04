@@ -1,0 +1,25 @@
+{
+  "name": "@chris.araneo/sort-patterns-file",
+  "version": "0.0.1",
+  "description": "Organize files containing glob patterns",
+  "keywords": [],
+  "license": "MIT",
+  "author": "Krzysztof Pająk (Chris Araneo) <chris.araneo@gmail.com>",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "sort-patterns-file": "./dist/index.js"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc --build tsconfig.lib.json",
+    "chores": "npm run lint && npm run format",
+    "format": "cd ../../ && node scripts/format-package sort-patterns-file",
+    "lint": "cd ../../ && node scripts/lint-package sort-patterns-file",
+    "test": "cd ../../ && npm run test -- ./packages/sort-patterns-file --collectCoverage=false",
+    "typecheck": "tsc"
+  }
+}
