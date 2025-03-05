@@ -1,4 +1,4 @@
-import { buildTestData } from "../../utils/build-test-data.function";
+import { createUnitTestData } from "../../utils/create-unit-test-data.function";
 
 const code =  `
 @Component({
@@ -8,7 +8,7 @@ const code =  `
   standalone: true,
   templateUrl: './one.component.html',
 })
-export class FirstComponent {}
+export class FirstComponent { }
 
 @Component({
   imports: [SomeModule],
@@ -17,7 +17,7 @@ export class FirstComponent {}
   standalone: true,
   templateUrl: './two.component.html',
 })
-export class SecondComponent {}
+export class SecondComponent { }
 `
 
-export const MULTIPLE_CLASSES = buildTestData(code, code);
+export const MULTIPLE_COMPONENTS = createUnitTestData(code, code);

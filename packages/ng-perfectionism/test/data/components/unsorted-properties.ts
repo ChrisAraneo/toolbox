@@ -1,6 +1,6 @@
-import { buildTestData } from '../../utils/build-test-data.function';
+import { createUnitTestData } from '../../utils/create-unit-test-data.function';
 
-export const UNSORTED_PROPERTIES = buildTestData(
+export const UNSORTED_COMPONENT_PROPERTIES = createUnitTestData(
   `
 @Component({
   imports: [SomeModule],

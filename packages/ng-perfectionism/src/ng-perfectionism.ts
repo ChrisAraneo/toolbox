@@ -1,5 +1,6 @@
 import { CurrentDirectory, FileFinder } from '@chris.araneo/file-system';
 import { FindFileResult } from '@chris.araneo/file-system/src/file-finder/find-file-result.type';
+import * as Prettier from 'prettier';
 import { catchError, finalize, first, of } from 'rxjs';
 import {
   ArrayLiteralExpression,
@@ -7,12 +8,15 @@ import {
   Decorator,
   ObjectLiteralElementLike,
   ObjectLiteralExpression,
+  Project,
   PropertyAssignment,
   SourceFile,
   SyntaxKind,
 } from 'ts-morph';
 
 const TEMPORARY_PREFIX = 'ΩΩΩ';
+
+const DECORATOR_NAMES = ['Component', 'NgModule'];
 
 const COMPONENT_PROPERTIES_ORDER = [
   'selector',
@@ -33,7 +37,10 @@ const MODULE_PROPERTIES_ORDER = [
 ];
 
 export class NgPerfectionism {
-  findFiles(workingDirectory?: string): Promise<FindFileResult> {
+  async findFiles(
+    pattern: string | RegExp,
+    workingDirectory?: string,
+  ): Promise<FindFileResult> {
     const fileFinder = new FileFinder();
     const directory =
       workingDirectory || new CurrentDirectory().getCurrentDirectory();
@@ -41,7 +48,7 @@ export class NgPerfectionism {
 
     return new Promise((resolve, reject) => {
       fileFinder
-        .findFile(/\.component\.ts$/, directory)
+        .findFile(pattern, directory)
         .pipe(
           first(),
           catchError((error: unknown) => {
@@ -61,59 +68,83 @@ export class NgPerfectionism {
     });
   }
 
-  organizeComponentMetadataObject(sourceFile: SourceFile): void {
-    const classDeclaration = this.getSingleClassOrThrow(sourceFile);
-    const moduleDecorator = this.getDecoratorOrThrow(
-      classDeclaration,
-      'Component',
+  async resolvePrettierConfig(workingDirectory?: string) {
+    return Prettier.resolveConfig(
+      workingDirectory || new CurrentDirectory().getCurrentDirectory(),
     );
-    const metadata = moduleDecorator.getArguments()[0];
-
-    if (!metadata) {
-      return sourceFile.formatText();
-    }
-
-    const metadataObject = metadata.asKindOrThrow(
-      SyntaxKind.ObjectLiteralExpression,
-    );
-
-    const properties = metadataObject.getProperties();
-
-    this.sortProperties(properties, COMPONENT_PROPERTIES_ORDER);
-    this.addTemporaryPropertiesWithOrganizedValues(properties, metadataObject);
-    this.removeSourceProperties(metadataObject);
-    this.renameTemporaryProperties(metadataObject);
-
-    sourceFile.formatText();
   }
 
-  organizeModuleMetadataObject(sourceFile: SourceFile): void {
-    const classDeclaration = this.getSingleClassOrThrow(sourceFile);
-    const moduleDecorator = this.getDecoratorOrThrow(
-      classDeclaration,
-      'NgModule',
+  async organizeMetadataObject(
+    sourceFile: SourceFile,
+    prettierOptions: Prettier.Options | null = null,
+  ): Promise<SourceFile> {
+    const classDeclarations = this.getClassesOrThrow(sourceFile);
+
+    const decorators = this.getDecoratorsOrThrow(classDeclarations);
+
+    await Promise.all(
+      decorators.map(async (decorator) => {
+        const metadata = decorator.getArguments()[0];
+
+        if (!metadata) {
+          return;
+        }
+
+        const metadataObject = metadata.asKindOrThrow(
+          SyntaxKind.ObjectLiteralExpression,
+        );
+
+        const properties = metadataObject.getProperties();
+
+        this.sortProperties(properties, decorator.getName());
+        this.addTemporaryPropertiesWithOrganizedValues(
+          properties,
+          metadataObject,
+        );
+        this.removeSourceProperties(metadataObject);
+        this.renameTemporaryProperties(metadataObject);
+
+        return;
+      }),
     );
-    const metadata = moduleDecorator.getArguments()[0];
 
-    if (!metadata) {
-      return sourceFile.formatText();
-    }
-
-    const metadataObject = metadata.asKindOrThrow(
-      SyntaxKind.ObjectLiteralExpression,
+    return new Project().createSourceFile(
+      sourceFile.getFilePath(),
+      await this.format(sourceFile, prettierOptions),
     );
-
-    const properties = metadataObject.getProperties();
-
-    this.sortProperties(properties, MODULE_PROPERTIES_ORDER);
-    this.addTemporaryPropertiesWithOrganizedValues(properties, metadataObject);
-    this.removeSourceProperties(metadataObject);
-    this.renameTemporaryProperties(metadataObject);
-
-    sourceFile.formatText();
   }
 
-  private getSingleClassOrThrow(sourceFile: SourceFile): ClassDeclaration {
+  async format(
+    sourceFile: SourceFile,
+    options?: Prettier.Options | null,
+  ): Promise<string> {
+    let error: unknown;
+    let result = '';
+
+    try {
+      result = await Prettier.format(
+        sourceFile.getFullText(),
+        options || undefined,
+      );
+    } catch (e: unknown) {
+      error = e;
+    }
+
+    if (error) {
+      const sourceFileCopy = new Project().createSourceFile(
+        sourceFile.getFilePath(),
+        sourceFile.getFullText(),
+      );
+
+      sourceFileCopy.formatText();
+
+      result = sourceFileCopy.getFullText();
+    }
+
+    return result;
+  }
+
+  private getClassesOrThrow(sourceFile: SourceFile): ClassDeclaration[] {
     const classes = sourceFile.getClasses();
 
     if (classes.length === 0) {
@@ -124,30 +155,43 @@ export class NgPerfectionism {
       throw new Error('File has no class defined');
     }
 
-    if (classes.length > 1) {
-      throw new Error('File has more than one class');
-    }
-
-    return classes[0];
+    return classes;
   }
 
-  private getDecoratorOrThrow(
-    classDeclaration: ClassDeclaration,
-    name: 'Component' | 'NgModule',
-  ): Decorator {
-    const decorator = classDeclaration?.getDecorator(name);
+  private getDecoratorsOrThrow(
+    classDeclarations: ClassDeclaration[],
+  ): Decorator[] {
+    const decorators: Decorator[] = [];
 
-    if (!decorator) {
-      throw new Error(`Class doesn't have ${name} decorator`);
+    classDeclarations.forEach((classDeclaration) => {
+      DECORATOR_NAMES.forEach((name) => {
+        const decorator = classDeclaration?.getDecorator(name);
+
+        if (decorator) {
+          decorators.push(decorator);
+        }
+      });
+    });
+
+    if (!decorators.length) {
+      throw new Error('File has no class with supported decorators');
     }
 
-    return decorator;
+    return decorators;
   }
 
   private sortProperties(
     properties: ObjectLiteralElementLike[],
-    order: string[],
+    decoratorName: string,
   ): void {
+    let order: string[] = [];
+
+    if (decoratorName === 'Component') {
+      order = COMPONENT_PROPERTIES_ORDER;
+    } else if (decoratorName === 'NgModule') {
+      order = MODULE_PROPERTIES_ORDER;
+    }
+
     properties.sort((a, b) => {
       if (a instanceof PropertyAssignment && b instanceof PropertyAssignment) {
         const aKey = a.getName();

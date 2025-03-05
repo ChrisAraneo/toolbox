@@ -1,3 +1,3 @@
-import { buildTestData } from "../../utils/build-test-data.function";
+import { createUnitTestData } from "../../utils/create-unit-test-data.function";
 
-export const EMPTY_SOURCE_FILE = buildTestData('', '');
+export const EMPTY_SOURCE_FILE = createUnitTestData('', '');
