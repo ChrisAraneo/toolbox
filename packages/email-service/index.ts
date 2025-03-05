@@ -1,1 +1,1 @@
-export * from './src/email-service';
+export * from './src/email-service.class';

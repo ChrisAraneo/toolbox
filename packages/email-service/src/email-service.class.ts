@@ -1,6 +1,7 @@
 import { Logger } from '@chris.araneo/logger';
-import express from 'express';
+import Express from 'express';
 import { ParamsDictionary, Request, Response } from 'express-serve-static-core';
+import { Server } from 'http';
 import Mustache from 'mustache';
 import Mailjet, { Client } from 'node-mailjet';
 import { ParsedQs } from 'qs';
@@ -10,9 +11,10 @@ import { EnvVarKey } from './env-var-key.type';
 export class EmailService {
   private env?: Record<string, string | undefined>;
   private mailjet?: Client;
+  private server?: Server;
 
   constructor(private readonly logger: Logger) {
-    this.logger.info('Email Service v0.0.5');
+    this.logger.info('Email Service v0.0.6');
 
     this.logger.debug(
       `Environmental variables: ${JSON.stringify({ ...process.env, ['MJ_APIKEY_PRIVATE']: undefined })}`,
@@ -29,22 +31,33 @@ export class EmailService {
   }
 
   listen(endpoint: string, port: number): void {
-    const app = express();
+    const express = Express();
 
-    app.get(endpoint, (request, respone) => {
-      this.logger.info(`GET ${endpoint}`);
+    express.get(endpoint, (request, response) => {
+      this.logger.debug(`GET ${endpoint}`);
 
-      this.handleRequest(request, respone);
+      this.handleRequest(request, response);
     });
 
-    app.listen(port);
+    if (this.server) {
+      this.server.closeAllConnections();
+      this.server.close();
+    }
 
-    this.logger.info(`Email service running at port ${port}`);
+    this.server = express.listen(port, () => {
+      this.logger.info(`Email service listening on port ${port}`);
+    });
   }
 
   handleRequest(
-    request: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-    respone: Response<any, Record<string, any>, number>,
+    request: Request<
+      ParamsDictionary,
+      unknown,
+      unknown,
+      ParsedQs,
+      Record<string, unknown>
+    >,
+    respone: Response<unknown, Record<string, unknown>, number>,
   ): void {
     const { TEXT_TEMPLATE, HTML_TEMPLATE, SENDER, NAME, RECEIVER, SUBJECT } =
       this.getEnvironmentVariablesOrThrow();
