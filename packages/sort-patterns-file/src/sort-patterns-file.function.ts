@@ -1,47 +1,116 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
+import { readFile as _readFile } from 'node:fs/promises';
+import { normalize } from 'node:path';
+import process from 'node:process';
 
-const { normalize } = require('node:path');
-const { readFile, writeFile } = require('node:fs/promises');
-const process = require('node:process');
-const { normalizeGlob } = require('normalize-glob');
+import { minimatch } from 'minimatch';
+
+import { CurrentDirectory, FileFinder } from '../../file-system';
 
 export async function sortPatternsFile() {
-  process.argv.forEach(async (value: string, index: number) => {
+  const currentDirectoryFiles = await getCurrentDirectoryFiles();
+  const patternFiles = await getPatternFiles();
+
+  console.log('patternFiles', patternFiles);
+
+  patternFiles.map(async ([path, data]) => {
+    if (!data) {
+      throw Error(`Can't read ${path}`);
+    }
+
+    const patterns = await readPatternFile(path);
+
+    sortPatterns(patterns, currentDirectoryFiles).forEach((x) => {
+      console.log(JSON.stringify(x));
+    });
+  });
+}
+
+async function getCurrentDirectoryFiles() {
+  const ALL_FILES_REGEX = /^(?=[\S\s]{10,8000})[\S\s]*$/;
+
+  const fileFinder = new FileFinder();
+  const currentDirectory = new CurrentDirectory();
+
+  return new Promise<string[]>((resolve) => {
+    fileFinder
+      .findFile(ALL_FILES_REGEX, currentDirectory.getCurrentDirectory())
+      .subscribe(({ success, result, message }) => {
+        if (!success) {
+          if (typeof message === 'string') {
+            throw new Error(message);
+          } else {
+            throw message;
+          }
+        }
+
+        resolve(result);
+      });
+  });
+}
+
+function sortPatterns(
+  patterns: string[],
+  files: string[],
+): [string, string[]][] {
+  const fileMatches: [string, string[]][] = [];
+
+  files.forEach((file) => {
+    const matchingPatterns: string[] = [];
+
+    patterns.forEach((pattern) => {
+      if (minimatch(file, pattern)) {
+        matchingPatterns.push(pattern);
+      }
+    });
+
+    if (matchingPatterns.length > 0) {
+      fileMatches.push([file, matchingPatterns]);
+    }
+  });
+
+  fileMatches.sort((a, b) => a[0].localeCompare(b[0]));
+
+  return fileMatches;
+}
+
+function getPatternFiles(): Promise<[string, string | null][]> {
+  const paths: string[] = [];
+
+  process.argv.forEach((value, index) => {
     if (index <= 1) {
       return;
     }
 
-    let data;
-
-    try {
-      data = await readFile(normalize(value), {
-        encoding: 'utf8',
-      });
-    } catch {
-      data = null;
-    }
-
-    if (data === null) {
-      return;
-    }
-
-    const result = data
-      .replaceAll('\r', '\n')
-      .split('\n')
-      .filter((line: string) => line)
-      .map((line: string) => ({
-        line,
-        normalized: Array.from(normalizeGlob(line, process.cwd()))[0],
-      }));
-
-    result.sort((a: { normalized: string }, b: { normalized: string }) =>
-      a.normalized.localeCompare(b.normalized),
-    );
-
-    writeFile(
-      normalize(value),
-      result.map((item: { line: string }) => item.line.trim()).join('\n') +
-        '\n',
-    );
+    paths.push(value);
   });
+
+  return Promise.all(
+    paths.map(async (path) => {
+      let data;
+
+      try {
+        data = await _readFile(normalize(path), {
+          encoding: 'utf8',
+        });
+      } catch {
+        data = null;
+      }
+
+      return [path, data];
+    }),
+  );
+}
+
+async function readPatternFile(path: string) {
+  let data;
+
+  try {
+    data = await _readFile(normalize(path), {
+      encoding: 'utf8',
+    });
+  } catch {
+    data = null;
+  }
+
+  return (data || '').split('\n');
 }
