@@ -21,5 +21,8 @@
     "lint": "cd ../../ && node scripts/lint-package sort-patterns-file",
     "test": "cd ../../ && npm run test -- ./packages/sort-patterns-file --collectCoverage=false",
     "typecheck": "tsc"
+  },
+  "dependencies": {
+    "normalize-glob": "^0.0.2"
   }
 }
