@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/health-check",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Simple health check service",
   "keywords": [],
   "license": "MIT",
