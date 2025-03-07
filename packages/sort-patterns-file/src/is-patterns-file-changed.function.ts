@@ -1,13 +1,15 @@
 export function isPatternsFileChanged(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) {
+    return true;
+  }
+
   let changed = false;
 
-  a.forEach((value, index) => {
-    if (b.length <= index || value !== b[index]) {
+  for (let i = 0; i < a.length && !changed; i++) {
+    if (a[i] !== b[i]) {
       changed = true;
-
-      return;
     }
-  });
+  }
 
   return changed;
 }
