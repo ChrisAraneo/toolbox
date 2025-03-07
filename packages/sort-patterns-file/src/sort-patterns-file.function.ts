@@ -22,7 +22,7 @@ export async function sortPatternsFile(path: string): Promise<void> {
     const getContentsEndTime = performance.now();
 
     console.log(
-      `Reading the contents of directory and all subdirectories ${getContentsEndTime - getContentsStartTime + 'ms'} `,
+      `Reading contents of directory and subdirectories ${(getContentsEndTime - getContentsStartTime).toPrecision(6) + 'ms'} `,
     );
   }
 
@@ -126,12 +126,12 @@ export async function sortPatternsFile(path: string): Promise<void> {
 
     const endTime = performance.now();
 
-    console.log(`${path} ${endTime - startTime + 'ms'} (changed)`);
+    console.log(`${path} ${(endTime - startTime).toPrecision(6) + 'ms'} (changed)`);
   } else {
     const endTime = performance.now();
 
     console.log(
-      `${path} ${endTime - startTime + 'ms'} \x1b[90m(unchanged)\x1b[0m`,
+      `\x1b[90m${path} ${(endTime - startTime).toPrecision(6) + 'ms'}\x1b[0m (unchanged)`,
     );
   }
 }
