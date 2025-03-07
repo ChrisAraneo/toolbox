@@ -1,9 +1,11 @@
 import { minimatch } from 'minimatch';
 
-import { getContents } from './get-contents.function';
-import { isPatternsFileChanged } from './is-patterns-file-changed.function';
-import { readPatternsFile } from './read-patterns-file.function';
-import { writePatternsFile } from './write-patterns-file.function';
+import { getContents } from './functions/get-contents.function';
+import { ignoreNodeModules } from './functions/ignore-node-modules.function';
+import { isPatternsFileChanged } from './functions/is-patterns-file-changed.function';
+import { readPatternsFile } from './functions/read-patterns-file.function';
+import { removeArrayItem } from './functions/remove-array-item.function';
+import { writePatternsFile } from './functions/write-patterns-file.function';
 
 let contents: {
   name: string;
@@ -132,15 +134,4 @@ export async function sortPatternsFile(path: string): Promise<void> {
       `${path} ${endTime - startTime + 'ms'} \x1b[90m(unchanged)\x1b[0m`,
     );
   }
-}
-
-function ignoreNodeModules(patterns: string[]): string[] {
-  return patterns.filter((pattern) => pattern !== 'node_modules');
-}
-
-function removeArrayItem(array: string[], item: string): void {
-  array.splice(
-    array.findIndex((i) => i === item),
-    1,
-  );
 }
