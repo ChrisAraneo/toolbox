@@ -28,7 +28,12 @@ export async function sortPatternsFile(path: string): Promise<void> {
 
   const patterns = await readPatternsFile(path);
 
-  patterns.push('node_modules');
+  let hasTemporaryNodeModules = false;
+
+  if (patterns.findIndex((pattern) => pattern === 'node_modules') < 0) {
+    patterns.push('node_modules');
+    hasTemporaryNodeModules = true;
+  }
 
   const contentsWithMatchings: {
     name: string;
@@ -101,9 +106,20 @@ export async function sortPatternsFile(path: string): Promise<void> {
     ...organizedPatterns,
     ...patternsNotMatchingAnything,
   ].filter(Boolean);
-  organizedPatterns.push('');
 
-  if (isPatternsFileChanged(patterns, organizedPatterns)) {
+  if (hasTemporaryNodeModules) {
+    removeArrayItem(patterns, 'node_modules');
+    removeArrayItem(organizedPatterns, 'node_modules');
+  }
+
+  if (
+    isPatternsFileChanged(
+      ignoreNodeModules(patterns),
+      ignoreNodeModules(organizedPatterns),
+    )
+  ) {
+    organizedPatterns.push('');
+
     await writePatternsFile(path, organizedPatterns);
 
     const endTime = performance.now();
@@ -116,4 +132,15 @@ export async function sortPatternsFile(path: string): Promise<void> {
       `${path} ${endTime - startTime + 'ms'} \x1b[90m(unchanged)\x1b[0m`,
     );
   }
+}
+
+function ignoreNodeModules(patterns: string[]): string[] {
+  return patterns.filter((pattern) => pattern !== 'node_modules');
+}
+
+function removeArrayItem(array: string[], item: string): void {
+  array.splice(
+    array.findIndex((i) => i === item),
+    1,
+  );
 }
