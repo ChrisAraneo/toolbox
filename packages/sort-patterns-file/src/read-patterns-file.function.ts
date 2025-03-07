@@ -10,7 +10,8 @@ export async function readPatternsFile(path: string): Promise<string[]> {
         const parts = data
           .split('\n')
           .map((part) => part.replaceAll('\r', ''))
-          .map((part) => part.replaceAll('\n', ''));
+          .map((part) => part.replaceAll('\n', ''))
+          .filter((part) => !!part);
 
         resolve(parts);
       }
