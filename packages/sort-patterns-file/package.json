@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/sort-patterns-file",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Organize files containing glob patterns",
   "keywords": [],
   "license": "MIT",
@@ -23,7 +23,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "minimatch": "^10.0.1",
-    "normalize-glob": "^0.0.2"
+    "glob": "^11.0.1",
+    "minimatch": "^10.0.1"
   }
 }

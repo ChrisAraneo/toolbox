@@ -1,116 +1,119 @@
-import { readFile as _readFile } from 'node:fs/promises';
-import { normalize } from 'node:path';
-import process from 'node:process';
-
 import { minimatch } from 'minimatch';
 
-import { CurrentDirectory, FileFinder } from '../../file-system';
+import { getContents } from './get-contents.function';
+import { isPatternsFileChanged } from './is-patterns-file-changed.function';
+import { readPatternsFile } from './read-patterns-file.function';
+import { writePatternsFile } from './write-patterns-file.function';
 
-export async function sortPatternsFile() {
-  const currentDirectoryFiles = await getCurrentDirectoryFiles();
-  const patternFiles = await getPatternFiles();
+let contents: {
+  name: string;
+  parentDirectory: string | null;
+  files: string[];
+}[];
 
-  console.log('patternFiles', patternFiles);
+export async function sortPatternsFile(path: string): Promise<void> {
+  if (!contents) {
+    const getContentsStartTime = performance.now();
 
-  patternFiles.map(async ([path, data]) => {
-    if (!data) {
-      throw Error(`Can't read ${path}`);
-    }
+    contents = await getContents();
 
-    const patterns = await readPatternFile(path);
+    const getContentsEndTime = performance.now();
 
-    sortPatterns(patterns, currentDirectoryFiles).forEach((x) => {
-      console.log(JSON.stringify(x));
-    });
-  });
-}
-
-async function getCurrentDirectoryFiles() {
-  const ALL_FILES_REGEX = /^(?=[\S\s]{10,8000})[\S\s]*$/;
-
-  const fileFinder = new FileFinder();
-  const currentDirectory = new CurrentDirectory();
-
-  return new Promise<string[]>((resolve) => {
-    fileFinder
-      .findFile(ALL_FILES_REGEX, currentDirectory.getCurrentDirectory())
-      .subscribe(({ success, result, message }) => {
-        if (!success) {
-          if (typeof message === 'string') {
-            throw new Error(message);
-          } else {
-            throw message;
-          }
-        }
-
-        resolve(result);
-      });
-  });
-}
-
-function sortPatterns(
-  patterns: string[],
-  files: string[],
-): [string, string[]][] {
-  const fileMatches: [string, string[]][] = [];
-
-  files.forEach((file) => {
-    const matchingPatterns: string[] = [];
-
-    patterns.forEach((pattern) => {
-      if (minimatch(file, pattern)) {
-        matchingPatterns.push(pattern);
-      }
-    });
-
-    if (matchingPatterns.length > 0) {
-      fileMatches.push([file, matchingPatterns]);
-    }
-  });
-
-  fileMatches.sort((a, b) => a[0].localeCompare(b[0]));
-
-  return fileMatches;
-}
-
-function getPatternFiles(): Promise<[string, string | null][]> {
-  const paths: string[] = [];
-
-  process.argv.forEach((value, index) => {
-    if (index <= 1) {
-      return;
-    }
-
-    paths.push(value);
-  });
-
-  return Promise.all(
-    paths.map(async (path) => {
-      let data;
-
-      try {
-        data = await _readFile(normalize(path), {
-          encoding: 'utf8',
-        });
-      } catch {
-        data = null;
-      }
-
-      return [path, data];
-    }),
-  );
-}
-
-async function readPatternFile(path: string) {
-  let data;
-
-  try {
-    data = await _readFile(normalize(path), {
-      encoding: 'utf8',
-    });
-  } catch {
-    data = null;
+    console.log(
+      `Reading the contents of directory and all subdirectories ${getContentsEndTime - getContentsStartTime + 'ms'} `,
+    );
   }
 
-  return (data || '').split('\n');
+  const startTime = performance.now();
+
+  const patterns = await readPatternsFile(path);
+
+  patterns.push('node_modules');
+
+  const contentsWithMatchings: {
+    name: string;
+    parentDirectory: string | null;
+    files: string[];
+    matchingDirectory: string[];
+    matchingFile: string[];
+  }[] = [];
+  contents.forEach((item) => {
+    contentsWithMatchings.push({
+      ...item,
+      matchingDirectory: [],
+      matchingFile: [],
+    });
+  });
+
+  patterns.forEach((pattern) => {
+    contents.forEach((item, index) => {
+      const directory = item.name;
+      const files = item.files;
+
+      const isMatchingDirectory = minimatch(directory, pattern);
+      let isMatchingFile = false;
+
+      for (let i = 0; i < files.length && !isMatchingFile; i++) {
+        if (minimatch(files[i], pattern)) {
+          isMatchingFile = true;
+        }
+      }
+
+      if (isMatchingDirectory) {
+        contentsWithMatchings[index].matchingDirectory.push(pattern);
+      }
+
+      if (isMatchingFile) {
+        contentsWithMatchings[index].matchingFile.push(pattern);
+      }
+    });
+  });
+
+  let organizedPatterns: string[] = [];
+
+  contentsWithMatchings.forEach((item) => {
+    item.matchingDirectory.sort((a, b) => a.localeCompare(b));
+    item.matchingDirectory.forEach((pattern) => {
+      if (!organizedPatterns.find((p) => p === pattern) && !!pattern) {
+        organizedPatterns.push(pattern);
+      }
+    });
+
+    item.matchingFile.sort((a, b) => a.localeCompare(b));
+    item.matchingFile.forEach((pattern) => {
+      if (!organizedPatterns.find((p) => p === pattern) && !!pattern) {
+        organizedPatterns.push(pattern);
+      }
+    });
+  });
+
+  const patternsNotMatchingAnything: string[] = [];
+
+  patterns.forEach((pattern) => {
+    if (!organizedPatterns.find((p) => p === pattern) && pattern) {
+      patternsNotMatchingAnything.push(pattern);
+    }
+  });
+
+  patternsNotMatchingAnything.sort((a, b) => a.localeCompare(b));
+
+  organizedPatterns = [
+    ...organizedPatterns,
+    ...patternsNotMatchingAnything,
+  ].filter(Boolean);
+  organizedPatterns.push('');
+
+  if (isPatternsFileChanged(patterns, organizedPatterns)) {
+    await writePatternsFile(path, organizedPatterns);
+
+    const endTime = performance.now();
+
+    console.log(`${path} ${endTime - startTime + 'ms'} (changed)`);
+  } else {
+    const endTime = performance.now();
+
+    console.log(
+      `${path} ${endTime - startTime + 'ms'} \x1b[90m(unchanged)\x1b[0m`,
+    );
+  }
 }
