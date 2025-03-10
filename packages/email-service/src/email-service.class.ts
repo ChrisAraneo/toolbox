@@ -97,7 +97,20 @@ export class EmailService {
         respone.send({ status: 'success' });
       })
       .catch((error) => {
-        this.logger.error(`Result: ${error?.toString()} - ${error?.stack}`);
+        let errorString = '';
+
+        try {
+          errorString = error?.toString();
+        } catch (_) {
+          errorString = '';
+        }
+
+        this.logger.error(
+          `Result: ${JSON.stringify(error)} - ${errorString} - ${error?.stack}`,
+          error,
+        );
+
+        console.error(error);
 
         respone.send({ status: 'error', message: error });
       });
