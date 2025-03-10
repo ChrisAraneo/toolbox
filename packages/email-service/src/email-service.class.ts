@@ -97,7 +97,7 @@ export class EmailService {
         respone.send({ status: 'success' });
       })
       .catch((error) => {
-        this.logger.error(`Result: ${JSON.stringify(error)}`);
+        this.logger.error(`Result: ${error?.toString()} - ${error?.stack}`);
 
         respone.send({ status: 'error', message: error });
       });
