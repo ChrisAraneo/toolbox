@@ -92,7 +92,7 @@ export class EmailService {
         ],
       })
       .then((result) => {
-        this.logger.info(`Result: ${result.body}`);
+        this.logger.info(`Result: ${JSON.stringify(result)}`);
 
         respone.send({ status: 'success' });
       })
@@ -106,7 +106,7 @@ export class EmailService {
         }
 
         this.logger.error(
-          `Result: ${JSON.stringify(error)} - ${errorString} - ${error?.stack}`,
+          `Result: ${JSON.stringify(error)} - ${errorString} - ${JSON.stringify(error?.stack)}`,
           error,
         );
 
