@@ -126,7 +126,9 @@ export async function sortPatternsFile(path: string): Promise<void> {
 
     const endTime = performance.now();
 
-    console.log(`${path} ${(endTime - startTime).toPrecision(6) + 'ms'} (changed)`);
+    console.log(
+      `${path} ${(endTime - startTime).toPrecision(6) + 'ms'} (changed)`,
+    );
   } else {
     const endTime = performance.now();
 
