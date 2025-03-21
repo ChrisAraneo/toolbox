@@ -4,10 +4,13 @@ import { normalize } from 'path';
 
 import { getParentDirectory } from './get-parent-directory.function';
 
-export async function getContents() {
-  const contents = await glob('**', { ignore: 'node_modules' });
+export async function getContents(ignoredDirectories: string[] = []) {
+  const contents = await glob('**', {
+    ignore: ignoredDirectories,
+  });
 
   const infos = contents
+    .map((path) => path.trim())
     .map((path) => normalize(path))
     .map((path) => {
       return {
@@ -61,9 +64,9 @@ export async function getContents() {
       item.files.sort((a, b) => a.localeCompare(b));
 
       result.push({
-        name: key,
-        parentDirectory: item.parentDirectory,
-        files: item.files,
+        name: key.trim(),
+        parentDirectory: item.parentDirectory?.trim() || null,
+        files: item.files.map((file) => file.trim()),
       });
     });
 

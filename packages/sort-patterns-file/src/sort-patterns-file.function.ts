@@ -13,19 +13,21 @@ let contents: {
   files: string[];
 }[];
 
-export async function sortPatternsFile(path: string): Promise<void> {
-  await readContents();
+export async function sortPatternsFile(
+  path: string,
+  ignoredDirectories: string[] = [],
+): Promise<void> {
+  await readContents(ignoredDirectories);
 
   const startTime = performance.now();
 
   const patterns = await readPatternsFile(path);
 
-  let hasTemporaryNodeModules = false;
-
-  if (patterns.findIndex((pattern) => pattern === 'node_modules') < 0) {
-    patterns.push('node_modules');
-    hasTemporaryNodeModules = true;
-  }
+  ignoredDirectories.forEach((ignoredDirectory) => {
+    if (patterns.findIndex((pattern) => pattern === ignoredDirectory) < 0) {
+      patterns.push(ignoredDirectory);
+    }
+  });
 
   const contentsWithMatchings: {
     name: string;
@@ -44,23 +46,11 @@ export async function sortPatternsFile(path: string): Promise<void> {
 
   patterns.forEach((pattern) => {
     contents.forEach((item, index) => {
-      const directory = item.name;
-      const files = item.files;
-
-      const isMatchingDirectory = minimatch(directory, pattern);
-      let isMatchingFile = false;
-
-      for (let i = 0; i < files.length && !isMatchingFile; i++) {
-        if (minimatch(files[i], pattern)) {
-          isMatchingFile = true;
-        }
-      }
-
-      if (isMatchingDirectory) {
+      if (isMatchingDirectory(pattern, item.name)) {
         contentsWithMatchings[index].matchingDirectory.push(pattern);
       }
 
-      if (isMatchingFile) {
+      if (isMatchingFile(pattern, item.files)) {
         contentsWithMatchings[index].matchingFile.push(pattern);
       }
     });
@@ -99,10 +89,10 @@ export async function sortPatternsFile(path: string): Promise<void> {
     ...patternsNotMatchingAnything,
   ].filter(Boolean);
 
-  if (hasTemporaryNodeModules) {
-    removeArrayItem(patterns, 'node_modules');
-    removeArrayItem(organizedPatterns, 'node_modules');
-  }
+  ignoredDirectories.forEach((ignoredDirectory) => {
+    removeArrayItem(patterns, ignoredDirectory);
+    removeArrayItem(organizedPatterns, ignoredDirectory);
+  });
 
   if (
     isPatternsFileChanged(
@@ -126,11 +116,11 @@ export async function sortPatternsFile(path: string): Promise<void> {
   }
 }
 
-async function readContents() {
+async function readContents(ignoredDirectories: string[]) {
   if (!contents) {
     const getContentsStartTime = performance.now();
 
-    contents = await getContents();
+    contents = await getContents(ignoredDirectories);
 
     const getContentsEndTime = performance.now();
 
@@ -138,4 +128,20 @@ async function readContents() {
       `Reading contents of directory and subdirectories ${(getContentsEndTime - getContentsStartTime).toPrecision(6) + 'ms'} `,
     );
   }
+}
+
+function isMatchingDirectory(pattern: string, directory: string): boolean {
+  return minimatch(directory, pattern);
+}
+
+function isMatchingFile(pattern: string, files: string[]): boolean {
+  let isMatchingFile = false;
+
+  for (let i = 0; i < files.length && !isMatchingFile; i++) {
+    if (minimatch(files[i], pattern)) {
+      isMatchingFile = true;
+    }
+  }
+
+  return isMatchingFile;
 }
