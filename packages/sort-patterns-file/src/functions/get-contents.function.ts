@@ -6,7 +6,9 @@ import { getParentDirectory } from './get-parent-directory.function';
 
 export async function getContents(ignoredDirectories: string[] = []) {
   const contents = await glob('**', {
-    ignore: ignoredDirectories,
+    ignore: ignoredDirectories.map((directory) => directory + '/**'),
+    dot: true,
+    dotRelative: true,
   });
 
   ignoredDirectories.forEach((directory) => {
@@ -15,6 +17,7 @@ export async function getContents(ignoredDirectories: string[] = []) {
 
   const infos = contents
     .map((path) => path.trim())
+    .filter(Boolean)
     .map((path) => normalize(path))
     .map((path) => {
       return {

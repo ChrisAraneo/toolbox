@@ -4,7 +4,6 @@ import { getContents } from './functions/get-contents.function';
 import { ignoreNodeModules } from './functions/ignore-node-modules.function';
 import { isPatternsFileChanged } from './functions/is-patterns-file-changed.function';
 import { readPatternsFile } from './functions/read-patterns-file.function';
-import { removeArrayItem } from './functions/remove-array-item.function';
 import { writePatternsFile } from './functions/write-patterns-file.function';
 
 let contents: {
@@ -22,12 +21,6 @@ export async function sortPatternsFile(
   const startTime = performance.now();
 
   const patterns = await readPatternsFile(path);
-
-  ignoredDirectories.forEach((ignoredDirectory) => {
-    if (patterns.findIndex((pattern) => pattern === ignoredDirectory) < 0) {
-      patterns.push(ignoredDirectory);
-    }
-  });
 
   const contentsWithMatchings: {
     name: string;
@@ -88,11 +81,6 @@ export async function sortPatternsFile(
     ...organizedPatterns,
     ...patternsNotMatchingAnything,
   ].filter(Boolean);
-
-  ignoredDirectories.forEach((ignoredDirectory) => {
-    removeArrayItem(patterns, ignoredDirectory);
-    removeArrayItem(organizedPatterns, ignoredDirectory);
-  });
 
   if (
     isPatternsFileChanged(
