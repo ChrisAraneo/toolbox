@@ -1,11 +1,11 @@
 .nx/cache
 .nx/workspace-data
+coverage
+node_modules
+reports
 .stryker-tmp
 build
-coverage
 dist
-node_modules
 out
-reports
 strykerTmp
 tsconfig.tsbuildinfo

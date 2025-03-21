@@ -3,15 +3,14 @@
 
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
-const { sortPatternsFile } = require('./sort-patterns-file');
 const { print } = require('./print');
 const packageJson = require('../package.json');
 
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
 const JSON_FILES = ['tsconfig.lib.json', 'tsconfig.json', 'package.json'];
-
 const SOURCE_FILES = ['*.{ts,js,mjs,cjs}', 'src/**/*.ts'];
+const PATTERNS_FILES = ['.gitignore'];
 
 async function formatPackage(package) {
   const prettierVersion = packageJson.devDependencies.prettier;
@@ -25,12 +24,10 @@ async function formatPackage(package) {
 
   const sortPackageJsonCommand = `npx sort-package-json@${sortPackageJsonVersion} "./packages/${package}/package.json"`;
   const prettierCommand = `npx prettier@${prettierVersion} --write ${patterns}`;
-  const command = `${sortPackageJsonCommand} && ${prettierCommand}`;
+  const sortPatternsFileCommand = `npx sort-patterns-file ${PATTERNS_FILES.join(' ')} -i .git node_modules coverage reports`;
+  const command = `${sortPackageJsonCommand} && ${sortPatternsFileCommand} && ${prettierCommand}`;
 
   exec(command, (error, stdout, stderr) => print(error, stdout, stderr));
-
-  sortPatternsFile(normalize(`${directory}/.prettierignore`));
-  sortPatternsFile(normalize(`${directory}/.gitignore`));
 }
 
 async function main() {

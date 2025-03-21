@@ -4,7 +4,6 @@
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
 const { readdir } = require('node:fs/promises');
-const { sortPatternsFile } = require('./sort-patterns-file');
 const { formatPackage } = require('./format-package');
 const { print } = require('./print');
 const packageJson = require('../package.json');
@@ -20,8 +19,8 @@ const JSON_FILES = [
   'tsconfig.json',
   'package.json',
 ];
-
 const SOURCE_FILES = ['scripts/**/*.js', '*.{ts,js,mjs,cjs}'];
+const PATTERNS_FILES = ['.gitignore'];
 
 async function getDirectories(source) {
   return (await readdir(source, { withFileTypes: true }))
@@ -36,11 +35,10 @@ async function formatAll() {
 
   const prettierCommand = `npx prettier@${prettierVersion} --write ${[...JSON_FILES, ...SOURCE_FILES].map((pattern) => `"${pattern}"`).join(' ')}`;
   const sortPackageJsonCommand = `npx sort-package-json@${sortPackageJsonVersion} "package.json"`;
-  const command = `${sortPackageJsonCommand} && ${prettierCommand}`;
+  const sortPatternsFileCommand = `npx sort-patterns-file ${PATTERNS_FILES.join(' ')} -i .git node_modules coverage reports`;
+  const command = `${sortPackageJsonCommand} && ${sortPatternsFileCommand} && ${prettierCommand}`;
 
   exec(command, (error, stdout, stderr) => print(error, stdout, stderr));
-
-  sortPatternsFile(normalize(`${__filename}/../../.gitignore`));
 
   (await getDirectories(PACKAGES_PATH)).map((directory) =>
     formatPackage(directory),
