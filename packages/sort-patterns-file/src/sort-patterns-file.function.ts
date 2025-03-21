@@ -14,17 +14,7 @@ let contents: {
 }[];
 
 export async function sortPatternsFile(path: string): Promise<void> {
-  if (!contents) {
-    const getContentsStartTime = performance.now();
-
-    contents = await getContents();
-
-    const getContentsEndTime = performance.now();
-
-    console.log(
-      `Reading contents of directory and subdirectories ${(getContentsEndTime - getContentsStartTime).toPrecision(6) + 'ms'} `,
-    );
-  }
+  await readContents();
 
   const startTime = performance.now();
 
@@ -120,8 +110,6 @@ export async function sortPatternsFile(path: string): Promise<void> {
       ignoreNodeModules(organizedPatterns),
     )
   ) {
-    organizedPatterns.push('');
-
     await writePatternsFile(path, organizedPatterns);
 
     const endTime = performance.now();
@@ -134,6 +122,20 @@ export async function sortPatternsFile(path: string): Promise<void> {
 
     console.log(
       `\x1b[90m${path} ${(endTime - startTime).toPrecision(6) + 'ms'}\x1b[0m (unchanged)`,
+    );
+  }
+}
+
+async function readContents() {
+  if (!contents) {
+    const getContentsStartTime = performance.now();
+
+    contents = await getContents();
+
+    const getContentsEndTime = performance.now();
+
+    console.log(
+      `Reading contents of directory and subdirectories ${(getContentsEndTime - getContentsStartTime).toPrecision(6) + 'ms'} `,
     );
   }
 }
