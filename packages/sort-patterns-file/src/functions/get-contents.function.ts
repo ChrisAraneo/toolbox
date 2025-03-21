@@ -9,6 +9,10 @@ export async function getContents(ignoredDirectories: string[] = []) {
     ignore: ignoredDirectories,
   });
 
+  ignoredDirectories.forEach((directory) => {
+    contents.push(directory);
+  });
+
   const infos = contents
     .map((path) => path.trim())
     .map((path) => normalize(path))
