@@ -3,8 +3,6 @@ import { writePatternsFile } from './write-patterns-file.function';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require('fs');
 
-jest.mock('fs');
-
 jest.mock('fs', () => ({
   writeFile: jest.fn(),
 }));
