@@ -1,7 +1,7 @@
-import { minimatch } from 'minimatch';
-
 import { getContents } from './functions/get-contents.function';
 import { ignoreNodeModules } from './functions/ignore-node-modules.function';
+import { isMatchingDirectory } from './functions/is-matching-directory.function';
+import { isMatchingFile } from './functions/is-matching-file.function';
 import { isPatternsFileChanged } from './functions/is-patterns-file-changed.function';
 import { readPatternsFile } from './functions/read-patterns-file.function';
 import { writePatternsFile } from './functions/write-patterns-file.function';
@@ -116,20 +116,4 @@ async function readContents(ignoredDirectories: string[]) {
       `Reading contents of directory and subdirectories ${(getContentsEndTime - getContentsStartTime).toPrecision(6) + 'ms'} `,
     );
   }
-}
-
-function isMatchingDirectory(pattern: string, directory: string): boolean {
-  return minimatch(directory, pattern);
-}
-
-function isMatchingFile(pattern: string, files: string[]): boolean {
-  let isMatchingFile = false;
-
-  for (let i = 0; i < files.length && !isMatchingFile; i++) {
-    if (minimatch(files[i], pattern)) {
-      isMatchingFile = true;
-    }
-  }
-
-  return isMatchingFile;
 }
