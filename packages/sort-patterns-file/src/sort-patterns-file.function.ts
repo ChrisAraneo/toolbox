@@ -1,4 +1,4 @@
-import { getContents } from './functions/get-contents.function';
+import { ContentItem, getRootDirectoryContents } from './functions/get-root-directory-contents.function';
 import { ignoreNodeModules } from './functions/ignore-node-modules.function';
 import { isMatchingDirectory } from './functions/is-matching-directory.function';
 import { isMatchingFile } from './functions/is-matching-file.function';
@@ -6,17 +6,15 @@ import { isPatternsFileChanged } from './functions/is-patterns-file-changed.func
 import { readPatternsFile } from './functions/read-patterns-file.function';
 import { writePatternsFile } from './functions/write-patterns-file.function';
 
-let contents: {
-  name: string;
-  parentDirectory: string | null;
-  files: string[];
-}[];
+let contents: ContentItem[]; 
 
 export async function sortPatternsFile(
   path: string,
   ignoredDirectories: string[] = [],
 ): Promise<void> {
-  await readContents(ignoredDirectories);
+  if (!contents) {
+    contents = await getRootDirectoryContents(ignoredDirectories);
+  }
 
   const startTime = performance.now();
 
@@ -100,20 +98,6 @@ export async function sortPatternsFile(
 
     console.log(
       `\x1b[90m${path} ${(endTime - startTime).toPrecision(6) + 'ms'}\x1b[0m (unchanged)`,
-    );
-  }
-}
-
-async function readContents(ignoredDirectories: string[]) {
-  if (!contents) {
-    const getContentsStartTime = performance.now();
-
-    contents = await getContents(ignoredDirectories);
-
-    const getContentsEndTime = performance.now();
-
-    console.log(
-      `Reading contents of directory and subdirectories ${(getContentsEndTime - getContentsStartTime).toPrecision(6) + 'ms'} `,
     );
   }
 }

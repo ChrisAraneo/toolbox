@@ -4,7 +4,38 @@ import { normalize } from 'path';
 
 import { getParentDirectory } from './get-parent-directory.function';
 
-export async function getContents(ignoredDirectories: string[] = []) {
+let contents: ContentItem[] = [];
+
+export interface ContentItem {
+  name: string;
+  parentDirectory: string | null;
+  files: string[];
+}
+
+export async function getRootDirectoryContents(
+  ignoredDirectories: string[],
+  options?: { logTime: boolean },
+) {
+  if (!contents) {
+    const getContentsStartTime = performance.now();
+
+    contents = await getContents(ignoredDirectories);
+
+    const getContentsEndTime = performance.now();
+
+    if (options?.logTime) {
+      console.log(
+        `Reading contents of directory and subdirectories ${(getContentsEndTime - getContentsStartTime).toPrecision(6) + 'ms'} `,
+      );
+    }
+  }
+
+  return contents;
+}
+
+async function getContents(
+  ignoredDirectories: string[] = [],
+): Promise<ContentItem[]> {
   const contents = await glob('**', {
     ignore: ignoredDirectories.map((directory) => directory + '/**'),
     dot: true,
