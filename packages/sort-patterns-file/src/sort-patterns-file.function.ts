@@ -1,4 +1,7 @@
-import { ContentItem, getRootDirectoryContents } from './functions/get-root-directory-contents.function';
+import {
+  ContentItem,
+  getRootDirectoryContents,
+} from './functions/get-root-directory-contents.function';
 import { ignoreNodeModules } from './functions/ignore-node-modules.function';
 import { isMatchingDirectory } from './functions/is-matching-directory.function';
 import { isMatchingFile } from './functions/is-matching-file.function';
@@ -6,7 +9,7 @@ import { isPatternsFileChanged } from './functions/is-patterns-file-changed.func
 import { readPatternsFile } from './functions/read-patterns-file.function';
 import { writePatternsFile } from './functions/write-patterns-file.function';
 
-let contents: ContentItem[]; 
+let contents: ContentItem[];
 
 export async function sortPatternsFile(
   path: string,
