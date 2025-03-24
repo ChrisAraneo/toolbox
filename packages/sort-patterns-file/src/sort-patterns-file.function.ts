@@ -1,87 +1,82 @@
-import {
-  ContentItem,
-  getRootDirectoryContents,
-} from './functions/get-root-directory-contents.function';
+import { getRootDirectoryContents } from './functions/get-root-directory-contents.function';
 import { ignoreNodeModules } from './functions/ignore-node-modules.function';
 import { isMatchingDirectory } from './functions/is-matching-directory.function';
 import { isMatchingFile } from './functions/is-matching-file.function';
 import { isPatternsFileChanged } from './functions/is-patterns-file-changed.function';
 import { readPatternsFile } from './functions/read-patterns-file.function';
 import { writePatternsFile } from './functions/write-patterns-file.function';
+import { ExtendedFileSystemNode } from './interfaces/extended-file-system-node.interface';
+import { FileSystemNode } from './interfaces/file-system-node.interface';
 
-let contents: ContentItem[];
+let nodes: FileSystemNode[];
 
 export async function sortPatternsFile(
   path: string,
   ignoredDirectories: string[] = [],
 ): Promise<void> {
-  if (!contents) {
-    contents = await getRootDirectoryContents(ignoredDirectories);
+  if (!nodes) {
+    nodes = await getRootDirectoryContents(ignoredDirectories, {
+      logTime: true,
+    });
   }
 
   const startTime = performance.now();
 
   const patterns = await readPatternsFile(path);
 
-  const contentsWithMatchings: {
-    name: string;
-    parentDirectory: string | null;
-    files: string[];
-    matchingDirectory: string[];
-    matchingFile: string[];
-  }[] = [];
-  contents.forEach((item) => {
-    contentsWithMatchings.push({
-      ...item,
-      matchingDirectory: [],
-      matchingFile: [],
+  const extendedNodes: ExtendedFileSystemNode[] = [];
+
+  nodes.forEach((node) => {
+    extendedNodes.push({
+      ...node,
+      matchingDirectories: [],
+      matchingFiles: [],
     });
   });
 
   patterns.forEach((pattern) => {
-    contents.forEach((item, index) => {
-      if (isMatchingDirectory(pattern, item.name)) {
-        contentsWithMatchings[index].matchingDirectory.push(pattern);
+    nodes.forEach((node, index) => {
+      if (isMatchingDirectory(pattern, node.name)) {
+        extendedNodes[index].matchingDirectories.push(pattern);
       }
 
-      if (isMatchingFile(pattern, item.files)) {
-        contentsWithMatchings[index].matchingFile.push(pattern);
+      if (isMatchingFile(pattern, node.files)) {
+        extendedNodes[index].matchingFiles.push(pattern);
       }
     });
   });
 
   let organizedPatterns: string[] = [];
 
-  contentsWithMatchings.forEach((item) => {
-    item.matchingDirectory.sort((a, b) => a.localeCompare(b));
-    item.matchingDirectory.forEach((pattern) => {
+  extendedNodes.forEach((node) => {
+    node.matchingDirectories.sort((a, b) => a.localeCompare(b));
+    node.matchingDirectories.forEach((pattern) => {
       if (!organizedPatterns.find((p) => p === pattern) && !!pattern) {
         organizedPatterns.push(pattern);
       }
     });
 
-    item.matchingFile.sort((a, b) => a.localeCompare(b));
-    item.matchingFile.forEach((pattern) => {
+    node.matchingFiles.sort((a, b) => a.localeCompare(b));
+    node.matchingFiles.forEach((pattern) => {
       if (!organizedPatterns.find((p) => p === pattern) && !!pattern) {
         organizedPatterns.push(pattern);
       }
     });
   });
 
-  const patternsNotMatchingAnything: string[] = [];
+  const nonMatchingPatterns: string[] = [];
 
   patterns.forEach((pattern) => {
     if (!organizedPatterns.find((p) => p === pattern) && pattern) {
-      patternsNotMatchingAnything.push(pattern);
+      nonMatchingPatterns.push(pattern);
     }
   });
 
-  patternsNotMatchingAnything.sort((a, b) => a.localeCompare(b));
+  nonMatchingPatterns.sort((a, b) => a.localeCompare(b));
 
-  organizedPatterns = [
-    ...organizedPatterns,
-    ...patternsNotMatchingAnything,
-  ].filter(Boolean);
+  organizedPatterns = [...organizedPatterns, ...nonMatchingPatterns].filter(
+    Boolean,
+  );
 
   if (
     isPatternsFileChanged(
@@ -91,16 +86,12 @@ export async function sortPatternsFile(
   ) {
     await writePatternsFile(path, organizedPatterns);
 
-    const endTime = performance.now();
-
     console.log(
-      `${path} ${(endTime - startTime).toPrecision(6) + 'ms'} (changed)`,
+      `${path} ${(performance.now() - startTime).toPrecision(6) + 'ms'} (changed)`,
     );
   } else {
-    const endTime = performance.now();
-
     console.log(
-      `\x1b[90m${path} ${(endTime - startTime).toPrecision(6) + 'ms'}\x1b[0m (unchanged)`,
+      `\x1b[90m${path} ${(performance.now() - startTime).toPrecision(6) + 'ms'}\x1b[0m (unchanged)`,
     );
   }
 }

@@ -1,41 +1,36 @@
 import { lstatSync } from 'fs';
 import { glob } from 'glob';
 import { normalize } from 'path';
+import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
 
 import { getParentDirectory } from './get-parent-directory.function';
 
-let contents: ContentItem[] = [];
-
-export interface ContentItem {
-  name: string;
-  parentDirectory: string | null;
-  files: string[];
-}
+let nodes: FileSystemNode[] = [];
 
 export async function getRootDirectoryContents(
   ignoredDirectories: string[],
   options?: { logTime: boolean },
 ) {
-  if (!contents) {
-    const getContentsStartTime = performance.now();
+  if (!nodes) {
+    const startTime = performance.now();
 
-    contents = await getContents(ignoredDirectories);
+    nodes = await getContents(ignoredDirectories);
 
-    const getContentsEndTime = performance.now();
+    const endTime = performance.now();
 
     if (options?.logTime) {
       console.log(
-        `Reading contents of directory and subdirectories ${(getContentsEndTime - getContentsStartTime).toPrecision(6) + 'ms'} `,
+        `Reading contents of directory and all subdirectories (${(endTime - startTime).toPrecision(6) + 'ms'})`,
       );
     }
   }
 
-  return contents;
+  return nodes;
 }
 
 async function getContents(
   ignoredDirectories: string[] = [],
-): Promise<ContentItem[]> {
+): Promise<FileSystemNode[]> {
   const contents = await glob('**', {
     ignore: ignoredDirectories.map((directory) => directory + '/**'),
     dot: true,
