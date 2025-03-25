@@ -1,5 +1,7 @@
+import { appendNewPatterns } from './functions/append-new-patterns.function';
 import { getRootDirectoryContents } from './functions/get-root-directory-contents.function';
 import { ignoreNodeModules } from './functions/ignore-node-modules.function';
+import { isArrayDiff } from './functions/is-array-diff.function';
 import { isMatchingDirectory } from './functions/is-matching-directory.function';
 import { isMatchingFile } from './functions/is-matching-file.function';
 import { isPatternsFileChanged } from './functions/is-patterns-file-changed.function';
@@ -10,15 +12,17 @@ import { ExtendedFileSystemNode } from './interfaces/extended-file-system-node.i
 import { FileSystemNode } from './interfaces/file-system-node.interface';
 
 let nodes: FileSystemNode[];
+let _ignoredDirectories: string[] = [];
 
 export async function sortPatternsFile(
   path: string,
   ignoredDirectories: string[] = [],
 ): Promise<void> {
-  if (!nodes) {
+  if (!nodes || isArrayDiff(ignoredDirectories, _ignoredDirectories)) {
     nodes = await getRootDirectoryContents(ignoredDirectories, {
       logTime: true,
     });
+    _ignoredDirectories = ignoredDirectories;
   }
 
   const startTime = performance.now();
@@ -52,28 +56,16 @@ export async function sortPatternsFile(
   extendedNodes.forEach((node) => {
     sortArrayAlphabetically(node.matchingDirectories);
 
-    node.matchingDirectories.forEach((pattern) => {
-      if (!organizedPatterns.find((p) => p === pattern) && !!pattern) {
-        organizedPatterns.push(pattern);
-      }
-    });
+    appendNewPatterns(organizedPatterns, node.matchingDirectories);
 
     sortArrayAlphabetically(node.matchingFiles);
 
-    node.matchingFiles.forEach((pattern) => {
-      if (!organizedPatterns.find((p) => p === pattern) && !!pattern) {
-        organizedPatterns.push(pattern);
-      }
-    });
+    appendNewPatterns(organizedPatterns, node.matchingFiles);
   });
 
   const nonMatchingPatterns: string[] = [];
 
-  patterns.forEach((pattern) => {
-    if (!organizedPatterns.find((p) => p === pattern) && pattern) {
-      nonMatchingPatterns.push(pattern);
-    }
-  });
+  appendNewPatterns(nonMatchingPatterns, patterns);
 
   sortArrayAlphabetically(nonMatchingPatterns);
 
