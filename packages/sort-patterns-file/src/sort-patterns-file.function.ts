@@ -4,6 +4,7 @@ import { isMatchingDirectory } from './functions/is-matching-directory.function'
 import { isMatchingFile } from './functions/is-matching-file.function';
 import { isPatternsFileChanged } from './functions/is-patterns-file-changed.function';
 import { readPatternsFile } from './functions/read-patterns-file.function';
+import { sortArrayAlphabetically } from './functions/sort-array-alphabetically.function';
 import { writePatternsFile } from './functions/write-patterns-file.function';
 import { ExtendedFileSystemNode } from './interfaces/extended-file-system-node.interface';
 import { FileSystemNode } from './interfaces/file-system-node.interface';
@@ -49,14 +50,16 @@ export async function sortPatternsFile(
   let organizedPatterns: string[] = [];
 
   extendedNodes.forEach((node) => {
-    node.matchingDirectories.sort((a, b) => a.localeCompare(b));
+    sortArrayAlphabetically(node.matchingDirectories);
+
     node.matchingDirectories.forEach((pattern) => {
       if (!organizedPatterns.find((p) => p === pattern) && !!pattern) {
         organizedPatterns.push(pattern);
       }
     });
 
-    node.matchingFiles.sort((a, b) => a.localeCompare(b));
+    sortArrayAlphabetically(node.matchingFiles);
+
     node.matchingFiles.forEach((pattern) => {
       if (!organizedPatterns.find((p) => p === pattern) && !!pattern) {
         organizedPatterns.push(pattern);
@@ -72,7 +75,7 @@ export async function sortPatternsFile(
     }
   });
 
-  nonMatchingPatterns.sort((a, b) => a.localeCompare(b));
+  sortArrayAlphabetically(nonMatchingPatterns);
 
   organizedPatterns = [...organizedPatterns, ...nonMatchingPatterns].filter(
     Boolean,

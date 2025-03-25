@@ -23,12 +23,11 @@ describe('sortArrayAlphabetically', () => {
     ]);
   });
 
-  it('should not mutate the input array', () => {
+  it('should mutate the input array', () => {
     const input = ['banana', 'apple', 'cherry'];
 
-    const result = sortArrayAlphabetically(input);
+    sortArrayAlphabetically(input);
 
-    expect(input).toEqual(['banana', 'apple', 'cherry']);
-    expect(input === result).toBeFalsy();
+    expect(input).toEqual(['apple', 'banana', 'cherry']);
   });
 });
