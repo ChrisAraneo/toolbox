@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/sort-patterns-file",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Organize files containing glob patterns",
   "keywords": [],
   "license": "MIT",
