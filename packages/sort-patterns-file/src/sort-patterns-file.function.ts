@@ -29,15 +29,11 @@ export async function sortPatternsFile(
 
   const patterns = await readPatternsFile(path);
 
-  const extendedNodes: ExtendedFileSystemNode[] = [];
-
-  nodes.forEach((node) => {
-    extendedNodes.push({
-      ...node,
-      matchingDirectories: [],
-      matchingFiles: [],
-    });
-  });
+  const extendedNodes: ExtendedFileSystemNode[] = nodes.map((node) => ({
+    ...node,
+    matchingDirectories: [],
+    matchingFiles: [],
+  }));
 
   patterns.forEach((pattern) => {
     nodes.forEach((node, index) => {
@@ -54,11 +50,11 @@ export async function sortPatternsFile(
   let organizedPatterns: string[] = [];
 
   extendedNodes.forEach((node) => {
-    sortArrayAlphabetically(node.matchingDirectories);
+    sortByMatchingDirectories(node);
 
     appendNewPatterns(organizedPatterns, node.matchingDirectories);
 
-    sortArrayAlphabetically(node.matchingFiles);
+    sortByMatchingFiles(node);
 
     appendNewPatterns(organizedPatterns, node.matchingFiles);
   });
@@ -89,4 +85,12 @@ export async function sortPatternsFile(
       `\x1b[90m${path} ${(performance.now() - startTime).toPrecision(6) + 'ms'}\x1b[0m (unchanged)`,
     );
   }
+}
+
+function sortByMatchingDirectories(node: ExtendedFileSystemNode) {
+  sortArrayAlphabetically(node.matchingDirectories);
+}
+
+function sortByMatchingFiles(node: ExtendedFileSystemNode) {
+  sortArrayAlphabetically(node.matchingFiles);
 }
