@@ -1,0 +1,30 @@
+{
+  "name": "@chris.araneo/email-service",
+  "version": "0.0.10",
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "author": "Krzysztof Pająk (Chris Araneo) <chris.araneo@gmail.com>",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc --build tsconfig.lib.json",
+    "chores": "npm run lint && npm run format",
+    "format": "cd ../../ && node scripts/format-package email-service",
+    "lint": "cd ../../ && node scripts/lint-package email-service",
+    "test": "cd ../../ && npm run test -- ./packages/email-service --collectCoverage=false",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mustache": "^4.2.0",
+    "node-mailjet": "^6.0.6"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4.2.5"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@chris.araneo/ng-perfectionism",
+  "version": "0.0.11",
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "author": "Krzysztof Pająk (Chris Araneo) <chris.araneo@gmail.com>",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "ng-perfectionism": "./dist/index.js"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc --build tsconfig.lib.json",
+    "chores": "npm run lint && npm run format",
+    "format": "cd ../../ && node scripts/format-package ng-perfectionism",
+    "lint": "cd ../../ && node scripts/lint-package ng-perfectionism",
+    "start": "npm run build && node dist/index.js",
+    "test": "cd ../../ && npm run test -- ./packages/ng-perfectionism --collectCoverage=false",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@chris.araneo/file-system": "0.0.35",
+    "prettier": "^3.5.2",
+    "rxjs": "^7.8.1",
+    "ts-morph": "^25.0.1"
+  }
+}

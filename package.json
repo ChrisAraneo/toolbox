@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/toolbox",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "license": "MIT",
   "author": "Krzysztof Pająk (Chris Araneo) <chris.araneo@gmail.com>",
@@ -12,9 +12,10 @@
     "format": "node scripts/format",
     "lint": "node scripts/lint",
     "stryker": "npx rimraf strykerTmp && npx stryker run",
-    "test": "npx rimraf strykerTmp && jest"
+    "test": "npx rimraf strykerTmp && node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "devDependencies": {
+    "@chris.araneo/sort-patterns-file": "0.0.8",
     "@nx/jest": "^20.3.0",
     "@stryker-mutator/jest-runner": "^8.7.1",
     "@stryker-mutator/typescript-checker": "^8.7.1",
