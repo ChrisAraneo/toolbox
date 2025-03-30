@@ -7,6 +7,8 @@ import { isMatchingFile } from './functions/is-matching-file.function';
 import { isPatternsFileChanged } from './functions/is-patterns-file-changed.function';
 import { readPatternsFile } from './functions/read-patterns-file.function';
 import { sortArrayAlphabetically } from './functions/sort-array-alphabetically.function';
+import { sortByMatchingDirectories } from './functions/sort-by-matching-directories.function';
+import { sortByMatchingFiles } from './functions/sort-by-matching-files.function';
 import { writePatternsFile } from './functions/write-patterns-file.function';
 import { ExtendedFileSystemNode } from './interfaces/extended-file-system-node.interface';
 import { FileSystemNode } from './interfaces/file-system-node.interface';
@@ -85,12 +87,4 @@ export async function sortPatternsFile(
       `\x1b[90m${path} ${(performance.now() - startTime).toPrecision(6) + 'ms'}\x1b[0m (unchanged)`,
     );
   }
-}
-
-function sortByMatchingDirectories(node: ExtendedFileSystemNode) {
-  sortArrayAlphabetically(node.matchingDirectories);
-}
-
-function sortByMatchingFiles(node: ExtendedFileSystemNode) {
-  sortArrayAlphabetically(node.matchingFiles);
 }
