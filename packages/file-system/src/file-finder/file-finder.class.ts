@@ -2,7 +2,7 @@ import { normalize } from 'node:path';
 
 import { Logger } from '@chris.araneo/logger';
 import { isString } from 'lodash';
-import { catchError, forkJoin, Observable, of } from 'rxjs';
+import { catchError, forkJoin, Observable, of, shareReplay } from 'rxjs';
 
 import { FileSystem } from '../file-system/file-system.class';
 import { FindFileResult } from './find-file-result.type';
@@ -72,6 +72,7 @@ export class FileFinder {
           }),
         );
       }),
+      shareReplay(1),
     );
   }
 
