@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "express": "^4.21.2",
-    "mustache": "^4.2.0"
+    "mustache": "^4.2.0",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@types/mustache": "^4.2.5"
