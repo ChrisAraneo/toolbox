@@ -77,14 +77,7 @@ export class EmailService {
       error = e;
     }
 
-    if (error) {
-      console.error(error);
-      this.logger.error(JSON.stringify(error));
-
-      return;
-    }
-
-    const body = {
+    const bodyObject = {
       from: {
         email: FROM_EMAIL,
         name: FROM_NAME,
@@ -100,10 +93,26 @@ export class EmailService {
       html: html,
       personalization: [],
     };
+    let body = '';
+
+    try {
+      body = JSON.stringify(bodyObject);
+    } catch (e: unknown) {
+      this.logger.error('Could not stringify body');
+      console.error(bodyObject);
+      error = e;
+    }
+
+    if (error) {
+      console.error(error);
+      this.logger.error(JSON.stringify(error));
+
+      return;
+    }
 
     fetch('https://api.mailersend.com/v1/email', {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: body,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${MAILERSEND_TOKEN}`,
