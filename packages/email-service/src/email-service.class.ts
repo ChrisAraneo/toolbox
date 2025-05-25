@@ -2,8 +2,8 @@ import { Logger } from '@chris.araneo/logger';
 import Express from 'express';
 import { ParamsDictionary, Request, Response } from 'express-serve-static-core';
 import { Server } from 'http';
+import fetch from 'make-fetch-happen';
 import Mustache from 'mustache';
-import fetch from 'node-fetch';
 import { ParsedQs } from 'qs';
 
 import { EnvVarKey } from './env-var-key.type';
