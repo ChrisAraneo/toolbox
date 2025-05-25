@@ -15,7 +15,7 @@ I found myself reusing code across multiple projects. I decided to put it in a s
 - @chris.araneo/logger - Logger that uses Winston under the hood.
 - @chris.araneo/health-check - Simple health check service.
 
-## 💿 Installing dependencies
+## 💿 Installation
 
 Example:
 
