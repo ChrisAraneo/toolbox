@@ -13,7 +13,7 @@ export class EmailService {
   private server?: Server;
 
   constructor(private readonly logger: Logger) {
-    this.logger.info('Email Service v0.0.12');
+    this.logger.info('Email Service v0.0.16');
 
     this.logger.debug(
       `Environmental variables: ${JSON.stringify({ ...process.env, ['MJ_APIKEY_PRIVATE']: undefined })}`,
@@ -120,6 +120,7 @@ export class EmailService {
     })
       .then((response) => response.json())
       .then(() => {
+        this.logger.info(body);
         response.send({ status: 'success', message: 'E-mail sent' });
       })
       .catch((error: unknown) => {
