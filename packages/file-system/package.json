@@ -15,7 +15,7 @@
     "build": "tsc --build tsconfig.lib.json",
     "chores": "npm run lint && npm run format",
     "format": "cd ../../ && node scripts/format-package file-system",
-    "lint": "cd ../../ && node scripts/lint-package file-system",
+    "lint": "eslint . --fix",
     "test": "cd ../../ && npm run test -- ./packages/file-system --collectCoverage=false",
     "typecheck": "tsc"
   },

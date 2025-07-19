@@ -18,7 +18,7 @@
     "build": "tsc --build tsconfig.lib.json",
     "chores": "npm run lint && npm run format",
     "format": "cd ../../ && node scripts/format-package sort-patterns-file",
-    "lint": "cd ../../ && node scripts/lint-package sort-patterns-file",
+    "lint": "eslint . --fix",
     "test": "cd ../../ && npm run test -- ./packages/sort-patterns-file --collectCoverage=false",
     "typecheck": "tsc"
   },

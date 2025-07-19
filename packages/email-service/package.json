@@ -15,11 +15,12 @@
     "build": "tsc --build tsconfig.lib.json",
     "chores": "npm run lint && npm run format",
     "format": "cd ../../ && node scripts/format-package email-service",
-    "lint": "cd ../../ && node scripts/lint-package email-service",
+    "lint": "eslint . --fix",
     "test": "cd ../../ && npm run test -- ./packages/email-service --collectCoverage=false",
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@emailjs/nodejs": "^5.0.2",
     "express": "^4.21.2",
     "make-fetch-happen": "^14.0.3",
     "mustache": "^4.2.0"

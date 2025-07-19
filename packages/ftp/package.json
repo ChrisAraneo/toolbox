@@ -15,7 +15,7 @@
     "build": "tsc --build tsconfig.lib.json",
     "chores": "npm run lint && npm run format",
     "format": "cd ../../ && node scripts/format-package ftp",
-    "lint": "cd ../../ && node scripts/lint-package ftp",
+    "lint": "eslint . --fix",
     "test": "cd ../../ && npm run test -- ./packages/ftp --collectCoverage=false",
     "typecheck": "tsc"
   },

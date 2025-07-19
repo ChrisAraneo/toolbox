@@ -18,7 +18,7 @@
     "build": "tsc --build tsconfig.lib.json",
     "chores": "npm run lint && npm run format",
     "format": "cd ../../ && node scripts/format-package ng-perfectionism",
-    "lint": "cd ../../ && node scripts/lint-package ng-perfectionism",
+    "lint": "eslint . --fix",
     "start": "npm run build && node dist/index.js",
     "test": "cd ../../ && npm run test -- ./packages/ng-perfectionism --collectCoverage=false",
     "typecheck": "tsc"
