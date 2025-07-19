@@ -1,7 +1,7 @@
 export function removeArrayItem(array: string[], item: string): void {
-  const index = array.findIndex((i) => i === item);
+  const index = array.indexOf(item);
 
-  if (index >= 0) {
+  if (index !== -1) {
     array.splice(index, 1);
   }
 }

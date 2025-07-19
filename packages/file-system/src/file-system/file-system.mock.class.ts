@@ -1,4 +1,3 @@
-import { AsyncFindStream } from 'find';
 import {
   MakeDirectoryOptions,
   NoParamCallback,
@@ -6,7 +5,9 @@ import {
   PathOrFileDescriptor,
   Stats,
   WriteFileOptions,
-} from 'fs';
+} from 'node:fs';
+
+import { AsyncFindStream } from 'find';
 import { isString } from 'lodash';
 
 import { FileSystem } from './file-system.class';
@@ -14,15 +15,13 @@ import { FileSystem } from './file-system.class';
 // Stryker disable all : It's mock
 
 export class FileSystemMock extends FileSystem {
-  override writeFile(
+  override async writeFile(
     _file: PathOrFileDescriptor,
     _data: string | NodeJS.ArrayBufferView,
     _options: WriteFileOptions,
     _callback: NoParamCallback,
   ): Promise<void> {
     _callback(null);
-
-    return Promise.resolve();
   }
 
   override existsSync(path: PathLike): boolean {
@@ -154,10 +153,10 @@ export class FileSystemMock extends FileSystem {
       'test2.json',
       'test3.json',
       'no-extension',
-      '/\\/test.json/i',
+      String.raw`/\/test.json/i`,
       'te/st.json',
-      '/te\\/st.json/i',
-      '/te\\/ist.json/i',
+      String.raw`/te\/st.json/i`,
+      String.raw`/te\/ist.json/i`,
     ].includes(path);
   }
 

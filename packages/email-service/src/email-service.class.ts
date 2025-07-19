@@ -1,7 +1,8 @@
+import { Server } from 'node:http';
+
 import { Logger } from '@chris.araneo/logger';
 import Express from 'express';
 import { ParamsDictionary, Request, Response } from 'express-serve-static-core';
-import { Server } from 'http';
 import fetch from 'make-fetch-happen';
 import Mustache from 'mustache';
 import { ParsedQs } from 'qs';
@@ -16,7 +17,7 @@ export class EmailService {
     this.logger.info('Email Service v0.0.16');
 
     this.logger.debug(
-      `Environmental variables: ${JSON.stringify({ ...process.env, ['MJ_APIKEY_PRIVATE']: undefined })}`,
+      `Environmental variables: ${JSON.stringify({ ...process.env, MJ_APIKEY_PRIVATE: undefined })}`,
     );
   }
 
@@ -47,7 +48,7 @@ export class EmailService {
       ParsedQs,
       Record<string, unknown>
     >,
-    response: Response<unknown, Record<string, unknown>, number>,
+    response: Response<unknown, Record<string, unknown>>,
   ): void {
     const {
       TEXT_TEMPLATE,
@@ -67,14 +68,14 @@ export class EmailService {
 
     try {
       text = Mustache.render(TEXT_TEMPLATE, requestBody);
-    } catch (e: unknown) {
-      error = e;
+    } catch (error_: unknown) {
+      error = error_;
     }
 
     try {
       html = Mustache.render(HTML_TEMPLATE, requestBody);
-    } catch (e: unknown) {
-      error = e;
+    } catch (error_: unknown) {
+      error = error_;
     }
 
     const bodyObject = {
@@ -89,18 +90,18 @@ export class EmailService {
         },
       ],
       subject: SUBJECT,
-      text: text,
-      html: html,
+      text,
+      html,
       personalization: [],
     };
     let body = '';
 
     try {
       body = JSON.stringify(bodyObject);
-    } catch (e: unknown) {
+    } catch (error_: unknown) {
       this.logger.error('Could not stringify body');
       console.error(bodyObject);
-      error = e;
+      error = error_;
     }
 
     if (error) {
@@ -112,13 +113,13 @@ export class EmailService {
 
     fetch('https://api.mailersend.com/v1/email', {
       method: 'POST',
-      body: body,
+      body,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${MAILERSEND_TOKEN}`,
       },
     })
-      .then((response) => response.json())
+      .then(async (response) => response.json())
       .then(() => {
         this.logger.info(body);
         response.send({ status: 'success', message: 'E-mail sent' });

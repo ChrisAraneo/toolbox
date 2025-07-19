@@ -12,9 +12,8 @@ export class TextFileReader extends FileReader<TextFile | ReadFileError> {
       map((result: ReadFileResult) => {
         if (result.status === ReadFileResultStatus.Success) {
           return new TextFile(result.path, result.data, result.modifiedDate);
-        } else {
-          return result;
         }
+        return result;
       }),
       catchError((error: unknown) =>
         of({

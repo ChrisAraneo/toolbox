@@ -16,9 +16,8 @@ export class JsonFileReader extends FileReader<JsonFile | ReadFileError> {
             JSON.parse(result.data),
             result.modifiedDate,
           );
-        } else {
-          return result;
         }
+        return result;
       }),
       catchError((error: unknown) =>
         of({

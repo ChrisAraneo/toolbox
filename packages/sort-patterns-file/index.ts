@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { sortPatternsFile } from './src/sort-patterns-file.function';
 
 const files: string[] = [];
@@ -39,7 +37,7 @@ process.argv.map(async (value, index) => {
 files.forEach(async (file) => {
   try {
     await sortPatternsFile(file, ignoredDirectories);
-  } catch (_) {
-    console.error('Error: could not read file ' + file);
+  } catch {
+    console.error(`Error: could not read file ${file}`);
   }
 });

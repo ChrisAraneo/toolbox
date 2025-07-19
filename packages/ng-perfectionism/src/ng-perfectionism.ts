@@ -103,8 +103,6 @@ export class NgPerfectionism {
         );
         this.removeSourceProperties(metadataObject);
         this.renameTemporaryProperties(metadataObject);
-
-        return;
       }),
     );
 
@@ -126,8 +124,8 @@ export class NgPerfectionism {
         sourceFile.getFullText(),
         options || undefined,
       );
-    } catch (e: unknown) {
-      error = e;
+    } catch (error_: unknown) {
+      error = error_;
     }
 
     if (error) {
@@ -163,17 +161,17 @@ export class NgPerfectionism {
   ): Decorator[] {
     const decorators: Decorator[] = [];
 
-    classDeclarations.forEach((classDeclaration) => {
-      DECORATOR_NAMES.forEach((name) => {
-        const decorator = classDeclaration?.getDecorator(name);
+    for (const classDeclaration of classDeclarations) {
+      for (const name of DECORATOR_NAMES) {
+        const decorator = classDeclaration.getDecorator(name);
 
         if (decorator) {
           decorators.push(decorator);
         }
-      });
-    });
+      }
+    }
 
-    if (!decorators.length) {
+    if (decorators.length === 0) {
       throw new Error('File has no class with supported decorators');
     }
 
@@ -213,9 +211,8 @@ export class NgPerfectionism {
         }
 
         return aKey.localeCompare(bKey);
-      } else {
-        throw new Error('Unsupported yet');
       }
+      throw new Error('Unsupported yet');
     });
   }
 
@@ -223,7 +220,7 @@ export class NgPerfectionism {
     properties: ObjectLiteralElementLike[],
     objectLiteral: ObjectLiteralExpression,
   ): void {
-    properties.forEach((property) => {
+    for (const property of properties) {
       if (property instanceof PropertyAssignment) {
         const initializer = property.getInitializer();
 
@@ -232,15 +229,13 @@ export class NgPerfectionism {
             .getElements()
             .map((element) => element.getText());
 
-          textElements.sort((a, b) => {
-            return a.localeCompare(b);
-          });
+          textElements.sort((a, b) => a.localeCompare(b));
 
           initializer.replaceWithText('[]');
 
-          textElements.forEach((text) => {
+          for (const text of textElements) {
             initializer.addElement(text);
-          });
+          }
 
           objectLiteral.addPropertyAssignment({
             name: `${TEMPORARY_PREFIX}${property.getName()}`,
@@ -253,33 +248,33 @@ export class NgPerfectionism {
           });
         }
       } else {
-        throw new Error('Unsupported');
+        throw new TypeError('Unsupported');
       }
-    });
+    }
   }
 
   private removeSourceProperties(objectLiteral: ObjectLiteralExpression): void {
-    objectLiteral.getProperties().forEach((property) => {
+    for (const property of objectLiteral.getProperties()) {
       if (property instanceof PropertyAssignment) {
-        if (property.getName().indexOf(TEMPORARY_PREFIX) === -1) {
+        if (!property.getName().includes(TEMPORARY_PREFIX)) {
           property.remove();
         }
       } else {
-        throw new Error('Unsupported');
+        throw new TypeError('Unsupported');
       }
-    });
+    }
   }
 
   private renameTemporaryProperties(
     objectLiteral: ObjectLiteralExpression,
   ): void {
-    objectLiteral.getProperties().forEach((property) => {
+    for (const property of objectLiteral.getProperties()) {
       if (
         property instanceof PropertyAssignment &&
-        property.getName().indexOf(TEMPORARY_PREFIX) == 0
+        property.getName().startsWith(TEMPORARY_PREFIX)
       ) {
         property.rename(property.getName().replace(TEMPORARY_PREFIX, ''));
       }
-    });
+    }
   }
 }

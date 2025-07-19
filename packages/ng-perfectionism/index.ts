@@ -27,7 +27,7 @@ ngPerfectionism.resolvePrettierConfig(directory).then((prettierOptions) => {
     .then(({ result }) => {
       const project = new Project();
 
-      result.forEach((path) => {
+      for (const path of result) {
         let sourceFile = project.addSourceFileAtPathIfExists(path);
         const relativePath = path.replace(directory, '');
 
@@ -44,14 +44,14 @@ ngPerfectionism.resolvePrettierConfig(directory).then((prettierOptions) => {
           .then((updatedSourceFile) => {
             updatedSourceFile.save();
           });
-      });
+      }
     });
 
   // TODO Refactoring
   ngPerfectionism.findFiles(/\.module\.ts$/, directory).then(({ result }) => {
     const project = new Project();
 
-    result.forEach((path) => {
+    for (const path of result) {
       let sourceFile = project.addSourceFileAtPathIfExists(path);
       const relativePath = path.replace(directory, '');
 
@@ -68,6 +68,6 @@ ngPerfectionism.resolvePrettierConfig(directory).then((prettierOptions) => {
         .then((updatedSourceFile) => {
           updatedSourceFile.save();
         });
-    });
+    }
   });
 });

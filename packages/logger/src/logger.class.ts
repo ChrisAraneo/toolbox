@@ -16,7 +16,7 @@ export class Logger {
 
   constructor(
     private logLevel: LogLevel = 'info',
-    private areWarningsIgnored = true,
+    private readonly areWarningsIgnored = true,
   ) {
     if (this.areWarningsIgnored) {
       this.ignoreWarnings();
@@ -57,7 +57,7 @@ export class Logger {
         format.splat(),
         simple(),
         printf((msg) => {
-          const message = msg.message;
+          const { message } = msg;
           const splat = msg[Symbol.for('splat')];
           const iso = new Date().toISOString();
           const parts = iso.split('.');
@@ -65,7 +65,7 @@ export class Logger {
           return colorize().colorize(
             msg.level,
             `[${parts[0].replace('T', ' ')}] [${msg.level.toLocaleUpperCase()}] - ${message}${
-              splat ? ' ' + JSON.stringify(splat) : ''
+              splat ? ` ${JSON.stringify(splat)}` : ''
             }`,
           );
         }),
@@ -75,8 +75,6 @@ export class Logger {
   }
 
   private ignoreWarnings(): void {
-    console.warn = (): undefined => {
-      return;
-    };
+    console.warn = (): undefined => {};
   }
 }

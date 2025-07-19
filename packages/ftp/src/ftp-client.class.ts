@@ -2,7 +2,7 @@ import * as BasicFtp from 'basic-ftp';
 import { from, Observable } from 'rxjs';
 
 export class FtpClient {
-  constructor(private client: BasicFtp.Client) {}
+  constructor(private readonly client: BasicFtp.Client) {}
 
   uploadDirectory(
     host: string,
@@ -15,9 +15,9 @@ export class FtpClient {
       new Promise<void>((resolve, reject) => {
         this.client
           .access({
-            host: host,
-            user: user,
-            password: password,
+            host,
+            user,
+            password,
           })
           .then(() => {
             this.client

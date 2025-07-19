@@ -17,9 +17,8 @@ export class Base64FileReader extends FileReader<Base64File | ReadFileError> {
       map((result: ReadFileResult) => {
         if (result.status === ReadFileResultStatus.Success) {
           return new Base64File(result.path, result.data, result.modifiedDate);
-        } else {
-          return result;
         }
+        return result;
       }),
       catchError((error: unknown) =>
         of({

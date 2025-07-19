@@ -5,13 +5,16 @@ import { CREATE_DIRECTORY_ERROR_MESSAGE } from './directory-creator.consts';
 
 export class DirectoryCreator {
   constructor(
-    private fileSystem: FileSystem,
-    private logger: Logger,
+    private readonly fileSystem: FileSystem,
+    private readonly logger: Logger,
   ) {}
 
   async createIfDoesntExist(directory: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      if (!this.fileSystem.existsSync(directory)) {
+      if (this.fileSystem.existsSync(directory)) {
+        this.logger.debug('Directory already exists');
+        resolve();
+      } else {
         this.logger.debug(`Creating directory: '${directory}'`);
 
         this.fileSystem.mkdirSync(
@@ -28,9 +31,6 @@ export class DirectoryCreator {
             resolve();
           },
         );
-      } else {
-        this.logger.debug('Directory already exists');
-        resolve();
       }
     });
   }
