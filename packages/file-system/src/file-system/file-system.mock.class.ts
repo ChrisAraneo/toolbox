@@ -15,12 +15,12 @@ import { FileSystem } from './file-system.class';
 // Stryker disable all : It's mock
 
 export class FileSystemMock extends FileSystem {
-  override async writeFile(
+  override writeFile(
     _file: PathOrFileDescriptor,
     _data: string | NodeJS.ArrayBufferView,
     _options: WriteFileOptions,
     _callback: NoParamCallback,
-  ): Promise<void> {
+  ): void {
     _callback(null);
   }
 
