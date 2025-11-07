@@ -23,7 +23,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "glob": "^11.0.1",
-    "minimatch": "^10.0.1"
+    "glob": "^11.0.3",
+    "minimatch": "^10.1.1"
   }
 }

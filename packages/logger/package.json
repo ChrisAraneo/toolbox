@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/logger",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Logger that uses Winston under the hood",
   "keywords": [],
   "license": "MIT",
@@ -20,6 +20,6 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "winston": "^3.17.0"
+    "winston": "^3.18.3"
   }
 }

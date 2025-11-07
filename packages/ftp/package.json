@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/ftp",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Reactive FTP client abstraction",
   "keywords": [],
   "license": "MIT",
@@ -21,6 +21,6 @@
   },
   "dependencies": {
     "basic-ftp": "^5.0.5",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.2"
   }
 }

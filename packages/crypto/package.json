@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/crypto",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Crypto wrappers intended for encrypting and decrypting files",
   "keywords": [],
   "license": "MIT",
@@ -21,6 +21,6 @@
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.2"
   }
 }
