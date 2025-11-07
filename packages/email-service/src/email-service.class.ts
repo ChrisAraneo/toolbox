@@ -119,7 +119,7 @@ export class EmailService {
         Authorization: `Bearer ${MAILERSEND_TOKEN}`,
       },
     })
-      .then(async (response) => response.json())
+      .then(async (fetchResponse) => fetchResponse.json())
       .then(() => {
         this.logger.info(body);
         response.send({ status: 'success', message: 'E-mail sent' });
