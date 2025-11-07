@@ -19,7 +19,7 @@ export abstract class FileWriter<T extends File<string>> {
           if (error) {
             subscriber.error(error);
           } else {
-            subscriber.next(undefined);
+            subscriber.next();
             subscriber.complete();
           }
         },
@@ -29,9 +29,7 @@ export abstract class FileWriter<T extends File<string>> {
 
   writeFiles(files: T[]): Observable<void> {
     return forkJoin(files.map((file) => this.writeFile(file))).pipe(
-      map(() => {
-        return;
-      }),
+      map(() => {}),
     );
   }
 }

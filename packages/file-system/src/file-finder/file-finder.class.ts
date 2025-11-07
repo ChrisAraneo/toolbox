@@ -2,15 +2,15 @@ import { normalize } from 'node:path';
 
 import { Logger } from '@chris.araneo/logger';
 import { isString } from 'lodash';
-import { catchError, forkJoin, Observable, of } from 'rxjs';
+import { catchError, forkJoin, Observable, of, shareReplay } from 'rxjs';
 
 import { FileSystem } from '../file-system/file-system.class';
 import { FindFileResult } from './find-file-result.type';
 
 export class FileFinder {
   constructor(
-    private fileSystem: FileSystem = new FileSystem(),
-    private logger?: Logger,
+    private readonly fileSystem: FileSystem = new FileSystem(),
+    private readonly logger?: Logger,
   ) {}
 
   findFile(
@@ -19,7 +19,7 @@ export class FileFinder {
     fileSystem: FileSystem = new FileSystem(),
   ): Observable<FindFileResult> {
     const _pattern: RegExp = isString(pattern)
-      ? new RegExp(pattern.replace('/i', '\\/i'), 'i')
+      ? new RegExp(pattern.replace('/i', String.raw`\/i`), 'i')
       : pattern;
 
     return new Observable<FindFileResult>((subscriber) => {
@@ -45,7 +45,7 @@ export class FileFinder {
               success: true,
               pattern: _pattern,
               root,
-              result: result,
+              result,
               message: null,
             }),
           );
@@ -55,14 +55,14 @@ export class FileFinder {
         .error((error: unknown) => {
           if (this.logger) {
             this.logger.debug(
-              `${JSON.stringify(error, Object.getOwnPropertyNames(error))}`,
+              JSON.stringify(error, Object.getOwnPropertyNames(error)),
             );
           }
         });
       // Stryker restore all
     }).pipe(
-      catchError((error: unknown) => {
-        return of(
+      catchError((error: unknown) =>
+        of(
           this.createFindFileResult({
             success: false,
             pattern: _pattern,
@@ -70,8 +70,9 @@ export class FileFinder {
             result: [],
             message: JSON.stringify(error, Object.getOwnPropertyNames(error)),
           }),
-        );
-      }),
+        ),
+      ),
+      shareReplay(1),
     );
   }
 
@@ -81,9 +82,7 @@ export class FileFinder {
     fileSystem: FileSystem = new FileSystem(),
   ): Observable<FindFileResult[]> {
     return forkJoin(
-      roots.map((root: string) => {
-        return this.findFile(pattern, root, fileSystem);
-      }),
+      roots.map((root: string) => this.findFile(pattern, root, fileSystem)),
     );
   }
 
@@ -116,9 +115,9 @@ export class FileFinder {
 
     return {
       success: input.success,
-      pattern: pattern,
-      root: root,
-      result: result,
+      pattern,
+      root,
+      result,
       message: input.message,
     };
   }
@@ -126,18 +125,17 @@ export class FileFinder {
   private fixIncorrectResultPathPrefix(path: string, root: string): string {
     if (path.startsWith(root)) {
       return path;
-    } else {
-      const rootParts = root.split('\\');
-      const pathParts = path.split('\\');
-
-      if (pathParts[0].startsWith(rootParts[0] + rootParts[1])) {
-        pathParts[0] = rootParts[1];
-        pathParts.unshift(rootParts[0]);
-
-        return pathParts.join('\\');
-      }
-
-      return path;
     }
+    const rootParts = root.split('\\');
+    const pathParts = path.split('\\');
+
+    if (pathParts[0].startsWith(rootParts[0] + rootParts[1])) {
+      pathParts[0] = rootParts[1];
+      pathParts.unshift(rootParts[0]);
+
+      return pathParts.join('\\');
+    }
+
+    return path;
   }
 }

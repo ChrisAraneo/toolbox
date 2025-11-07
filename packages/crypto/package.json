@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/crypto",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Crypto wrappers intended for encrypting and decrypting files",
   "keywords": [],
   "license": "MIT",
@@ -15,12 +15,12 @@
     "build": "tsc --build tsconfig.lib.json",
     "chores": "npm run lint && npm run format",
     "format": "cd ../../ && node scripts/format-package crypto",
-    "lint": "cd ../../ && node scripts/lint-package crypto",
+    "lint": "eslint . --fix",
     "test": "cd ../../ && npm run test -- ./packages/crypto --collectCoverage=false",
     "typecheck": "tsc"
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.2"
   }
 }

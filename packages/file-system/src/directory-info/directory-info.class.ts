@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
 import { Observable } from 'rxjs';
 
 import { FileSystem } from '../file-system/file-system.class';
 
-export class DirectoryInfo {
-  static getContents(
+export const DirectoryInfo = {
+  getContents(
     directory: string,
     fileSystem: FileSystem = new FileSystem(),
   ): Observable<string[]> {
@@ -18,5 +17,5 @@ export class DirectoryInfo {
         }
       });
     });
-  }
-}
+  },
+};

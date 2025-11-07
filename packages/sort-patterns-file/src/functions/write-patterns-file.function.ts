@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 export async function writePatternsFile(
   path: string,
@@ -7,10 +7,10 @@ export async function writePatternsFile(
   return new Promise((resolve, reject) => {
     fs.writeFile(
       path,
-      patterns
+      `${patterns
         .map((pattern) => pattern.trim())
         .filter(Boolean)
-        .join('\n') + '\n',
+        .join('\n')}\n`,
       'utf8',
       (e) => {
         if (e) {

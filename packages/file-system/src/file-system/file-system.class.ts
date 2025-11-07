@@ -1,4 +1,3 @@
-import find, { AsyncFindStream } from 'find';
 import fs, {
   MakeDirectoryOptions,
   NoParamCallback,
@@ -6,7 +5,9 @@ import fs, {
   PathOrFileDescriptor,
   Stats,
   WriteFileOptions,
-} from 'fs';
+} from 'node:fs';
+
+import find, { AsyncFindStream } from 'find';
 
 // Stryker disable all
 
@@ -58,14 +59,7 @@ export class FileSystem {
     },
     callback?: (err: NodeJS.ErrnoException | null, path?: string) => void,
   ): void {
-    return fs.mkdir(
-      path,
-      options,
-      callback ||
-        (() => {
-          return;
-        }),
-    );
+    return fs.mkdir(path, options, callback || (() => {}));
   }
 
   findFile(

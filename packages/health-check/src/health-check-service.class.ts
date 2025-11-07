@@ -1,9 +1,9 @@
+import { Server } from 'node:http';
 import process from 'node:process';
 
 import { Logger } from '@chris.araneo/logger';
 import Express from 'express';
 import { ParamsDictionary, Request, Response } from 'express-serve-static-core';
-import { Server } from 'http';
 import { ParsedQs } from 'qs';
 
 export class HealthCheckService {
@@ -34,7 +34,7 @@ export class HealthCheckService {
       ParsedQs,
       Record<string, unknown>
     >,
-    response: Response<unknown, Record<string, unknown>, number>,
+    response: Response<unknown, Record<string, unknown>>,
   ): void {
     const healthcheck = {
       uptime: process.uptime(),

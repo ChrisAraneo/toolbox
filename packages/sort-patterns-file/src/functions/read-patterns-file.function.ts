@@ -1,5 +1,5 @@
-import { readFile } from 'fs';
-import { normalize, sep } from 'path';
+import { readFile } from 'node:fs';
+import { normalize, sep } from 'node:path';
 
 export async function readPatternsFile(path: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
@@ -11,7 +11,7 @@ export async function readPatternsFile(path: string): Promise<string[]> {
           .split('\n')
           .map((part) => part.replaceAll('\r', ''))
           .map((part) => part.replaceAll('\n', ''))
-          .filter((part) => !!part);
+          .filter(Boolean);
 
         resolve(parts);
       }

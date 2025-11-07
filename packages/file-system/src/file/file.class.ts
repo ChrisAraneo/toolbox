@@ -1,5 +1,6 @@
+import path from 'node:path';
+
 import md5 from 'md5';
-import path from 'path';
 
 export abstract class File<T> {
   private hashValue!: string;
@@ -37,7 +38,7 @@ export abstract class File<T> {
       return null;
     }
 
-    return parts[parts.length - 1];
+    return parts.at(-1) ?? null;
   }
 
   getContent(): T {
@@ -60,9 +61,9 @@ export abstract class File<T> {
     const basenameIndex = this.path.lastIndexOf(basename);
 
     this.path =
-      this.path.substring(0, basenameIndex) +
+      this.path.slice(0, Math.max(0, basenameIndex)) +
       filename +
-      (extension ? '.' + extension : '');
+      (extension ? `.${extension}` : '');
   }
 
   setPath(path: string): void {

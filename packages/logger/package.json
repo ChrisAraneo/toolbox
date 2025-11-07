@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/logger",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Logger that uses Winston under the hood",
   "keywords": [],
   "license": "MIT",
@@ -15,11 +15,11 @@
     "build": "tsc --build tsconfig.lib.json",
     "chores": "npm run lint && npm run format",
     "format": "cd ../../ && node scripts/format-package logger",
-    "lint": "cd ../../ && node scripts/lint-package logger",
+    "lint": "eslint . --fix",
     "test": "cd ../../ && npm run test -- ./packages/logger --collectCoverage=false",
     "typecheck": "tsc"
   },
   "dependencies": {
-    "winston": "^3.17.0"
+    "winston": "^3.18.3"
   }
 }

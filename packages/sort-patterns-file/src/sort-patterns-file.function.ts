@@ -37,8 +37,8 @@ export async function sortPatternsFile(
     matchingFiles: [],
   }));
 
-  patterns.forEach((pattern) => {
-    nodes.forEach((node, index) => {
+  for (const pattern of patterns) {
+    for (const [index, node] of nodes.entries()) {
       if (isMatchingDirectory(pattern, node.name)) {
         extendedNodes[index].matchingDirectories.push(pattern);
       }
@@ -46,12 +46,12 @@ export async function sortPatternsFile(
       if (isMatchingFile(pattern, node.files)) {
         extendedNodes[index].matchingFiles.push(pattern);
       }
-    });
-  });
+    }
+  }
 
   let organizedPatterns: string[] = [];
 
-  extendedNodes.forEach((node) => {
+  for (const node of extendedNodes) {
     sortByMatchingDirectories(node);
 
     appendNewPatterns(organizedPatterns, node.matchingDirectories);
@@ -59,7 +59,7 @@ export async function sortPatternsFile(
     sortByMatchingFiles(node);
 
     appendNewPatterns(organizedPatterns, node.matchingFiles);
-  });
+  }
 
   const nonMatchingPatterns: string[] = [];
 
@@ -80,11 +80,11 @@ export async function sortPatternsFile(
     await writePatternsFile(path, organizedPatterns);
 
     console.log(
-      `${path} ${(performance.now() - startTime).toPrecision(6) + 'ms'} (changed)`,
+      `${path} ${(performance.now() - startTime).toPrecision(6)}ms (changed)`,
     );
   } else {
     console.log(
-      `\x1b[90m${path} ${(performance.now() - startTime).toPrecision(6) + 'ms'}\x1b[0m (unchanged)`,
+      `\u001B[90m${path} ${(performance.now() - startTime).toPrecision(6)}ms\u001B[0m (unchanged)`,
     );
   }
 }
