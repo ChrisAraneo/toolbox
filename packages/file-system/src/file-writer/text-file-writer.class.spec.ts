@@ -1,4 +1,5 @@
-import { NoParamCallback, PathOrFileDescriptor, WriteFileOptions } from 'fs';
+import { NoParamCallback, PathOrFileDescriptor, WriteFileOptions } from 'node:fs';
+
 import { lastValueFrom } from 'rxjs';
 
 import { TextFile } from '../file/text-file.class';
@@ -58,8 +59,8 @@ describe('TextFileWriter', () => {
 
     try {
       await lastValueFrom(writer.writeFiles(files));
-    } catch (e: unknown) {
-      error = e;
+    } catch (error_: unknown) {
+      error = error_;
     }
 
     expect(error).toBe('Error');

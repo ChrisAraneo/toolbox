@@ -28,8 +28,8 @@ describe('DirectoryInfo', () => {
 
     try {
       await firstValueFrom(DirectoryInfo.getContents('./', fileSystem));
-    } catch (e: unknown) {
-      error = e;
+    } catch (error_: unknown) {
+      error = error_;
     }
 
     expect(error).toBeTruthy();

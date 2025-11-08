@@ -1,4 +1,5 @@
-import { PathOrFileDescriptor, Stats } from 'fs';
+import { PathOrFileDescriptor, Stats } from 'node:fs';
+
 import { lastValueFrom } from 'rxjs';
 
 import { FileSystem } from '../file-system/file-system.class';

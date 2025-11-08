@@ -67,8 +67,8 @@ describe('FtpClient', () => {
           'teacup-backup',
         ),
       );
-    } catch (e: unknown) {
-      error = e;
+    } catch (error_: unknown) {
+      error = error_;
     }
 
     expect(error).toStrictEqual('Rejected error');
@@ -89,8 +89,8 @@ describe('FtpClient', () => {
           'teacup-backup',
         ),
       );
-    } catch (e: unknown) {
-      error = e;
+    } catch (error_: unknown) {
+      error = error_;
     }
 
     expect(error).toStrictEqual('Upload failed');
@@ -98,13 +98,13 @@ describe('FtpClient', () => {
 });
 
 class AccessRejectedMock extends BasicFtpClientMock {
-  override access(): Promise<BasicFtp.FTPResponse> {
-    return Promise.reject('Rejected error');
+  async override access(): Promise<BasicFtp.FTPResponse> {
+    throw 'Rejected error';
   }
 }
 
 class UploadFailedMock extends BasicFtpClientMock {
-  override uploadFromDir(): Promise<void> {
-    return Promise.reject('Upload failed');
+  async override uploadFromDir(): Promise<void> {
+    throw 'Upload failed';
   }
 }

@@ -1,5 +1,6 @@
+import { MakeDirectoryOptions, PathLike } from 'node:fs';
+
 import { Logger } from '@chris.araneo/logger';
-import { MakeDirectoryOptions, PathLike } from 'fs';
 
 import { FileSystem } from '../file-system/file-system.class';
 import { FileSystemMock } from '../file-system/file-system.mock.class';
@@ -123,6 +124,6 @@ class CreateDirectoryNoCallbackPathFileSystemMock extends FileSystemMock {
       return;
     }
 
-    callback(null, undefined);
+    callback(null);
   }
 }

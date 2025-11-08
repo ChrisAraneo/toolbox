@@ -28,7 +28,7 @@ describe('appendNewPatterns', () => {
     const targetArray: string[] = ['pattern1', 'pattern2'];
     const patterns: string[] = ['', 'pattern3', null, 'pattern4'] as string[];
 
-    appendNewPatterns(targetArray, patterns as string[]);
+    appendNewPatterns(targetArray, patterns);
 
     expect(targetArray).toEqual([
       'pattern1',

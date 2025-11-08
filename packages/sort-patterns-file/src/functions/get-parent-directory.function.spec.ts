@@ -1,9 +1,9 @@
 import { getParentDirectory } from './get-parent-directory.function';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const fs = require('fs');
+const fs = require('node:fs');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const path = require('path');
+const path = require('node:path');
 
 jest.mock('fs', () => ({
   lstatSync: jest.fn(),

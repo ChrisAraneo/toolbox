@@ -16,8 +16,11 @@ export class EmailService {
   constructor(private readonly logger: Logger) {
     this.logger.info('Email Service v0.0.16');
 
+    const env = { ...process.env };
+    delete env.MJ_APIKEY_PRIVATE;
+
     this.logger.debug(
-      `Environmental variables: ${JSON.stringify({ ...process.env, MJ_APIKEY_PRIVATE: undefined })}`,
+      `Environmental variables: ${JSON.stringify(env)}`,
     );
   }
 

@@ -1,4 +1,5 @@
-import { PathOrFileDescriptor, Stats } from 'fs';
+import { PathOrFileDescriptor, Stats } from 'node:fs';
+
 import { lastValueFrom as firstValueFrom } from 'rxjs';
 
 import { JsonFile } from '../file/json-file.class';
@@ -41,9 +42,9 @@ describe('JsonFileReader', () => {
 
     const calls = jest.mocked(fileSystem.readFile).mock.calls;
     expect(calls.length).toBe(3);
-    result.forEach((value) => {
+    for (const value of result) {
       expect(value).toBeInstanceOf(JsonFile);
-    });
+    }
   });
 
   it('#readFile should return error object when file system calls callback with error on file read', async () => {
@@ -115,19 +116,19 @@ class ReadFileErrorCallbackMock extends FileSystemMock {
 
 class ReadFileThrowErrorMock extends FileSystemMock {
   override readFile(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _path: PathOrFileDescriptor,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _options:
       | ({
           encoding: BufferEncoding;
           flag?: string | undefined;
         } & unknown)
       | BufferEncoding,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _callback: (err: NodeJS.ErrnoException | null, data: string) => void,
   ): void {
-    throw Error('Mock error');
+    throw new Error('Mock error');
   }
 }
 
@@ -145,11 +146,11 @@ class MetaDataErrorCallbackMock extends FileSystemMock {
 
 class MetaDataThrowErrorMock extends FileSystemMock {
   override stat(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _path: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     _callback: (err: NodeJS.ErrnoException | null, stats: Stats) => void,
   ): void {
-    throw Error('Mock error');
+    throw new Error('Mock error');
   }
 }

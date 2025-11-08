@@ -1,7 +1,7 @@
 import { lstatSync } from 'node:fs';
 import { dirname, sep } from 'node:path';
 
-export function getParentDirectory(path: string): string {
+export const getParentDirectory = (path: string): string => {
   if (lstatSync(path).isFile()) {
     return dirname(path) || '.';
   }
@@ -9,4 +9,4 @@ export function getParentDirectory(path: string): string {
   parts.pop();
 
   return parts.join(sep) || '.';
-}
+};
