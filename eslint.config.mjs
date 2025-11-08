@@ -14,6 +14,7 @@ export default [
       'package.json',
       'packages/**/package.json',
       'packages/**/dist/',
+      'packages/**/node_modules/',
       'eslint.config.mjs',
     ],
     tsconfigRootDir: import.meta.dirname,
