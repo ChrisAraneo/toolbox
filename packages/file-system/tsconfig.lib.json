@@ -8,7 +8,7 @@
     "outDir": "dist",
     "rootDir": ".",
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "extends": "../../tsconfig.base.json",
   "include": ["**/*.ts"],
