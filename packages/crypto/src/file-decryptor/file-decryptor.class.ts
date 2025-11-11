@@ -5,13 +5,13 @@ import cryptoAes from 'crypto-js/aes';
 import { EncryptedFile } from '../encrypted-file/encrypted-file.class';
 
 export class FileDecryptor {
-  decryptBase64Files(files: EncryptedFile[], secretKey: string): Base64File[] {
+  static decryptBase64Files(files: EncryptedFile[], secretKey: string): Base64File[] {
     return files.map((file: EncryptedFile) =>
       this.decryptBase64File(file, secretKey),
     );
   }
 
-  decryptBase64File(file: EncryptedFile, secretKey: string): Base64File {
+  static decryptBase64File(file: EncryptedFile, secretKey: string): Base64File {
     return new Base64File(
       file.getPath(),
       cryptoAes.decrypt(file.getContent(), secretKey).toString(
