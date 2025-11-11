@@ -98,13 +98,13 @@ describe('FtpClient', () => {
 });
 
 class AccessRejectedMock extends BasicFtpClientMock {
-  async override access(): Promise<BasicFtp.FTPResponse> {
+  override async access(): Promise<BasicFtp.FTPResponse> {
     throw 'Rejected error';
   }
 }
 
 class UploadFailedMock extends BasicFtpClientMock {
-  async override uploadFromDir(): Promise<void> {
+  override async uploadFromDir(): Promise<void> {
     throw 'Upload failed';
   }
 }

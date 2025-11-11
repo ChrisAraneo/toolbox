@@ -1,4 +1,8 @@
-import { NoParamCallback, PathOrFileDescriptor, WriteFileOptions } from 'node:fs';
+import {
+  NoParamCallback,
+  PathOrFileDescriptor,
+  WriteFileOptions,
+} from 'node:fs';
 
 import { lastValueFrom } from 'rxjs';
 

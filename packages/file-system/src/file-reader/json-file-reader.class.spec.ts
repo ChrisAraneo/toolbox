@@ -116,16 +116,15 @@ class ReadFileErrorCallbackMock extends FileSystemMock {
 
 class ReadFileThrowErrorMock extends FileSystemMock {
   override readFile(
-     
     _path: PathOrFileDescriptor,
-     
+
     _options:
       | ({
           encoding: BufferEncoding;
           flag?: string | undefined;
         } & unknown)
       | BufferEncoding,
-     
+
     _callback: (err: NodeJS.ErrnoException | null, data: string) => void,
   ): void {
     throw new Error('Mock error');
@@ -146,9 +145,8 @@ class MetaDataErrorCallbackMock extends FileSystemMock {
 
 class MetaDataThrowErrorMock extends FileSystemMock {
   override stat(
-     
     _path: string,
-     
+
     _callback: (err: NodeJS.ErrnoException | null, stats: Stats) => void,
   ): void {
     throw new Error('Mock error');

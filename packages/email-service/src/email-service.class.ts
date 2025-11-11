@@ -19,9 +19,7 @@ export class EmailService {
     const env = { ...process.env };
     delete env.MJ_APIKEY_PRIVATE;
 
-    this.logger.debug(
-      `Environmental variables: ${JSON.stringify(env)}`,
-    );
+    this.logger.debug(`Environmental variables: ${JSON.stringify(env)}`);
   }
 
   listen(endpoint: string, port: number): void {
