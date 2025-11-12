@@ -2,6 +2,6 @@ import { ExtendedFileSystemNode } from 'src/interfaces/extended-file-system-node
 
 import { sortArrayAlphabetically } from './sort-array-alphabetically.function';
 
-export function sortByMatchingFiles(node: ExtendedFileSystemNode) {
+export const sortByMatchingFiles = (node: ExtendedFileSystemNode): void => {
   sortArrayAlphabetically(node.matchingFiles);
-}
+};

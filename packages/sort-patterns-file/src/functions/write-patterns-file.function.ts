@@ -1,10 +1,10 @@
 import * as fs from 'node:fs';
 
-export async function writePatternsFile(
+export const writePatternsFile = async (
   path: string,
   patterns: string[],
-): Promise<void> {
-  return new Promise((resolve, reject) => {
+): Promise<void> =>
+  new Promise((resolve, reject) => {
     fs.writeFile(
       path,
       `${patterns
@@ -21,4 +21,3 @@ export async function writePatternsFile(
       },
     );
   });
-}
