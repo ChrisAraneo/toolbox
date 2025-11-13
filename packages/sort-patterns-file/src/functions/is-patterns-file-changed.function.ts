@@ -1,15 +1,15 @@
-export function isPatternsFileChanged(a: string[], b: string[]): boolean {
+export const isPatternsFileChanged = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return true;
   }
 
-  let changed = false;
+  let isChanged = false;
 
-  for (let i = 0; i < a.length && !changed; i++) {
+  for (let i = 0; i < a.length && !isChanged; i += 1) {
     if (a[i] !== b[i]) {
-      changed = true;
+      isChanged = true;
     }
   }
 
-  return changed;
-}
+  return isChanged;
+};
