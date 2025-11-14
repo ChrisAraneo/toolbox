@@ -5,7 +5,7 @@ export const isPatternsFileChanged = (a: string[], b: string[]): boolean => {
 
   let isChanged = false;
 
-  for (let i = 0; i < a.length && !isChanged; i += 1) {
+  for (let i = 0; i < a.length && !isChanged; i++) {
     if (a[i] !== b[i]) {
       isChanged = true;
     }
