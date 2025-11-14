@@ -1,4 +1,4 @@
-export function isArrayDiff(a: string[], b: string[]) {
+export const isArrayDiff = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return true;
   }
@@ -12,4 +12,4 @@ export function isArrayDiff(a: string[], b: string[]) {
   }
 
   return isDiff;
-}
+};
