@@ -1,104 +1,107 @@
+
+/* eslint-disable max-lines-per-function */
+/* eslint-disable no-console */
+
 import { lstatSync } from 'node:fs';
 import { normalize } from 'node:path';
 
 import { glob } from 'glob';
+import { isEmpty, isUndefined } from 'lodash';
 import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
+import { performance } from 'just-performance';
 
 import { getParentDirectory } from './get-parent-directory.function';
 
-let nodes: FileSystemNode[] = [];
-
-export async function getRootDirectoryContents(
-  ignoredDirectories: string[],
-  options?: { logTime: boolean },
-) {
-  if (!nodes) {
-    const startTime = performance.now();
-
-    nodes = await getContents(ignoredDirectories);
-
-    const endTime = performance.now();
-
-    if (options?.logTime) {
-      console.log(
-        `Reading contents of directory and all subdirectories (${(endTime - startTime).toPrecision(6)}ms)`,
-      );
-    }
-  }
-
-  return nodes;
+interface FileInfo {
+  path: string;
+  isDirectory: boolean;
+  isFile: boolean;
 }
 
-async function getContents(
-  ignoredDirectories: string[] = [],
-): Promise<FileSystemNode[]> {
-  const contents = await glob('**', {
-    ignore: ignoredDirectories.map((directory) => `${directory}/**`),
-    dot: true,
-    dotRelative: true,
-  });
+interface DirectoryInfo {
+  name: string;
+  files: string[];
+  parentDirectory: string | null;
+}
 
+const LOG_TIME_PRECISION = 6;
+
+let nodes: FileSystemNode[];
+
+const pushIgnoredDirectories = (contents: string[], ignoredDirectories: string[]) => {
   for (const directory of ignoredDirectories) {
     contents.push(directory);
   }
+}
 
-  const infos = contents
-    .map((path) => path.trim())
-    .filter(Boolean)
-    .map((path) => normalize(path))
-    .map((path) => ({
-      path,
-      isDirectory: lstatSync(path).isDirectory(),
-      isFile: lstatSync(path).isFile(),
-    }));
+const createInfos = (paths: string[]): FileInfo[] => paths
+  .map((path) => path.trim())
+  .filter(Boolean)
+  .map((path) => normalize(path))
+  .map((path) => ({
+    path,
+    isDirectory: lstatSync(path).isDirectory(),
+    isFile: lstatSync(path).isFile(),
+  }));
 
+const createDirectoryMap = (infos: FileInfo[]) => {
   const directories: Record<
     string,
     { files: string[]; parentDirectory: string | null }
   > = {};
 
-  for (const item of infos) {
+  infos.forEach((item) => {
     const parentDirectory = getParentDirectory(item.path);
 
-    if (item.isDirectory && !directories[item.path]) {
+    if (item.isDirectory && isEmpty(directories[item.path])) {
       directories[item.path] = {
         parentDirectory,
         files: [],
       };
-    } else if (item.isFile && !directories[parentDirectory]) {
+    } else if (item.isFile && isEmpty(directories[parentDirectory])) {
       directories[parentDirectory] = {
         parentDirectory: getParentDirectory(parentDirectory),
         files: [item.path],
       };
-    } else if (item.isFile && directories[parentDirectory]) {
+    } else if (item.isFile && !isEmpty(directories[parentDirectory])) {
       directories[parentDirectory] = {
         ...directories[parentDirectory],
         files: [...directories[parentDirectory].files, item.path],
       };
     }
-  }
+  });
 
-  const keys = Object.keys(directories);
+  return directories;
+};
+
+const getSortedKeys = (object: object): string[] => {
+  const keys = Object.keys(object);
 
   keys.sort((a, b) => a.localeCompare(b));
 
+  return keys;
+}
+
+const createDirectoryInfos = (directories: Record<string, { files: string[]; parentDirectory: string | null }>): DirectoryInfo[] => {
   const result: {
     name: string;
     parentDirectory: string | null;
     files: string[];
   }[] = [];
 
-  for (const key of keys.filter((key) => key !== '.')) {
+  const keys = getSortedKeys(directories);
+
+  keys.filter((item) => item !== '.').forEach((key) => {
     const item = directories[key];
 
     item.files.sort((a, b) => a.localeCompare(b));
 
     result.push({
       name: key.trim(),
-      parentDirectory: item.parentDirectory?.trim() || null,
+      parentDirectory: item.parentDirectory?.trim() ?? null,
       files: item.files.map((file) => file.trim()),
     });
-  }
+  });
 
   result.push({
     name: '.',
@@ -108,3 +111,44 @@ async function getContents(
 
   return result;
 }
+
+const getContents = async (
+  ignoredDirectories: string[] = [],
+): Promise<FileSystemNode[]> => {
+  const contents = await glob('**', {
+    ignore: ignoredDirectories.map((directory) => `${directory}/**`),
+    dot: true,
+    dotRelative: true,
+  });
+
+  pushIgnoredDirectories(contents, ignoredDirectories);
+
+  const infos = createInfos(contents);
+
+  const directoryMap = createDirectoryMap(infos);
+
+  return createDirectoryInfos(directoryMap);
+};
+
+export const getRootDirectoryContents = async (
+  ignoredDirectories: string[],
+  options?: { logTime: boolean },
+): Promise<FileSystemNode[]> => {
+  if (isUndefined(nodes)) {
+    const startTime = performance.now();
+
+    // eslint-disable-next-line require-atomic-updates
+    nodes = await getContents(ignoredDirectories);
+
+    const endTime = performance.now();
+
+    if (options?.logTime) {
+      console.log(
+        `Reading contents of directory and all subdirectories (${(endTime - startTime).toPrecision(LOG_TIME_PRECISION)}ms)`,
+      );
+    }
+  }
+
+  return nodes;
+};
+
