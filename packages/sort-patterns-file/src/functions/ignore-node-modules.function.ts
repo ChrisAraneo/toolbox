@@ -1,3 +1,2 @@
-export function ignoreNodeModules(patterns: string[]): string[] {
-  return patterns.filter((pattern) => pattern !== 'node_modules');
-}
+export const ignoreNodeModules = (patterns: string[]): string[] =>
+  patterns.filter((pattern) => pattern !== 'node_modules');
