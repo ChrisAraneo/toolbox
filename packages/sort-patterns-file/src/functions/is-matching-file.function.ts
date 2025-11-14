@@ -1,13 +1,13 @@
 import { minimatch } from 'minimatch';
 
-export function isMatchingFile(pattern: string, files: string[]): boolean {
-  let isMatchingFile = false;
+export const isMatchingFile = (pattern: string, files: string[]): boolean => {
+  let isMatching = false;
 
-  for (let i = 0; i < files.length && !isMatchingFile; i++) {
+  for (let i = 0; i < files.length && !isMatching; i++) {
     if (minimatch(files[i], pattern)) {
-      isMatchingFile = true;
+      isMatching = true;
     }
   }
 
-  return isMatchingFile;
-}
+  return isMatching;
+};
