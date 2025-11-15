@@ -5,26 +5,21 @@ import { glob } from 'glob';
 import { performance } from 'just-performance';
 import { isEmpty, isUndefined } from 'lodash';
 import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
+import { FileSystemPathInfo } from 'src/interfaces/file-system-path-info.interface';
 
 import { getParentDirectory } from './get-parent-directory.function';
-
-interface FileInfo {
-  path: string;
-  isDirectory: boolean;
-  isFile: boolean;
-}
 
 const LOG_TIME_PRECISION = 6;
 
 let nodes: FileSystemNode[];
 
-const pushIgnoredDirectories = (contents: string[], ignoredDirectories: string[]) => {
+const appendIgnoredDirectories = (contents: string[], ignoredDirectories: string[]) => {
   for (const directory of ignoredDirectories) {
     contents.push(directory);
   }
 }
 
-const createInfos = (paths: string[]): FileInfo[] => paths
+const createFileSystemPathInfos = (paths: string[]): FileSystemPathInfo[] => paths
   .map((path) => path.trim())
   .filter(Boolean)
   .map((path) => normalize(path))
@@ -34,7 +29,7 @@ const createInfos = (paths: string[]): FileInfo[] => paths
     isFile: lstatSync(path).isFile(),
   }));
 
-const createDirectoryMap = (infos: FileInfo[]) => {
+const createDirectoryMap = (infos: FileSystemPathInfo[]) => {
   const directories: Record<
     string,
     { files: string[]; parentDirectory: string | null }
@@ -111,9 +106,9 @@ const getContents = async (
     dotRelative: true,
   });
 
-  pushIgnoredDirectories(contents, ignoredDirectories);
+  appendIgnoredDirectories(contents, ignoredDirectories);
 
-  const infos = createInfos(contents);
+  const infos = createFileSystemPathInfos(contents);
 
   const directoryMap = createDirectoryMap(infos);
 
