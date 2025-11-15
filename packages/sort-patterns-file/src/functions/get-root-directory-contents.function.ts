@@ -1,14 +1,10 @@
-
-/* eslint-disable max-lines-per-function */
-/* eslint-disable no-console */
-
 import { lstatSync } from 'node:fs';
 import { normalize } from 'node:path';
 
 import { glob } from 'glob';
+import { performance } from 'just-performance';
 import { isEmpty, isUndefined } from 'lodash';
 import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
-import { performance } from 'just-performance';
 
 import { getParentDirectory } from './get-parent-directory.function';
 
@@ -16,12 +12,6 @@ interface FileInfo {
   path: string;
   isDirectory: boolean;
   isFile: boolean;
-}
-
-interface DirectoryInfo {
-  name: string;
-  files: string[];
-  parentDirectory: string | null;
 }
 
 const LOG_TIME_PRECISION = 6;
@@ -82,7 +72,7 @@ const getSortedKeys = (object: object): string[] => {
   return keys;
 }
 
-const createDirectoryInfos = (directories: Record<string, { files: string[]; parentDirectory: string | null }>): DirectoryInfo[] => {
+const createFileSystemNodes = (directories: Record<string, { files: string[]; parentDirectory: string | null }>): FileSystemNode[] => {
   const result: {
     name: string;
     parentDirectory: string | null;
@@ -127,7 +117,7 @@ const getContents = async (
 
   const directoryMap = createDirectoryMap(infos);
 
-  return createDirectoryInfos(directoryMap);
+  return createFileSystemNodes(directoryMap);
 };
 
 export const getRootDirectoryContents = async (
@@ -143,6 +133,7 @@ export const getRootDirectoryContents = async (
     const endTime = performance.now();
 
     if (options?.logTime) {
+      // eslint-disable-next-line no-console
       console.log(
         `Reading contents of directory and all subdirectories (${(endTime - startTime).toPrecision(LOG_TIME_PRECISION)}ms)`,
       );
