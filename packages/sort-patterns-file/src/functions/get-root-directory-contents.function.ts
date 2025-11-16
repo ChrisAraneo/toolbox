@@ -8,12 +8,13 @@ import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
 import { FileSystemPathInfo } from 'src/interfaces/file-system-path-info.interface';
 
 import { getParentDirectory } from './get-parent-directory.function';
+import { getSortedKeys } from './get-sorted-keys.function';
 
 const LOG_TIME_PRECISION = 6;
 
 let nodes: FileSystemNode[];
 
-const appendIgnoredDirectories = (contents: string[], ignoredDirectories: string[]) => {
+const appendIgnoredDirectories = (contents: string[], ignoredDirectories: string[]): void => {
   for (const directory of ignoredDirectories) {
     contents.push(directory);
   }
@@ -29,10 +30,10 @@ const createFileSystemPathInfos = (paths: string[]): FileSystemPathInfo[] => pat
     isFile: lstatSync(path).isFile(),
   }));
 
-const createDirectoryMap = (infos: FileSystemPathInfo[]) => {
+const createFileSystemNodeMap = (infos: FileSystemPathInfo[]) => {
   const directories: Record<
     string,
-    { files: string[]; parentDirectory: string | null }
+    FileSystemNode
   > = {};
 
   infos.forEach((item) => {
@@ -40,11 +41,13 @@ const createDirectoryMap = (infos: FileSystemPathInfo[]) => {
 
     if (item.isDirectory && isEmpty(directories[item.path])) {
       directories[item.path] = {
+        name: item.path.trim(),
         parentDirectory,
         files: [],
       };
     } else if (item.isFile && isEmpty(directories[parentDirectory])) {
       directories[parentDirectory] = {
+        name: parentDirectory.trim(),
         parentDirectory: getParentDirectory(parentDirectory),
         files: [item.path],
       };
@@ -59,20 +62,8 @@ const createDirectoryMap = (infos: FileSystemPathInfo[]) => {
   return directories;
 };
 
-const getSortedKeys = (object: object): string[] => {
-  const keys = Object.keys(object);
-
-  keys.sort((a, b) => a.localeCompare(b));
-
-  return keys;
-}
-
-const createFileSystemNodes = (directories: Record<string, { files: string[]; parentDirectory: string | null }>): FileSystemNode[] => {
-  const result: {
-    name: string;
-    parentDirectory: string | null;
-    files: string[];
-  }[] = [];
+const createOrganizedFileSystemNodeArray = (directories: Record<string, FileSystemNode>): FileSystemNode[] => {
+  const result: FileSystemNode[] = [];
 
   const keys = getSortedKeys(directories);
 
@@ -110,9 +101,9 @@ const getContents = async (
 
   const infos = createFileSystemPathInfos(contents);
 
-  const directoryMap = createDirectoryMap(infos);
+  const directoryMap = createFileSystemNodeMap(infos);
 
-  return createFileSystemNodes(directoryMap);
+  return createOrganizedFileSystemNodeArray(directoryMap);
 };
 
 export const getRootDirectoryContents = async (
