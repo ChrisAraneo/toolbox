@@ -1,8 +1,6 @@
 import { minimatch } from 'minimatch';
 
-export function isMatchingDirectory(
+export const isMatchingDirectory = (
   pattern: string,
   directory: string,
-): boolean {
-  return minimatch(directory, pattern);
-}
+): boolean => minimatch(directory, pattern);
