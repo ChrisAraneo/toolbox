@@ -1,3 +1,12 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable require-atomic-updates */
+/* eslint-disable no-console */
+/* eslint-disable max-statements */
+/* eslint-disable max-lines-per-function */
+
+import { isEmpty } from 'lodash';
+
+import { LOG_TIME_PRECISION } from './consts';
 import { appendNewPatterns } from './functions/append-new-patterns.function';
 import { getRootDirectoryContents } from './functions/get-root-directory-contents.function';
 import { ignoreNodeModules } from './functions/ignore-node-modules.function';
@@ -14,17 +23,17 @@ import { ExtendedFileSystemNode } from './interfaces/extended-file-system-node.i
 import { FileSystemNode } from './interfaces/file-system-node.interface';
 
 let nodes: FileSystemNode[];
-let _ignoredDirectories: string[] = [];
+let ignoredDirectories_: string[] = [];
 
-export async function sortPatternsFile(
+export const sortPatternsFile = async (
   path: string,
   ignoredDirectories: string[] = [],
-): Promise<void> {
-  if (!nodes || isArrayDiff(ignoredDirectories, _ignoredDirectories)) {
+): Promise<void> => {
+  if (isEmpty(nodes) || isArrayDiff(ignoredDirectories, ignoredDirectories_)) {
     nodes = await getRootDirectoryContents(ignoredDirectories, {
       logTime: true,
     });
-    _ignoredDirectories = ignoredDirectories;
+    ignoredDirectories_ = ignoredDirectories;
   }
 
   const startTime = performance.now();
@@ -80,11 +89,11 @@ export async function sortPatternsFile(
     await writePatternsFile(path, organizedPatterns);
 
     console.log(
-      `${path} ${(performance.now() - startTime).toPrecision(6)}ms (changed)`,
+      `${path} ${(performance.now() - startTime).toPrecision(LOG_TIME_PRECISION)}ms (changed)`,
     );
   } else {
     console.log(
-      `\u001B[90m${path} ${(performance.now() - startTime).toPrecision(6)}ms\u001B[0m (unchanged)`,
+      `\u001B[90m${path} ${(performance.now() - startTime).toPrecision(LOG_TIME_PRECISION)}ms\u001B[0m (unchanged)`,
     );
   }
-}
+};

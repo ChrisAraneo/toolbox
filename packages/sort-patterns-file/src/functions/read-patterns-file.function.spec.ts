@@ -27,8 +27,8 @@ describe('readPatternsFile', () => {
 
     try {
       await readPatternsFile('test-patterns.txt');
-    } catch (error) {
-      expect(error).toEqual(error);
+    } catch (error_: unknown) {
+      expect(error_).toEqual(error);
     }
   });
 

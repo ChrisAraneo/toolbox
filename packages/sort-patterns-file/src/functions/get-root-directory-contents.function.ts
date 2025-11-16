@@ -4,13 +4,13 @@ import { normalize } from 'node:path';
 import { glob } from 'glob';
 import { performance } from 'just-performance';
 import { isEmpty, isUndefined } from 'lodash';
+import { LOG_TIME_PRECISION } from 'src/consts';
 import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
 import { FileSystemPathInfo } from 'src/interfaces/file-system-path-info.interface';
 
 import { getParentDirectory } from './get-parent-directory.function';
 import { getSortedKeys } from './get-sorted-keys.function';
 
-const LOG_TIME_PRECISION = 6;
 
 let nodes: FileSystemNode[];
 

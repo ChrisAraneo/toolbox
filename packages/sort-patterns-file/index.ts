@@ -2,13 +2,17 @@
 
 import { sortPatternsFile } from './src/sort-patterns-file.function';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const files: string[] = [];
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const ignoredDirectories: string[] = [];
 
 let isWriteMode = true;
 let isIgnoreMode = false;
 
-process.argv.map(async (value, index) => {
+process.argv.forEach((value, index) => {
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   if (index <= 1) {
     return;
   }
@@ -34,10 +38,13 @@ process.argv.map(async (value, index) => {
   }
 });
 
-files.forEach(async (file) => {
-  try {
-    await sortPatternsFile(file, ignoredDirectories);
-  } catch {
-    console.error(`Error: could not read file ${file}`);
-  }
-});
+void Promise.all(
+  files.map(async (file) => {
+    try {
+      await sortPatternsFile(file, ignoredDirectories);
+    } catch {
+      // eslint-disable-next-line no-console
+      console.error(`Error: could not read file ${file}`);
+    }
+  }),
+);
