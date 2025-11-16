@@ -30,7 +30,7 @@ const createFileSystemPathInfos = (paths: string[]): FileSystemPathInfo[] => pat
     isFile: lstatSync(path).isFile(),
   }));
 
-const createFileSystemNodeMap = (infos: FileSystemPathInfo[]) => {
+const createFileSystemNodeMap = (infos: FileSystemPathInfo[]): Record<string, FileSystemNode> => {
   const directories: Record<
     string,
     FileSystemNode
