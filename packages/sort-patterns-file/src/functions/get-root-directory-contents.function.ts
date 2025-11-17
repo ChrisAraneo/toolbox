@@ -3,7 +3,7 @@ import { normalize } from 'node:path';
 
 import { glob } from 'glob';
 import { performance } from 'just-performance';
-import { isEmpty, isUndefined } from 'lodash';
+import { concat, isEmpty, isUndefined } from 'lodash';
 import { LOG_TIME_PRECISION } from 'src/consts';
 import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
 import { FileSystemPathInfo } from 'src/interfaces/file-system-path-info.interface';
@@ -11,14 +11,7 @@ import { FileSystemPathInfo } from 'src/interfaces/file-system-path-info.interfa
 import { getParentDirectory } from './get-parent-directory.function';
 import { getSortedKeys } from './get-sorted-keys.function';
 
-
 let nodes: FileSystemNode[];
-
-const appendIgnoredDirectories = (contents: string[], ignoredDirectories: string[]): void => {
-  for (const directory of ignoredDirectories) {
-    contents.push(directory);
-  }
-}
 
 const createFileSystemPathInfos = (paths: string[]): FileSystemPathInfo[] => paths
   .map((path) => path.trim())
@@ -97,9 +90,9 @@ const getContents = async (
     dotRelative: true,
   });
 
-  appendIgnoredDirectories(contents, ignoredDirectories);
+  const contentsWithIgnored = concat(contents, ignoredDirectories);
 
-  const infos = createFileSystemPathInfos(contents);
+  const infos = createFileSystemPathInfos(contentsWithIgnored);
 
   const directoryMap = createFileSystemNodeMap(infos);
 
