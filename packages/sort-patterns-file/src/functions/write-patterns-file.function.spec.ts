@@ -1,7 +1,6 @@
-import { writePatternsFile } from './write-patterns-file.function';
+import FS from 'node:fs';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const fs = require('node:fs');
+import { writePatternsFile } from './write-patterns-file.function';
 
 jest.mock('fs', () => ({
   writeFile: jest.fn(),
@@ -13,7 +12,7 @@ describe('writePatternsFile', () => {
   });
 
   it('should resolve when the file is written successfully', async () => {
-    fs.writeFile.mockImplementation(
+    (FS.writeFile as any).mockImplementation(
       (
         _path: unknown,
         _data: unknown,
@@ -31,7 +30,7 @@ describe('writePatternsFile', () => {
   });
 
   it('should reject when there is an error writing the file', async () => {
-    fs.writeFile.mockImplementation(
+    (FS.writeFile as any).mockImplementation(
       (
         _path: unknown,
         _data: unknown,
@@ -49,7 +48,7 @@ describe('writePatternsFile', () => {
       'Write failed',
     );
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(FS.writeFile).toHaveBeenCalledWith(
       path,
       'pattern1\npattern2\npattern3\n',
       'utf8',
@@ -58,7 +57,7 @@ describe('writePatternsFile', () => {
   });
 
   it('should write file with empty line at the end when called with patterns file', async () => {
-    fs.writeFile.mockImplementation(
+    (FS.writeFile as any).mockImplementation(
       (
         _path: unknown,
         _data: unknown,
@@ -73,7 +72,7 @@ describe('writePatternsFile', () => {
       writePatternsFile('test.txt', ['pattern1', 'pattern2', 'pattern3']),
     ).resolves.toBeUndefined();
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(FS.writeFile).toHaveBeenCalledWith(
       'test.txt',
       'pattern1\npattern2\npattern3\n',
       'utf8',
@@ -82,7 +81,7 @@ describe('writePatternsFile', () => {
   });
 
   it('should write file without empty patterns when called with array having empty patterns', async () => {
-    fs.writeFile.mockImplementation(
+    FS.writeFile.mockImplementation(
       (
         _path: unknown,
         _data: unknown,
@@ -104,7 +103,7 @@ describe('writePatternsFile', () => {
       ]),
     ).resolves.toBeUndefined();
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(FS.writeFile).toHaveBeenCalledWith(
       'test.txt',
       'pattern1\npattern2\npattern3\n',
       'utf8',
@@ -113,7 +112,7 @@ describe('writePatternsFile', () => {
   });
 
   it('should write file with trimmed patterns when called with array having patterns with prefix or suffix whitespaces', async () => {
-    fs.writeFile.mockImplementation(
+    FS.writeFile.mockImplementation(
       (
         _path: unknown,
         _data: unknown,
@@ -132,7 +131,7 @@ describe('writePatternsFile', () => {
       ]),
     ).resolves.toBeUndefined();
 
-    expect(fs.writeFile).toHaveBeenCalledWith(
+    expect(FS.writeFile).toHaveBeenCalledWith(
       'test.txt',
       'pattern1\npattern2\npattern3\n',
       'utf8',
