@@ -1,9 +1,7 @@
-import { getParentDirectory } from './get-parent-directory.function';
+import fs from 'node:fs';
+import path from 'node:path';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const fs = require('node:fs');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const path = require('node:path');
+import { getParentDirectory } from './get-parent-directory.function';
 
 jest.mock('fs', () => ({
   lstatSync: jest.fn(),
@@ -20,8 +18,8 @@ describe('getParentDirectory', () => {
   });
 
   it('should return parent directory of file', () => {
-    fs.lstatSync.mockReturnValue({ isFile: () => true });
-    path.dirname.mockReturnValue('/users/test');
+    (fs.lstatSync as any).mockReturnValue({ isFile: () => true });
+    (path.dirname as any).mockReturnValue('/users/test');
 
     const result = getParentDirectory('/users/test/file.txt');
 
@@ -29,8 +27,8 @@ describe('getParentDirectory', () => {
   });
 
   it('should return parent directory of directory', () => {
-    fs.lstatSync.mockReturnValue({ isFile: () => false });
-    path.dirname.mockReturnValue('/users/test/folder');
+    (fs.lstatSync as any).mockReturnValue({ isFile: () => false });
+    (path.dirname as any).mockReturnValue('/users/test/folder');
 
     const result = getParentDirectory('/users/test/folder');
 
@@ -38,8 +36,8 @@ describe('getParentDirectory', () => {
   });
 
   it('should return current directory when path is the root directory', () => {
-    fs.lstatSync.mockReturnValue({ isFile: () => false });
-    path.dirname.mockReturnValue('/');
+    (fs.lstatSync as any).mockReturnValue({ isFile: () => false });
+    (path.dirname as any).mockReturnValue('/');
 
     const result = getParentDirectory('/');
 
@@ -47,8 +45,8 @@ describe('getParentDirectory', () => {
   });
 
   it('should return root directory when dirname is empty', () => {
-    fs.lstatSync.mockReturnValue({ isFile: () => true });
-    path.dirname.mockReturnValue('');
+    (fs.lstatSync as any).mockReturnValue({ isFile: () => true });
+    (path.dirname as any).mockReturnValue('');
 
     const result = getParentDirectory('');
 
