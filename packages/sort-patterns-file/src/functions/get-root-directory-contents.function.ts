@@ -1,5 +1,3 @@
-import { lstatSync } from 'node:fs';
-import { normalize } from 'node:path';
 
 import { glob } from 'glob';
 import { performance } from 'just-performance';
@@ -8,20 +6,11 @@ import { LOG_TIME_PRECISION } from 'src/consts';
 import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
 import { FileSystemPathInfo } from 'src/interfaces/file-system-path-info.interface';
 
+import { createFileSystemPathInfos } from './create-file-system-path-infos.function';
 import { getParentDirectory } from './get-parent-directory.function';
 import { getSortedKeys } from './get-sorted-keys.function';
 
 let nodes: FileSystemNode[];
-
-const createFileSystemPathInfos = (paths: string[]): FileSystemPathInfo[] => paths
-  .map((path) => path.trim())
-  .filter(Boolean)
-  .map((path) => normalize(path))
-  .map((path) => ({
-    path,
-    isDirectory: lstatSync(path).isDirectory(),
-    isFile: lstatSync(path).isFile(),
-  }));
 
 const createFileSystemNodeMap = (infos: FileSystemPathInfo[]): Record<string, FileSystemNode> => {
   const directories: Record<
