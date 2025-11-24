@@ -22,32 +22,45 @@ import { writePatternsFile } from './functions/write-patterns-file.function';
 import { ExtendedFileSystemNode } from './interfaces/extended-file-system-node.interface';
 import { FileSystemNode } from './interfaces/file-system-node.interface';
 
-let nodes: FileSystemNode[];
-let ignoredDirectories_: string[] = [];
+const state = {
+  nodes: [] as FileSystemNode[],
+  ignoredDirectories: [] as string[],
+}
+
+const getTimeDiff = (startTime: number): string => (performance.now() - startTime).toPrecision(LOG_TIME_PRECISION)
+
+const updateState = async (
+  nodes: FileSystemNode[],
+  ignoredDirectories: string[],
+): Promise<void> => {
+  state.nodes = nodes;
+  state.ignoredDirectories = ignoredDirectories;
+}
 
 export const sortPatternsFile = async (
   path: string,
   ignoredDirectories: string[] = [],
 ): Promise<void> => {
-  if (isEmpty(nodes) || isArrayDiff(ignoredDirectories, ignoredDirectories_)) {
-    nodes = await getRootDirectoryContents(ignoredDirectories, {
+  if (isEmpty(state.nodes) || isArrayDiff(state.ignoredDirectories, ignoredDirectories)) {
+    const updatedNodes = await getRootDirectoryContents(ignoredDirectories, {
       logTime: true,
     });
-    ignoredDirectories_ = ignoredDirectories;
+
+    await updateState(updatedNodes, ignoredDirectories);
   }
 
   const startTime = performance.now();
 
   const patterns = await readPatternsFile(path);
 
-  const extendedNodes: ExtendedFileSystemNode[] = nodes.map((node) => ({
+  const extendedNodes: ExtendedFileSystemNode[] = state.nodes.map((node) => ({
     ...node,
     matchingDirectories: [],
     matchingFiles: [],
   }));
 
   for (const pattern of patterns) {
-    for (const [index, node] of nodes.entries()) {
+    for (const [index, node] of state.nodes.entries()) {
       if (isMatchingDirectory(pattern, node.name)) {
         extendedNodes[index].matchingDirectories.push(pattern);
       }
@@ -89,11 +102,11 @@ export const sortPatternsFile = async (
     await writePatternsFile(path, organizedPatterns);
 
     console.log(
-      `${path} ${(performance.now() - startTime).toPrecision(LOG_TIME_PRECISION)}ms (changed)`,
+      `${path} ${getTimeDiff(startTime)}ms (changed)`,
     );
   } else {
     console.log(
-      `\u001B[90m${path} ${(performance.now() - startTime).toPrecision(LOG_TIME_PRECISION)}ms\u001B[0m (unchanged)`,
+      `\u001B[90m${path} ${getTimeDiff(startTime)}ms\u001B[0m (unchanged)`,
     );
   }
 };
