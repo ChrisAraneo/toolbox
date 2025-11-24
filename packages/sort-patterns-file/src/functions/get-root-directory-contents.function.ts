@@ -65,12 +65,10 @@ export const getRootDirectoryContents = async (
     // eslint-disable-next-line require-atomic-updates
     nodes = await getContents(ignoredDirectories);
 
-    const endTime = performance.now();
-
     if (options?.logTime) {
       // eslint-disable-next-line no-console
       console.log(
-        `Reading contents of directory and all subdirectories (${(endTime - startTime).toPrecision(LOG_TIME_PRECISION)}ms)`,
+        `Reading contents of directory and all subdirectories (${(performance.now() - startTime).toPrecision(LOG_TIME_PRECISION)}ms)`,
       );
     }
   }
