@@ -4,13 +4,8 @@ import { FileSystemPathInfo } from "src/interfaces/file-system-path-info.interfa
 
 import { getParentDirectory } from "./get-parent-directory.function";
 
-export const createFileSystemNodeMap = (infos: FileSystemPathInfo[]): Record<string, FileSystemNode> => {
-    const directories: Record<
-        string,
-        FileSystemNode
-    > = {};
-
-    infos.forEach((item) => {
+export const createFileSystemNodeMap = (infos: FileSystemPathInfo[]): Record<string, FileSystemNode> =>
+    infos.reduce<Record<string, FileSystemNode>>((directories, item) => {
         const parentDirectory = getParentDirectory(item.path);
 
         if (item.isDirectory && isEmpty(directories[item.path])) {
@@ -31,7 +26,6 @@ export const createFileSystemNodeMap = (infos: FileSystemPathInfo[]): Record<str
                 files: [...directories[parentDirectory].files, item.path],
             };
         }
-    });
 
-    return directories;
-};
+        return directories;
+    }, {});
