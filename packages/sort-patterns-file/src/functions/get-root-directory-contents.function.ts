@@ -3,7 +3,7 @@ import { glob } from 'glob';
 import { performance } from 'just-performance';
 import { concat, isUndefined } from 'lodash';
 import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
-import { getTimeDiff } from 'src/utils/get-time-diff.function';
+import { getTimeDiff } from './get-time-diff.function';
 
 import { createFileSystemNodeMap } from './create-file-system-node-map.function';
 import { createFileSystemPathInfos } from './create-file-system-path-infos.function';

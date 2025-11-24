@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable require-atomic-updates */
+ 
 /* eslint-disable no-console */
 /* eslint-disable max-statements */
 /* eslint-disable max-lines-per-function */
@@ -8,6 +8,7 @@ import { isEmpty } from 'lodash';
 
 import { appendNewPatterns } from './functions/append-new-patterns.function';
 import { getRootDirectoryContents } from './functions/get-root-directory-contents.function';
+import { getTimeDiff } from './functions/get-time-diff.function';
 import { ignoreNodeModules } from './functions/ignore-node-modules.function';
 import { isArrayDiff } from './functions/is-array-diff.function';
 import { isMatchingDirectory } from './functions/is-matching-directory.function';
@@ -20,7 +21,6 @@ import { sortByMatchingFiles } from './functions/sort-by-matching-files.function
 import { writePatternsFile } from './functions/write-patterns-file.function';
 import { ExtendedFileSystemNode } from './interfaces/extended-file-system-node.interface';
 import { FileSystemNode } from './interfaces/file-system-node.interface';
-import { getTimeDiff } from './utils/get-time-diff.function';
 
 const state = {
   nodes: [] as FileSystemNode[],
