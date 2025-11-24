@@ -1,48 +1,15 @@
 
 import { glob } from 'glob';
 import { performance } from 'just-performance';
-import { concat, isEmpty, isUndefined } from 'lodash';
+import { concat, isUndefined } from 'lodash';
 import { LOG_TIME_PRECISION } from 'src/consts';
 import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
-import { FileSystemPathInfo } from 'src/interfaces/file-system-path-info.interface';
 
+import { createFileSystemNodeMap } from './create-file-system-node-map.function';
 import { createFileSystemPathInfos } from './create-file-system-path-infos.function';
-import { getParentDirectory } from './get-parent-directory.function';
 import { getSortedKeys } from './get-sorted-keys.function';
 
 let nodes: FileSystemNode[];
-
-const createFileSystemNodeMap = (infos: FileSystemPathInfo[]): Record<string, FileSystemNode> => {
-  const directories: Record<
-    string,
-    FileSystemNode
-  > = {};
-
-  infos.forEach((item) => {
-    const parentDirectory = getParentDirectory(item.path);
-
-    if (item.isDirectory && isEmpty(directories[item.path])) {
-      directories[item.path] = {
-        name: item.path.trim(),
-        parentDirectory,
-        files: [],
-      };
-    } else if (item.isFile && isEmpty(directories[parentDirectory])) {
-      directories[parentDirectory] = {
-        name: parentDirectory.trim(),
-        parentDirectory: getParentDirectory(parentDirectory),
-        files: [item.path],
-      };
-    } else if (item.isFile && !isEmpty(directories[parentDirectory])) {
-      directories[parentDirectory] = {
-        ...directories[parentDirectory],
-        files: [...directories[parentDirectory].files, item.path],
-      };
-    }
-  });
-
-  return directories;
-};
 
 const createOrganizedFileSystemNodeArray = (directories: Record<string, FileSystemNode>): FileSystemNode[] => {
   const result: FileSystemNode[] = [];
