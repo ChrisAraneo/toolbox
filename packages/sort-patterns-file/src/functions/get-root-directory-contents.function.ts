@@ -3,11 +3,11 @@ import { glob } from 'glob';
 import { performance } from 'just-performance';
 import { concat, isUndefined } from 'lodash';
 import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
-import { getTimeDiff } from './get-time-diff.function';
 
 import { createFileSystemNodeMap } from './create-file-system-node-map.function';
 import { createFileSystemPathInfos } from './create-file-system-path-infos.function';
 import { getSortedKeys } from './get-sorted-keys.function';
+import { getTimeDiff } from './get-time-diff.function';
 
 let nodes: FileSystemNode[];
 
@@ -42,7 +42,9 @@ const getContents = async (
 ): Promise<FileSystemNode[]> => {
   const contents = await glob('**', {
     ignore: ignoredDirectories.map((directory) => `${directory}/**`),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     dot: true,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     dotRelative: true,
   });
 
@@ -57,7 +59,7 @@ const getContents = async (
 
 export const getRootDirectoryContents = async (
   ignoredDirectories: string[],
-  options?: { logTime: boolean },
+  options?: { willLogTime: boolean },
 ): Promise<FileSystemNode[]> => {
   if (isUndefined(nodes)) {
     const startTime = performance.now();
@@ -65,7 +67,7 @@ export const getRootDirectoryContents = async (
     // eslint-disable-next-line require-atomic-updates
     nodes = await getContents(ignoredDirectories);
 
-    if (options?.logTime) {
+    if (options?.willLogTime) {
       // eslint-disable-next-line no-console
       console.log(
         `Reading contents of directory and all subdirectories (${getTimeDiff(startTime)}ms)`,

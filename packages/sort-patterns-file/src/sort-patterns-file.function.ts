@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
- 
+
 /* eslint-disable no-console */
 /* eslint-disable max-statements */
 /* eslint-disable max-lines-per-function */
@@ -41,7 +41,7 @@ export const sortPatternsFile = async (
 ): Promise<void> => {
   if (isEmpty(state.nodes) || isArrayDiff(state.ignoredDirectories, ignoredDirectories)) {
     const updatedNodes = await getRootDirectoryContents(ignoredDirectories, {
-      logTime: true,
+      willLogTime: true,
     });
 
     await updateState(updatedNodes, ignoredDirectories);
