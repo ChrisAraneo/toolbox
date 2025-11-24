@@ -6,7 +6,6 @@
 
 import { isEmpty } from 'lodash';
 
-import { LOG_TIME_PRECISION } from './consts';
 import { appendNewPatterns } from './functions/append-new-patterns.function';
 import { getRootDirectoryContents } from './functions/get-root-directory-contents.function';
 import { ignoreNodeModules } from './functions/ignore-node-modules.function';
@@ -21,13 +20,12 @@ import { sortByMatchingFiles } from './functions/sort-by-matching-files.function
 import { writePatternsFile } from './functions/write-patterns-file.function';
 import { ExtendedFileSystemNode } from './interfaces/extended-file-system-node.interface';
 import { FileSystemNode } from './interfaces/file-system-node.interface';
+import { getTimeDiff } from './utils/get-time-diff.function';
 
 const state = {
   nodes: [] as FileSystemNode[],
   ignoredDirectories: [] as string[],
 }
-
-const getTimeDiff = (startTime: number): string => (performance.now() - startTime).toPrecision(LOG_TIME_PRECISION)
 
 const updateState = async (
   nodes: FileSystemNode[],
