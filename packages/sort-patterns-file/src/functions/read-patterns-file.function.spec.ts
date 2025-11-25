@@ -9,9 +9,11 @@ jest.mock('fs', () => ({
 describe('readPatternsFile', () => {
   it('should resolve with the correct array of lines from the file', async () => {
     const content = 'pattern1\npattern2\npattern3\r\n';
-    (fs.readFile as unknown as jest.Mock).mockImplementation((_, __, callback) => {
-      callback(null, content);
-    });
+    (fs.readFile as unknown as jest.Mock).mockImplementation(
+      (_, __, callback) => {
+        callback(null, content);
+      },
+    );
 
     const result = await readPatternsFile('test-patterns.txt');
 
@@ -20,8 +22,8 @@ describe('readPatternsFile', () => {
 
   it('should reject with an error if readFile fails', async () => {
     const error = new Error('File not found');
-    (fs.readFile as unknown as jest.Mock).mockImplementation((_, __, callback) =>
-      callback(error, ''),
+    (fs.readFile as unknown as jest.Mock).mockImplementation(
+      (_, __, callback) => callback(error, ''),
     );
 
     try {
@@ -35,8 +37,8 @@ describe('readPatternsFile', () => {
     String.raw`should ignore empty lines and lines with only \r or \n characters`,
     async () => {
       const content = '\n\npattern1\n\npattern2\n\r\n\r\n';
-      (fs.readFile as unknown as jest.Mock).mockImplementation((_, __, callback) =>
-        callback(null, content),
+      (fs.readFile as unknown as jest.Mock).mockImplementation(
+        (_, __, callback) => callback(null, content),
       );
 
       const result = await readPatternsFile('test-patterns.txt');
@@ -47,8 +49,8 @@ describe('readPatternsFile', () => {
 
   it(String.raw`should handle \r and \n characters correctly`, async () => {
     const content = 'pattern1\r\npattern2\npattern3\r';
-    (fs.readFile as unknown as jest.Mock).mockImplementation((_, __, callback) =>
-      callback(null, content),
+    (fs.readFile as unknown as jest.Mock).mockImplementation(
+      (_, __, callback) => callback(null, content),
     );
 
     const result = await readPatternsFile('test-patterns.txt');

@@ -25,7 +25,7 @@ import { FileSystemNode } from './interfaces/file-system-node.interface';
 const state = {
   nodes: [] as FileSystemNode[],
   ignoredDirectories: [] as string[],
-}
+};
 
 const updateState = async (
   nodes: FileSystemNode[],
@@ -33,13 +33,16 @@ const updateState = async (
 ): Promise<void> => {
   state.nodes = nodes;
   state.ignoredDirectories = ignoredDirectories;
-}
+};
 
 export const sortPatternsFile = async (
   path: string,
   ignoredDirectories: string[] = [],
 ): Promise<void> => {
-  if (isEmpty(state.nodes) || isArrayDiff(state.ignoredDirectories, ignoredDirectories)) {
+  if (
+    isEmpty(state.nodes) ||
+    isArrayDiff(state.ignoredDirectories, ignoredDirectories)
+  ) {
     const updatedNodes = await getRootDirectoryContents(ignoredDirectories, {
       willLogTime: true,
     });
@@ -99,9 +102,7 @@ export const sortPatternsFile = async (
   ) {
     await writePatternsFile(path, organizedPatterns);
 
-    console.log(
-      `${path} ${getTimeDiff(startTime)}ms (changed)`,
-    );
+    console.log(`${path} ${getTimeDiff(startTime)}ms (changed)`);
   } else {
     console.log(
       `\u001B[90m${path} ${getTimeDiff(startTime)}ms\u001B[0m (unchanged)`,

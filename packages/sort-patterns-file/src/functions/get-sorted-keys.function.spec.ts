@@ -51,7 +51,8 @@ describe('getSortedKeys', () => {
     const input = {
       'key-3': 'value3',
       'key-1': 'value1',
-      'key_2': 'value2',
+      // eslint-disable-next-line camelcase
+      key_2: 'value2',
     };
 
     const result = getSortedKeys(input);

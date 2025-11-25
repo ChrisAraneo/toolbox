@@ -1,3 +1,7 @@
+.nx/workspace-data
+coverage
+node_modules
+reports
 .nx/cache
 .nx/workspace-data
 .stryker-tmp

@@ -1,4 +1,3 @@
-
 import { glob } from 'glob';
 import { performance } from 'just-performance';
 import { concat, isUndefined } from 'lodash';
@@ -11,22 +10,26 @@ import { getTimeDiff } from './get-time-diff.function';
 
 let nodes: FileSystemNode[];
 
-const createOrganizedFileSystemNodeArray = (directories: Record<string, FileSystemNode>): FileSystemNode[] => {
+const createOrganizedFileSystemNodeArray = (
+  directories: Record<string, FileSystemNode>,
+): FileSystemNode[] => {
   const result: FileSystemNode[] = [];
 
   const keys = getSortedKeys(directories);
 
-  keys.filter((item) => item !== '.').forEach((key) => {
-    const item = directories[key];
+  keys
+    .filter((item) => item !== '.')
+    .forEach((key) => {
+      const item = directories[key];
 
-    item.files.sort((a, b) => a.localeCompare(b));
+      item.files.sort((a, b) => a.localeCompare(b));
 
-    result.push({
-      name: key.trim(),
-      parentDirectory: item.parentDirectory?.trim() ?? null,
-      files: item.files.map((file) => file.trim()),
+      result.push({
+        name: key.trim(),
+        parentDirectory: item.parentDirectory?.trim() ?? null,
+        files: item.files.map((file) => file.trim()),
+      });
     });
-  });
 
   result.push({
     name: '.',
@@ -35,7 +38,7 @@ const createOrganizedFileSystemNodeArray = (directories: Record<string, FileSyst
   });
 
   return result;
-}
+};
 
 const getContents = async (
   ignoredDirectories: string[] = [],
@@ -77,4 +80,3 @@ export const getRootDirectoryContents = async (
 
   return nodes;
 };
-
