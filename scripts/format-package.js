@@ -24,7 +24,7 @@ async function formatPackage(package) {
 
   const sortPackageJsonCommand = `npx sort-package-json@${sortPackageJsonVersion} "./packages/${package}/package.json"`;
   const prettierCommand = `npx prettier@${prettierVersion} --write ${patterns}`;
-  const sortPatternsFileCommand = `npx sort-patterns-file ${PATTERNS_FILES.join(' ')} -i .git node_modules coverage reports`;
+  const sortPatternsFileCommand = `node node_modules/@chris.araneo/sort-patterns-file/dist/index.js -- ${PATTERNS_FILES.join(' ')} -i .git node_modules coverage reports`;
   const command = `${sortPackageJsonCommand} && ${sortPatternsFileCommand} && ${prettierCommand}`;
 
   exec(command, (error, stdout, stderr) => print(error, stdout, stderr));

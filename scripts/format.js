@@ -35,7 +35,7 @@ async function formatAll() {
 
   const prettierCommand = `npx prettier@${prettierVersion} --write ${[...JSON_FILES, ...SOURCE_FILES].map((pattern) => `"${pattern}"`).join(' ')}`;
   const sortPackageJsonCommand = `npx sort-package-json@${sortPackageJsonVersion} "package.json"`;
-  const sortPatternsFileCommand = `npx sort-patterns-file ${PATTERNS_FILES.join(' ')} -i .git node_modules coverage reports`;
+  const sortPatternsFileCommand = `node node_modules/@chris.araneo/sort-patterns-file/dist/index.js -- ${PATTERNS_FILES.join(' ')} -i .git node_modules coverage reports`;
   const command = `${sortPackageJsonCommand} && ${sortPatternsFileCommand} && ${prettierCommand}`;
 
   exec(command, (error, stdout, stderr) => print(error, stdout, stderr));
