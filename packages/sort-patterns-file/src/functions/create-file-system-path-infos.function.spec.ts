@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+
 import fs from 'node:fs';
 import path from 'node:path';
 
