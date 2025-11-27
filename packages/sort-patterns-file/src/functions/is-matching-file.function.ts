@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports, @typescript-eslint/naming-convention
 const { minimatch } = require('minimatch');
 
 export const isMatchingFile = (pattern: string, files: string[]): boolean => {
