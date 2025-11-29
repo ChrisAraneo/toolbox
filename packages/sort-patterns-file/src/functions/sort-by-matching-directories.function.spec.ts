@@ -14,7 +14,11 @@ describe('sortByMatchingDirectories', () => {
 
     sortByMatchingDirectories(node);
 
-    expect(node.matchingDirectories).toEqual(['coverage', 'dist', 'node_modules']);
+    expect(node.matchingDirectories).toEqual([
+      'coverage',
+      'dist',
+      'node_modules',
+    ]);
   });
 
   it('should handle empty matchingDirectories array', () => {
@@ -71,7 +75,11 @@ describe('sortByMatchingDirectories', () => {
 
     sortByMatchingDirectories(node);
 
-    expect(node.matchingDirectories).toEqual(['coverage', 'dist', 'node_modules']);
+    expect(node.matchingDirectories).toEqual([
+      'coverage',
+      'dist',
+      'node_modules',
+    ]);
     expect(node.matchingDirectories).not.toEqual(original);
   });
 
