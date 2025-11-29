@@ -10,7 +10,6 @@ const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
 const JSON_FILES = ['tsconfig.lib.json', 'tsconfig.json', 'package.json'];
 const SOURCE_FILES = ['*.{ts,js,mjs,cjs}', 'src/**/*.ts'];
-const PATTERNS_FILES = ['.gitignore'];
 
 async function formatPackage(package) {
   const prettierVersion = packageJson.devDependencies.prettier;
@@ -24,9 +23,7 @@ async function formatPackage(package) {
 
   const sortPackageJsonCommand = `npx sort-package-json@${sortPackageJsonVersion} "./packages/${package}/package.json"`;
   const prettierCommand = `npx prettier@${prettierVersion} --write ${patterns}`;
-  const buildSortPatternsFileCommand = `cd packages/sort-patterns-file && npm run build && npm i && cd ../../`;
-  const sortPatternsFileCommand = `node node_modules/@chris.araneo/sort-patterns-file/dist/index -- ${PATTERNS_FILES.join(' ')} -i .git node_modules coverage reports`;
-  const command = `${sortPackageJsonCommand} && ${buildSortPatternsFileCommand} && ${sortPatternsFileCommand} && ${prettierCommand}`;
+  const command = `${sortPackageJsonCommand} && ${prettierCommand}`;
 
   exec(command, (error, stdout, stderr) => print(error, stdout, stderr));
 }
