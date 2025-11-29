@@ -9,7 +9,7 @@ const packageJson = require('../package.json');
 const PACKAGES_PATH = normalize(`${__filename}/../../packages/`);
 
 const JSON_FILES = ['tsconfig.lib.json', 'tsconfig.json', 'package.json'];
-const SOURCE_FILES = ['*.{ts,js,mjs,cjs}', 'src/**/*.ts'];
+const SOURCE_FILES = ['*.{ts,js,mjs,cjs}', 'src/**/*.ts', 'test/**/*.ts'];
 
 async function formatPackage(package) {
   const prettierVersion = packageJson.devDependencies.prettier;
