@@ -9,8 +9,7 @@ export const readPatternsFile = async (path: string): Promise<string[]> =>
       } else {
         const parts = data
           .split('\n')
-          .map((part) => part.replaceAll('\r', ''))
-          .map((part) => part.replaceAll('\n', ''))
+          .map((part) => part.replaceAll(/[\n\r]/gu, ''))
           .filter(Boolean);
 
         resolve(parts);
