@@ -3,9 +3,9 @@ import { normalize, sep } from 'node:path';
 
 export const readPatternsFile = async (path: string): Promise<string[]> =>
   new Promise((resolve, reject) => {
-    readFile(normalize(process.cwd() + sep + path), 'utf8', (e, data) => {
-      if (e) {
-        reject(e);
+    readFile(normalize(process.cwd() + sep + path), 'utf8', (error: unknown, data: string) => {
+      if (error) {
+        reject(error as Error);
       } else {
         const parts = data
           .split('\n')
