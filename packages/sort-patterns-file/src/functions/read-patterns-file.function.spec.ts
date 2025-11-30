@@ -1,10 +1,15 @@
 import fs from 'node:fs';
-import { sep } from 'node:path';
+import { normalize, sep } from 'node:path';
 
 import { readPatternsFile } from './read-patterns-file.function';
 
 jest.mock('fs', () => ({
   readFile: jest.fn(),
+}));
+
+jest.mock('node:path', () => ({
+  ...jest.requireActual('node:path'),
+  normalize: jest.fn((path) => path),
 }));
 
 describe('readPatternsFile', () => {
@@ -48,7 +53,7 @@ describe('readPatternsFile', () => {
   it(
     String.raw`should ignore empty lines and lines with only \r or \n characters`,
     async () => {
-      const content = '\n\npattern1\n\npattern2\n\r\n\r\n';
+      const content = '\n\npattern1\n\n\npattern2\n\r\n\r\n';
       (fs.readFile as unknown as jest.Mock).mockImplementation(
         (_, __, callback) => callback(null, content),
       );
@@ -60,7 +65,7 @@ describe('readPatternsFile', () => {
   );
 
   it(String.raw`should handle \r and \n characters correctly`, async () => {
-    const content = 'pattern1\r\npattern2\n\n\n\npattern3\r\n';
+    const content = '\n\n\rpattern1\r\npattern2\n\n\n\npattern3\n\r\n';
     (fs.readFile as unknown as jest.Mock).mockImplementation(
       (_, __, callback) => callback(null, content),
     );
@@ -71,7 +76,7 @@ describe('readPatternsFile', () => {
   });
 
   it('should call readFile with utf8 encoding', async () => {
-    const content = 'pattern1\npattern2\n\npattern3';
+    const content = 'pattern1\npattern2\npattern3';
     (fs.readFile as unknown as jest.Mock).mockImplementation(
       (_, __, callback) => callback(null, content),
     );
@@ -88,8 +93,11 @@ describe('readPatternsFile', () => {
   it('should construct file path using process.cwd() and path separator', async () => {
     const content = 'pattern1\npattern2';
     const mockCwd = String.raw`C:\Users\test\project`;
+    const inputPath = 'patterns.txt';
+    const expectedNormalizeArg = mockCwd + sep + inputPath;
 
     const cwdSpy = jest.spyOn(process, 'cwd').mockReturnValue(mockCwd);
+    (normalize as jest.Mock).mockImplementation((path) => path);
     (fs.readFile as unknown as jest.Mock).mockImplementation(
       (path, _, callback) => {
         expect(path).toContain(mockCwd);
@@ -99,8 +107,9 @@ describe('readPatternsFile', () => {
       },
     );
 
-    await readPatternsFile('patterns.txt');
+    await readPatternsFile(inputPath);
 
+    expect(normalize).toHaveBeenCalledWith(expectedNormalizeArg);
     expect(fs.readFile).toHaveBeenCalled();
     cwdSpy.mockRestore();
   });
