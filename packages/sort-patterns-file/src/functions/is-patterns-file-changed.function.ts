@@ -1,15 +1,11 @@
+import { isUndefined } from 'lodash';
+
 export const isPatternsFileChanged = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return true;
   }
 
-  let isChanged = false;
-
-  for (let i = 0; i < a.length && !isChanged; i++) {
-    if (a[i] !== b[i]) {
-      isChanged = true;
-    }
-  }
-
-  return isChanged;
+  return !isUndefined(
+    a.find((value, index) => value !== b[index]),
+  );
 };
