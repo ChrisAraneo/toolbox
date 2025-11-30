@@ -10,13 +10,18 @@ describe('isPatternsFileChanged', () => {
 
     expect(isPatternsFileChanged(a, b)).toBe(true);
 
-    a = [];
-    b = ['apple'];
+    a = ['apple'];
+    b = ['apple', 'banana'];
 
     expect(isPatternsFileChanged(a, b)).toBe(true);
 
     a = ['banana'];
     b = [];
+
+    expect(isPatternsFileChanged(a, b)).toBe(true);
+
+    a = [];
+    b = ['cherry'];
 
     expect(isPatternsFileChanged(a, b)).toBe(true);
   });
@@ -41,6 +46,11 @@ describe('isPatternsFileChanged', () => {
 
     a = ['apple', 'banana'];
     b = ['apple', 'orange'];
+
+    expect(isPatternsFileChanged(a, b)).toBe(true);
+
+    a = ['apple', 'banana', 'cherry', 'date', 'elderberry'];
+    b = ['apple', 'orange', 'cherry', 'date', 'elderberry'];
 
     expect(isPatternsFileChanged(a, b)).toBe(true);
   });
