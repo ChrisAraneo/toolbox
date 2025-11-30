@@ -16,16 +16,20 @@ export const createFileSystemNodeMap = (
         parentDirectory,
         files: [],
       };
-    } else if (item.isFile && isEmpty(directories[parentDirectory])) {
+    } else if (item.isFile) {
+      const isParentDirectoryEmpty = isEmpty(directories[parentDirectory]);
+      const previousFileSystemNode = isParentDirectoryEmpty
+        ? {}
+        : directories[parentDirectory];
+      const previousFiles = isParentDirectoryEmpty
+        ? []
+        : directories[parentDirectory].files;
+
       directories[parentDirectory] = {
+        ...previousFileSystemNode,
         name: parentDirectory,
         parentDirectory: getParentDirectory(parentDirectory),
-        files: [item.path],
-      };
-    } else if (item.isFile && !isEmpty(directories[parentDirectory])) {
-      directories[parentDirectory] = {
-        ...directories[parentDirectory],
-        files: [...directories[parentDirectory].files, item.path],
+        files: [...previousFiles, item.path],
       };
     }
 
