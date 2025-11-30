@@ -52,4 +52,14 @@ describe('getParentDirectory', () => {
 
     expect(result).toBe('.');
   });
+
+  it('should trim whitespace from parent directory path', () => {
+    (fs.lstatSync as any).mockReturnValue({ isFile: () => false });
+    (path.dirname as any).mockReturnValue('     /users/test/folder  ');
+
+    const result = getParentDirectory('/users/test/folder');
+
+    expect(result).toBe('/users/test');
+    expect(result).not.toContain(' ');
+  });
 });
