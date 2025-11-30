@@ -18,7 +18,7 @@ export const createFileSystemNodeMap = (
       };
     } else if (item.isFile && isEmpty(directories[parentDirectory])) {
       directories[parentDirectory] = {
-        name: parentDirectory.trim(),
+        name: parentDirectory,
         parentDirectory: getParentDirectory(parentDirectory),
         files: [item.path],
       };
