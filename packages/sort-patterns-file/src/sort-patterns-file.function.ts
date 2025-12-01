@@ -44,7 +44,8 @@ export const sortPatternsFile = async (
     isArrayDiff(state.ignoredDirectories, ignoredDirectories)
   ) {
     const updatedNodes = await getRootDirectoryContents(ignoredDirectories, {
-      willLogTime: true,
+      withTimeLogging: true,
+      withCache: true,
     });
 
     await updateState(updatedNodes, ignoredDirectories);
