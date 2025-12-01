@@ -5,7 +5,5 @@ export const isArrayDiff = (a: string[], b: string[]): boolean => {
     return true;
   }
 
-  return !isUndefined(
-    a.find((value, index) => value !== b[index]),
-  );
+  return !isUndefined(a.find((value, index) => value !== b[index]));
 };
