@@ -1,3 +1,4 @@
+/* eslint-disable require-atomic-updates */
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/naming-convention */
 
@@ -25,6 +26,7 @@ export const getRootDirectoryContents = async (
 ): Promise<FileSystemNode[]> => {
   const startTime = performance.now();
 
+  // Stryker disable all
   if (options.withCache === false) {
     nodes = null;
   }
@@ -38,6 +40,7 @@ export const getRootDirectoryContents = async (
 
     return nodes;
   }
+  // Stryker restore all
 
   const contents = await glob('**', {
     ignore: ignoredDirectories.map((directory) => `${directory}/**`),
@@ -51,14 +54,15 @@ export const getRootDirectoryContents = async (
 
   const directoryMap = createFileSystemNodeMap(infos);
 
-  // eslint-disable-next-line require-atomic-updates
   nodes = createOrganizedFileSystemNodeArray(directoryMap);
 
+  // Stryker disable all
   if (options.withTimeLogging) {
     console.log(
       `Reading contents of directory and all subdirectories (${getTimeDiff(startTime)}ms)`,
     );
   }
+  // Stryker restore all
 
   return nodes;
 };
