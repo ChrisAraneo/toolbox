@@ -6,9 +6,9 @@ export const readPatternsFile = async (path: string): Promise<string[]> =>
     readFile(
       normalize(process.cwd() + sep + path),
       'utf8',
-      (error: unknown, data: string) => {
+      (error, data: string) => {
         if (error) {
-          reject(error as Error);
+          reject(error);
         } else {
           const parts = data
             .split('\n')
