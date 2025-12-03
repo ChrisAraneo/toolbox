@@ -1,3 +1,5 @@
+// Stryker disable all
+
 /* eslint-disable @typescript-eslint/naming-convention */
 
 /* eslint-disable no-console */
