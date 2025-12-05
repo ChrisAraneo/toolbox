@@ -71,6 +71,6 @@ export abstract class File<T> {
   }
 
   private setHashValue(content: T): void {
-    this.hashValue = md5(content?.toString() || '');
+    this.hashValue = md5(content?.toString() ?? '');
   }
 }

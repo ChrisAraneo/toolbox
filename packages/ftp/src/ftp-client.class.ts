@@ -25,11 +25,11 @@ export class FtpClient {
               .then(() => {
                 resolve();
               })
-              .catch((error: unknown) => {
+              .catch((error: Error) => {
                 reject(error);
               });
           })
-          .catch((error: unknown) => {
+          .catch((error: Error) => {
             reject(error);
           });
       }),

@@ -1,3 +1,4 @@
+import { noop } from 'lodash';
 import { forkJoin, map, Observable } from 'rxjs';
 
 import { File } from '../file/file.class';
@@ -28,8 +29,6 @@ export abstract class FileWriter<T extends File<string>> {
   }
 
   writeFiles(files: T[]): Observable<void> {
-    return forkJoin(files.map((file) => this.writeFile(file))).pipe(
-      map(() => {}),
-    );
+    return forkJoin(files.map((file) => this.writeFile(file))).pipe(map(noop));
   }
 }

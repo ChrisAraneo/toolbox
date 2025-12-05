@@ -48,7 +48,7 @@ export class FileSystemMock extends FileSystem {
 
   override mkdirSync(
     path: PathLike,
-    options?: MakeDirectoryOptions & {
+    _options?: MakeDirectoryOptions & {
       recursive: true;
     },
     callback?: (err: NodeJS.ErrnoException | null, path?: string) => void,
