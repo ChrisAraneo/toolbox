@@ -13,6 +13,7 @@ export default [
       'package-lock.json',
       'package.json',
       'packages/**/package.json',
+      'packages/**/*.mock.class.ts',
       'packages/**/dist/',
       'packages/**/node_modules/',
       'eslint.config.mjs',
