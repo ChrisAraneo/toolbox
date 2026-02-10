@@ -4,7 +4,6 @@
 const { normalize } = require('node:path');
 const { exec } = require('node:child_process');
 const { readdir } = require('node:fs/promises');
-const { formatPackage } = require('./format-package');
 const { print } = require('./print');
 const packageJson = require('../package.json');
 
@@ -42,8 +41,8 @@ async function formatAll() {
 
   exec(command, (error, stdout, stderr) => print(error, stdout, stderr));
 
-  (await getDirectories(PACKAGES_PATH)).map((directory) =>
-    formatPackage(directory),
+  exec('npx nx run-many -t format', (error, stdout, stderr) =>
+    print(error, stdout, stderr),
   );
 }
 
@@ -59,7 +58,12 @@ async function main() {
   if (!packages.length) {
     formatAll();
   } else {
-    packages.forEach((package) => formatPackage(package));
+    packages.forEach((pkg) =>
+      exec(
+        `npx nx run @chris.araneo/${pkg}:format`,
+        (error, stdout, stderr) => print(error, stdout, stderr),
+      ),
+    );
   }
 }
 

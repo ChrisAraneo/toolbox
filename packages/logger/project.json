@@ -5,7 +5,12 @@
     "chores": {},
     "format": {
       "options": {
-        "command": "node scripts/format-package logger"
+        "commands": [
+          "npx sort-package-json package.json",
+          "npx prettier --write tsconfig.lib.json tsconfig.json package.json project.json \"*.{ts,js,mjs,cjs}\" \"src/**/*.ts\""
+        ],
+        "cwd": "{projectRoot}",
+        "parallel": false
       }
     },
     "lint": {},
