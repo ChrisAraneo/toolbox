@@ -47,7 +47,7 @@ describe('TextFileWriter', () => {
 
     await lastValueFrom(writer.writeFiles(files));
 
-    const calls = jest.mocked(fileSystem.writeFile).mock.calls;
+    const { calls } = jest.mocked(fileSystem.writeFile).mock;
     expect(calls.length).toBe(3);
   });
 

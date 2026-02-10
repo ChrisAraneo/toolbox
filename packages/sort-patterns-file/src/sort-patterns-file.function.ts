@@ -1,11 +1,5 @@
 // Stryker disable all
 
-/* eslint-disable @typescript-eslint/naming-convention */
-
-/* eslint-disable no-console */
-/* eslint-disable max-statements */
-/* eslint-disable max-lines-per-function */
-
 import { isEmpty } from 'lodash';
 
 import { appendNewPatterns } from './functions/append-new-patterns.function';

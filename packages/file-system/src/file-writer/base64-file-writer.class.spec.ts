@@ -42,7 +42,7 @@ describe('Base64FileWriter', () => {
 
     await firstValueFrom(writer.writeFiles(files));
 
-    const calls = jest.mocked(fileSystem.writeFile).mock.calls;
+    const { calls } = jest.mocked(fileSystem.writeFile).mock;
     expect(calls.length).toBe(3);
   });
 });

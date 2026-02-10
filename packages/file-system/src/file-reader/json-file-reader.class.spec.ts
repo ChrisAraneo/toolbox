@@ -40,7 +40,7 @@ describe('JsonFileReader', () => {
       reader.readFiles(['test.json', 'test2.json', 'test3.json']),
     );
 
-    const calls = jest.mocked(fileSystem.readFile).mock.calls;
+    const { calls } = jest.mocked(fileSystem.readFile).mock;
     expect(calls.length).toBe(3);
     for (const value of result) {
       expect(value).toBeInstanceOf(JsonFile);

@@ -31,7 +31,7 @@ describe('Base64FileReader', () => {
       reader.readFiles(['test.txt', 'test2.txt', 'test3.txt']),
     );
 
-    const calls = jest.mocked(fileSystem.readFile).mock.calls;
+    const { calls } = jest.mocked(fileSystem.readFile).mock;
     expect(calls.length).toBe(3);
   });
 

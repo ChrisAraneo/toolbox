@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-namespace */
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 import { Node, SourceFile } from 'ts-morph';
 
 export function extendExpectWithToEqualSource(): void {

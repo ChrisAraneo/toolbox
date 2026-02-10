@@ -68,7 +68,7 @@ describe('FileFinder', () => {
       fileFinder.findFiles('test.json', ['D:\\', 'E:\\', 'F:\\'], fileSystem),
     );
 
-    const calls = jest.mocked(fileSystem.findFile).mock.calls;
+    const { calls } = jest.mocked(fileSystem.findFile).mock;
     expect(calls.length).toBe(3);
   });
 

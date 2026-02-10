@@ -1,7 +1,3 @@
-/* eslint-disable require-atomic-updates */
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { glob } from 'glob';
 import { performance } from 'just-performance';
 import { concat, isNull } from 'lodash';
