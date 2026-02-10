@@ -1,6 +1,6 @@
-import { createUnitTestData } from "../../utils/create-unit-test-data.function";
+import { createUnitTestData } from '../../utils/create-unit-test-data.function';
 
-const code =  `
+const code = `
 @NgModule({
   declarations: [],
   imports: [],
@@ -16,6 +16,6 @@ export class FirstModule {}
   exports: []
 })
 export class SecondModule {}
-`
+`;
 
 export const MULTIPLE_MODULES = createUnitTestData(code, code);

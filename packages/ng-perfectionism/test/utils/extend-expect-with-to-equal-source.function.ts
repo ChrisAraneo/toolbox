@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
-import { Node,SourceFile } from 'ts-morph';
+import { Node, SourceFile } from 'ts-morph';
 
 export function extendExpectWithToEqualSource(): void {
   expect.extend({
@@ -40,9 +40,15 @@ function areSourcesEqual(
     const leaf1 = leafNodes1.next();
     const leaf2 = leafNodes2.next();
 
-    if (leaf1.done && leaf2.done) {return true;}
-    if (leaf1.done || leaf2.done) {return false;}
-    if (leaf1.value.getText() !== leaf2.value.getText()) {return false;}
+    if (leaf1.done && leaf2.done) {
+      return true;
+    }
+    if (leaf1.done || leaf2.done) {
+      return false;
+    }
+    if (leaf1.value.getText() !== leaf2.value.getText()) {
+      return false;
+    }
   }
 
   function* getLeafNodes(sourceFile: SourceFile): Generator<any, void> {
@@ -50,16 +56,19 @@ function areSourcesEqual(
 
     function* searchNode(node: Node): any {
       const children = node.getChildren();
-      if (children.length === 0) {yield node;}
-      else {
-        for (const child of children) {yield* searchNode(child);}
+      if (children.length === 0) {
+        yield node;
+      } else {
+        for (const child of children) {
+          yield* searchNode(child);
+        }
       }
     }
   }
 }
 
 interface CustomMatchers<R = unknown> {
-  toEqualSource: (todo?: Partial<SourceFile>  ) => R;
+  toEqualSource: (todo?: Partial<SourceFile>) => R;
 }
 
 declare global {

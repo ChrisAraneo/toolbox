@@ -1,23 +1,35 @@
-import createConfigs from '@chris.araneo/eslint-config';
+import { configBuilder } from '@chris.araneo/eslint-config';
 
-export default [
-  ...createConfigs({
-    jsons: ['**/*.json'],
-    sources: ['**/!(*.spec).{ts,js,mjs}'],
-    tests: ['**/*.spec.ts'],
-    ignored: [
-      'node_modules/',
-      'dist/',
-      'scripts/',
-      'coverage/',
-      'package-lock.json',
-      'package.json',
-      'packages/**/package.json',
-      'packages/**/*.mock.class.ts',
-      'packages/**/dist/',
-      'packages/**/node_modules/',
-      'eslint.config.mjs',
-    ],
-    tsconfigRootDir: import.meta.dirname,
-  }),
+const SOURCES = ['**/!(*.spec).{ts,js,mjs}'];
+const TESTS = ['**/*.spec.{ts,js,mjs}'];
+const JSONS = ['**/*.json'];
+const IGNORED = [
+  'node_modules/',
+  'dist/',
+  'scripts/',
+  'coverage/',
+  'package-lock.json',
+  'package.json',
+  'packages/**/package.json',
+  'packages/**/*.mock.class.ts',
+  'packages/**/dist/',
+  'packages/**/node_modules/',
+  'eslint.config.mjs',
 ];
+
+export default configBuilder()
+  .addTypeScriptConfig({
+    sources: SOURCES,
+    tsconfigRootDir: import.meta.dirname,
+  })
+  .addTypeScriptTestsConfig({
+    sources: TESTS,
+    tsconfigRootDir: import.meta.dirname,
+  })
+  .addJsonConfig({
+    jsons: JSONS,
+  })
+  .addIgnored({
+    ignored: IGNORED,
+  })
+  .build();

@@ -1,6 +1,6 @@
-import { createUnitTestData } from "../../utils/create-unit-test-data.function";
+import { createUnitTestData } from '../../utils/create-unit-test-data.function';
 
-const code =  `
+const code = `
 @Component({
   imports: [SomeModule],
   selector: 'app-one',
@@ -18,6 +18,6 @@ export class FirstComponent { }
   templateUrl: './two.component.html',
 })
 export class SecondComponent { }
-`
+`;
 
 export const MULTIPLE_COMPONENTS = createUnitTestData(code, code);

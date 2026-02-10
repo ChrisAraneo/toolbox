@@ -40,7 +40,7 @@ describe('NgPerfectionism', () => {
 
       await expect(
         ngPerfectionism.organizeMetadataObject(input),
-      ).rejects.toThrow("File has no class with supported decorators");
+      ).rejects.toThrow('File has no class with supported decorators');
     });
 
     it('should throw error when all classes in file does not have decorator', async () => {
@@ -48,7 +48,7 @@ describe('NgPerfectionism', () => {
 
       await expect(
         ngPerfectionism.organizeMetadataObject(input),
-      ).rejects.toThrow("File has no class with supported decorators");
+      ).rejects.toThrow('File has no class with supported decorators');
     });
 
     it('should sort properties of the component metadata object in opinionated way', async () => {

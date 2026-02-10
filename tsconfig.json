@@ -26,6 +26,9 @@
     },
     {
       "path": "./packages/sort-patterns-file"
+    },
+    {
+      "path": "./packages/find"
     }
   ]
 }
