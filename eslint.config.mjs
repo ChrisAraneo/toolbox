@@ -8,6 +8,8 @@ const IGNORED = [
   'dist/',
   'scripts/',
   'coverage/',
+  '.nx/',
+  'strykerTmp/',
   'package-lock.json',
   'package.json',
   'packages/**/package.json',
