@@ -1,0 +1,32 @@
+{
+  "name": "@chris.araneo/find",
+  "targets": {
+    "build": {},
+    "chores": {},
+    "format": {
+      "options": {
+        "command": "node scripts/format-package find"
+      }
+    },
+    "lint": {
+      "options": {
+        "command": "eslint .",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "lint:fix": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "eslint . --fix",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --experimental-vm-modules node_modules/jest/bin/jest.js ./packages/find --collectCoverage=false"
+      }
+    },
+    "typecheck": {}
+  }
+}

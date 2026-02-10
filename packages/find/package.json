@@ -10,14 +10,5 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist/**"
-  ],
-  "scripts": {
-    "build": "tsc --build tsconfig.lib.json",
-    "chores": "npm run lint && npm run format",
-    "format": "cd ../../ && node scripts/format-package find",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "test": "cd ../../ && npm run test -- ./packages/find --collectCoverage=false",
-    "typecheck": "tsc"
-  }
+  ]
 }

@@ -1,0 +1,20 @@
+{
+  "name": "@chris.araneo/health-check",
+  "targets": {
+    "build": {},
+    "chores": {},
+    "format": {
+      "options": {
+        "command": "node scripts/format-package health-check"
+      }
+    },
+    "lint": {},
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --experimental-vm-modules node_modules/jest/bin/jest.js ./packages/health-check --collectCoverage=false"
+      }
+    },
+    "typecheck": {}
+  }
+}

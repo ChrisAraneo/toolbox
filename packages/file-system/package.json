@@ -11,14 +11,6 @@
   "files": [
     "dist/**"
   ],
-  "scripts": {
-    "build": "tsc --build tsconfig.lib.json",
-    "chores": "npm run lint && npm run format",
-    "format": "cd ../../ && node scripts/format-package file-system",
-    "lint": "eslint . --fix",
-    "test": "cd ../../ && npm run test -- ./packages/file-system --collectCoverage=false",
-    "typecheck": "tsc"
-  },
   "dependencies": {
     "app-root-path": "^3.1.0",
     "find": "^0.3.0",

@@ -1,0 +1,20 @@
+{
+  "name": "@chris.araneo/ftp",
+  "targets": {
+    "build": {},
+    "chores": {},
+    "format": {
+      "options": {
+        "command": "node scripts/format-package ftp"
+      }
+    },
+    "lint": {},
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --experimental-vm-modules node_modules/jest/bin/jest.js ./packages/ftp --collectCoverage=false"
+      }
+    },
+    "typecheck": {}
+  }
+}

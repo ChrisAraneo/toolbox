@@ -1,0 +1,20 @@
+{
+  "name": "@chris.araneo/file-system",
+  "targets": {
+    "build": {},
+    "chores": {},
+    "format": {
+      "options": {
+        "command": "node scripts/format-package file-system"
+      }
+    },
+    "lint": {},
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node --experimental-vm-modules node_modules/jest/bin/jest.js ./packages/file-system --collectCoverage=false"
+      }
+    },
+    "typecheck": {}
+  }
+}

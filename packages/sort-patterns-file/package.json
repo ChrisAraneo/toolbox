@@ -14,14 +14,6 @@
   "files": [
     "dist/**"
   ],
-  "scripts": {
-    "build": "tsc --build tsconfig.lib.json",
-    "chores": "npm run lint && npm run format",
-    "format": "cd ../../ && node scripts/format-package sort-patterns-file",
-    "lint": "eslint . --fix",
-    "test": "cd ../../ && npm run test -- ./packages/sort-patterns-file --collectCoverage=false",
-    "typecheck": "tsc"
-  },
   "dependencies": {
     "glob": "^11.0.3",
     "just-performance": "^4.4.0",
