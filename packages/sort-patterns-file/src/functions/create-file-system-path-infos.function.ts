@@ -10,8 +10,22 @@ export const createFileSystemPathInfos = (
     .map((path) => path.trim())
     .filter(Boolean)
     .map((path) => normalize(path))
-    .map((path) => ({
-      path,
-      isDirectory: lstatSync(path).isDirectory(),
-      isFile: lstatSync(path).isFile(),
-    }));
+    .map((path) => {
+      let isFile: boolean;
+      let isDirectory: boolean;
+
+      try {
+        isFile = lstatSync(path).isFile();
+        isDirectory = lstatSync(path).isDirectory();
+      } catch (error: unknown) {
+        // If there is error, we skip the path.
+        isFile = false;
+        isDirectory = false;
+      }
+
+      return {
+        path,
+        isDirectory: isDirectory,
+        isFile: isFile,
+      };
+    });

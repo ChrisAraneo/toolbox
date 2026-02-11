@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { readGitignore } from './src/functions/read-gitignore.function';
 import { sortPatternsFile } from './src/sort-patterns-file.function';
 
 const files: string[] = [];
@@ -35,12 +36,16 @@ process.argv.forEach((value, index) => {
   }
 });
 
-void Promise.all(
-  files.map(async (file) => {
-    try {
-      await sortPatternsFile(file, ignoredDirectories);
-    } catch {
-      console.error(`Error: could not read file ${file}`);
-    }
-  }),
-);
+void (async () => {
+  ignoredDirectories.push(...(await readGitignore()));
+
+  await Promise.all(
+    files.map(async (file) => {
+      try {
+        await sortPatternsFile(file, ignoredDirectories);
+      } catch (error: unknown) {
+        console.error(`Error: could not process file ${file}`, error);
+      }
+    }),
+  );
+})();

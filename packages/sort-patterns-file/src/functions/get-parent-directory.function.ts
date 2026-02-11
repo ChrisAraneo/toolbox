@@ -2,7 +2,16 @@ import { lstatSync } from 'node:fs';
 import { dirname, sep } from 'node:path';
 
 export const getParentDirectory = (path: string): string => {
-  if (lstatSync(path).isFile()) {
+  let isFile: boolean;
+
+  try {
+    isFile = lstatSync(path).isFile();
+  } catch (error: unknown) {
+    // If there is error, we skip the path.
+    isFile = false;
+  }
+
+  if (isFile) {
     return dirname(path) || '.';
   }
 
