@@ -13,10 +13,15 @@
       }
     },
     "format": {
+      "dependsOn": ["@chris.araneo/sort-patterns-file:build"],
       "description": "Format code with sort-package-json and prettier",
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["npx sort-package-json", "npx prettier --write ."],
+        "commands": [
+          "node packages/sort-patterns-file/dist/index.js .gitignore",
+          "npx sort-package-json",
+          "npx prettier --write ."
+        ],
         "parallel": false
       }
     },
