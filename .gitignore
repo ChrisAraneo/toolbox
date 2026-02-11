@@ -1,13 +1,8 @@
-.nx/workspace-data
-coverage
-node_modules
-reports
-.nx/cache
-.nx/workspace-data
-.stryker-tmp
-build
+.nx
 coverage
 dist
+.stryker-tmp
+build
 node_modules
 out
 reports
