@@ -7,13 +7,6 @@
   "workspaces": [
     "packages/*"
   ],
-  "scripts": {
-    "chores": "npm run lint && npm run format",
-    "format": "npx sort-package-json && prettier --write .",
-    "lint": "eslint . --fix",
-    "stryker": "npx rimraf strykerTmp && npx stryker run",
-    "test": "npx rimraf strykerTmp && node --experimental-vm-modules node_modules/jest/bin/jest.js"
-  },
   "devDependencies": {
     "@chris.araneo/eslint-config": "0.0.111",
     "@nx/jest": "^22.0.2",

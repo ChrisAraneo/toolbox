@@ -1,0 +1,50 @@
+{
+  "$schema": "node_modules/nx/schemas/project-schema.json",
+  "name": "root",
+  "projectType": "library",
+  "sourceRoot": ".",
+  "targets": {
+    "chores": {
+      "description": "Run linting and formatting tasks",
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx run root:lint", "nx run root:format"],
+        "parallel": false
+      }
+    },
+    "format": {
+      "description": "Format code with sort-package-json and prettier",
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npx sort-package-json", "npx prettier --write ."],
+        "parallel": false
+      }
+    },
+    "lint": {
+      "description": "Lint code with ESLint",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx eslint . --fix"
+      }
+    },
+    "stryker": {
+      "description": "Run mutation testing with Stryker",
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npx rimraf strykerTmp", "npx stryker run"],
+        "parallel": false
+      }
+    },
+    "test": {
+      "description": "Run all tests with Jest",
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "npx rimraf strykerTmp",
+          "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+        ],
+        "parallel": false
+      }
+    }
+  }
+}
