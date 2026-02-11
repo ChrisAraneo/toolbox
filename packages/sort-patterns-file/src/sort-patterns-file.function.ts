@@ -81,9 +81,9 @@ export const sortPatternsFile = async (
     appendNewPatterns(organizedPatterns, node.matchingFiles);
   }
 
-  const nonMatchingPatterns: string[] = [];
-
-  appendNewPatterns(nonMatchingPatterns, patterns);
+  const nonMatchingPatterns = patterns.filter(
+    (pattern) => Boolean(pattern) && !organizedPatterns.includes(pattern),
+  );
 
   sortArrayAlphabetically(nonMatchingPatterns);
 
