@@ -13,6 +13,16 @@ jest.mock('node:path', () => ({
 }));
 
 describe('readGitignore', () => {
+  let consoleSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+  });
+
+  afterEach(() => {
+    consoleSpy.mockRestore();
+  });
+
   it('should resolve with entries from .gitignore', async () => {
     const content = 'node_modules\ndist\ncoverage\n';
     (fs.readFile as unknown as jest.Mock).mockImplementation(
@@ -24,6 +34,9 @@ describe('readGitignore', () => {
     const result = await readGitignore();
 
     expect(result).toEqual(['node_modules', 'dist', 'coverage']);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Ignoring 3 entries from .gitignore',
+    );
   });
 
   it('should resolve with an empty array if .gitignore does not exist', async () => {
@@ -37,6 +50,21 @@ describe('readGitignore', () => {
     const result = await readGitignore();
 
     expect(result).toEqual([]);
+    expect(consoleSpy).not.toHaveBeenCalled();
+  });
+
+  it('should resolve with an empty array when error is truthy and not process data', async () => {
+    const error = new Error('Permission denied');
+    (fs.readFile as unknown as jest.Mock).mockImplementation(
+      (_, __, callback) => {
+        callback(error, 'node_modules\ndist\n');
+      },
+    );
+
+    const result = await readGitignore();
+
+    expect(result).toEqual([]);
+    expect(consoleSpy).not.toHaveBeenCalled();
   });
 
   it('should filter out comment lines starting with #', async () => {
@@ -137,6 +165,9 @@ describe('readGitignore', () => {
     const result = await readGitignore();
 
     expect(result).toEqual([]);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Ignoring 0 entries from .gitignore',
+    );
   });
 
   it('should handle a .gitignore with only comments and empty lines', async () => {
@@ -150,5 +181,8 @@ describe('readGitignore', () => {
     const result = await readGitignore();
 
     expect(result).toEqual([]);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Ignoring 0 entries from .gitignore',
+    );
   });
 });
