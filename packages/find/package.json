@@ -10,5 +10,8 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist/**"
-  ]
+  ],
+  "dependencies": {
+    "glob": "^11.1.0"
+  }
 }
