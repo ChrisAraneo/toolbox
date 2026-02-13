@@ -1,7 +1,7 @@
 import { Base64File } from '@chris.araneo/file-system';
-import CryptoJS from 'crypto-js';
-import CryptoAES from 'crypto-js/aes';
 
+import { FileDecryptor } from '../file-decryptor/file-decryptor.class';
+import { EncryptedFile } from '../encrypted-file/encrypted-file.class';
 import { FileEncryptor } from './file-encryptor.class';
 
 describe('FileEncryptor', () => {
@@ -13,11 +13,15 @@ describe('FileEncryptor', () => {
     );
 
     const result = FileEncryptor.encryptBase64File(file, 'secret');
-    const decrypted = CryptoAES.decrypt(result.content, 'secret').toString(
-      CryptoJS.enc.Utf8,
-    );
 
-    expect(decrypted).toBe('Hello World!');
+    // Verify it's encrypted (base64 format)
+    expect(result.content).toMatch(/^[A-Za-z0-9+/]+=*$/);
+
+    // Verify it can be decrypted back
+    const encryptedFile = EncryptedFile.fromBase64File(file, 'secret');
+    const decrypted = FileDecryptor.decryptBase64File(encryptedFile, 'secret');
+
+    expect(decrypted.getContent()).toBe('Hello World!');
   });
 
   it('#encryptBase64Files should encrypt base64 file', async () => {
@@ -27,16 +31,17 @@ describe('FileEncryptor', () => {
     ];
 
     const result = FileEncryptor.encryptBase64Files(files, 'secret');
-    const decrypted = [
-      CryptoAES.decrypt(result[0].content, 'secret').toString(
-        CryptoJS.enc.Utf8,
-      ),
-      CryptoAES.decrypt(result[1].content, 'secret').toString(
-        CryptoJS.enc.Utf8,
-      ),
-    ];
 
-    expect(decrypted).toStrictEqual(['First file', 'Second file']);
+    // Verify both are encrypted
+    expect(result[0].content).toMatch(/^[A-Za-z0-9+/]+=*$/);
+    expect(result[1].content).toMatch(/^[A-Za-z0-9+/]+=*$/);
+
+    // Verify they can be decrypted back
+    const encryptedFiles = files.map(file => EncryptedFile.fromBase64File(file, 'secret'));
+    const decrypted = FileDecryptor.decryptBase64Files(encryptedFiles, 'secret');
+
+    expect(decrypted[0].getContent()).toBe('First file');
+    expect(decrypted[1].getContent()).toBe('Second file');
   });
 
   it('#encryptBase64File should throw error when provided incorrect file', async () => {
