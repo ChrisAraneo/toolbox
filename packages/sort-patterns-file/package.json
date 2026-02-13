@@ -15,7 +15,7 @@
     "dist/**"
   ],
   "dependencies": {
-    "glob": "^11.0.3",
+    "glob": "^11.1.0",
     "just-performance": "^4.4.0",
     "minimatch": "^10.1.1"
   }
