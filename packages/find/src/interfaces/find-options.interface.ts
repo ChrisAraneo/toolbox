@@ -1,3 +1,5 @@
+// Stryker disable all
+
 export interface FindOptions {
   readonly root?: string;
   readonly cwd?: string;

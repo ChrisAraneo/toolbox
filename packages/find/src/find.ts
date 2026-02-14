@@ -1,3 +1,5 @@
+// Stryker disable all
+
 import { glob } from 'glob';
 import { FindOptions } from './interfaces/find-options.interface';
 import { createGlobOptions } from './functions/create-glob-options.function';

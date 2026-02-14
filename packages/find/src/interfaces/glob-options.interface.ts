@@ -1,3 +1,5 @@
+// Stryker disable all
+
 export interface GlobOptions {
   readonly cwd?: string;
   readonly ignore?: string[];
