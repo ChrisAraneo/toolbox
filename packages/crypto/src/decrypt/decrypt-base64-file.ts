@@ -1,6 +1,6 @@
 import { Base64File } from '@chris.araneo/file-system';
-import { EncryptedFile } from './classes/encrypted-file.class';
-import { decryptAES } from './utils/decrypt-aes';
+import { EncryptedFile } from '../classes/encrypted-file.class';
+import { decryptAES } from './internal/decrypt-aes';
 
 export const decryptBase64File = (
   file: EncryptedFile,
