@@ -1,37 +1,14 @@
+// Stryker disable all
+
 import { Logger } from '@chris.araneo/logger';
 
 import { FileSystem } from '../file-system/file-system.class';
-import { CREATE_DIRECTORY_ERROR_MESSAGE } from './directory-creator.consts';
+import { createIfDoesntExist } from './functions/create-if-doesnt-exist.function';
 
 export class DirectoryCreator {
-  constructor(
-    private readonly fileSystem: FileSystem,
-    private readonly logger: Logger,
-  ) {}
+  readonly createIfDoesntExistSync: (directory: string) => Promise<void>;
 
-  async createIfDoesntExist(directory: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      if (this.fileSystem.existsSync(directory)) {
-        this.logger.debug('Directory already exists');
-        resolve();
-      } else {
-        this.logger.debug(`Creating directory: '${directory}'`);
-
-        this.fileSystem.mkdirSync(
-          directory,
-          { recursive: true },
-          (error: NodeJS.ErrnoException | null, path?: string) => {
-            if (error || !path) {
-              reject(CREATE_DIRECTORY_ERROR_MESSAGE);
-
-              return;
-            }
-
-            this.logger.debug('Created directory');
-            resolve();
-          },
-        );
-      }
-    });
+  constructor(fileSystem: FileSystem, logger: Logger) {
+    this.createIfDoesntExistSync = createIfDoesntExist(fileSystem, logger);
   }
 }

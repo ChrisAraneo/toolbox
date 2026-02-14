@@ -1,21 +1,14 @@
-import { Observable } from 'rxjs';
+// Stryker disable all
 
 import { FileSystem } from '../file-system/file-system.class';
+import { getContents } from './functions/get-contents.function';
 
-export const DirectoryInfo = {
-  getContents(
+export class DirectoryInfo {
+  readonly getContents: (
     directory: string,
-    fileSystem: FileSystem = new FileSystem(),
-  ): Observable<string[]> {
-    return new Observable((subscriber) => {
-      fileSystem.readdir(directory, (error: unknown, files: string[]) => {
-        if (error) {
-          subscriber.error(error);
-        } else {
-          subscriber.next(files);
-          subscriber.complete();
-        }
-      });
-    });
-  },
-};
+  ) => ReturnType<ReturnType<typeof getContents>>;
+
+  constructor(fileSystem: FileSystem = new FileSystem()) {
+    this.getContents = getContents(fileSystem);
+  }
+}

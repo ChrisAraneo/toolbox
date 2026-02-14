@@ -1,30 +1,12 @@
-import { catchError, map, Observable, of } from 'rxjs';
+// Stryker disable all
 
-import { JsonFile } from '../file/json-file.class';
-import { FileReader } from './file-reader.class';
-import { ReadFileError } from './read-file-error.type';
-import { ReadFileResult } from './read-file-result.type';
-import { ReadFileResultStatus } from './read-file-result-status.enum';
+import { FileSystem } from '../file-system/file-system.class';
+import { readJsonFile } from './functions/read-json-file.function';
 
-export class JsonFileReader extends FileReader<JsonFile | ReadFileError> {
-  readFile(path: string): Observable<JsonFile | ReadFileError> {
-    return this._readFile(path, 'utf-8').pipe(
-      map((result: ReadFileResult) => {
-        if (result.status === ReadFileResultStatus.Success) {
-          return new JsonFile(
-            result.path,
-            JSON.parse(result.data),
-            result.modifiedDate,
-          );
-        }
-        return result;
-      }),
-      catchError((error: unknown) =>
-        of({
-          status: ReadFileResultStatus.Error,
-          message: error?.toString(),
-        } as ReadFileError),
-      ),
-    );
+export class JsonFileReader {
+  readonly readFile: ReturnType<typeof readJsonFile>;
+
+  constructor(fileSystem: FileSystem) {
+    this.readFile = readJsonFile(fileSystem);
   }
 }

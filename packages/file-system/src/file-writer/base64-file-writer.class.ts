@@ -1,9 +1,17 @@
-import { Base64File } from '../file/base64-file.class';
-import { FileSystem } from '../file-system/file-system.class';
-import { FileWriter } from './file-writer.class';
+// Stryker disable all
 
-export class Base64FileWriter extends FileWriter<Base64File> {
-  constructor(protected override fileSystem: FileSystem) {
-    super(fileSystem, 'base64');
+import { FileSystem } from '../file-system/file-system.class';
+import {
+  writeBase64File,
+  writeBase64Files,
+} from './functions/write-base64-file.function';
+
+export class Base64FileWriter {
+  readonly writeFile: ReturnType<typeof writeBase64File>;
+  readonly writeFiles: ReturnType<typeof writeBase64Files>;
+
+  constructor(fileSystem: FileSystem) {
+    this.writeFile = writeBase64File(fileSystem);
+    this.writeFiles = writeBase64Files(fileSystem);
   }
 }

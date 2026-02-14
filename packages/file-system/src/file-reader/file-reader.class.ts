@@ -5,10 +5,10 @@ import { FileSystem } from '../file-system/file-system.class';
 import {
   FILE_CONTENT_READING_ERROR_MESSAGE,
   FILE_METADATA_READING_ERROR_MESSAGE,
-} from './file-reader.consts';
-import { ReadFileError } from './read-file-error.type';
-import { ReadFileResult } from './read-file-result.type';
+} from './consts/file-reader.consts';
 import { ReadFileResultStatus } from './read-file-result-status.enum';
+import { ReadFileError } from './types/read-file-error.type';
+import { ReadFileResult } from './types/read-file-result.type';
 
 export abstract class FileReader<
   T extends File<string | object> | ReadFileError,

@@ -1,18 +1,9 @@
 // Stryker disable all
 
-import appRootPath from 'app-root-path';
+import { getCurrentDirectory } from './functions/get-current-directory.function';
+import { getExtendedCurrentDirectoryInfo } from './functions/get-extended-current-directory-info.function';
 
 export class CurrentDirectory {
-  getCurrentDirectory(): string {
-    return process.cwd();
-  }
-
-  getExtendedInfo(): object {
-    return {
-      dirname: __dirname,
-      filename: __filename,
-      root: appRootPath.toString(),
-      cwd: process.cwd(),
-    };
-  }
+  readonly getCurrentDirectory = getCurrentDirectory();
+  readonly getExtendedCurrentDirectoryInfo = getExtendedCurrentDirectoryInfo();
 }

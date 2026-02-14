@@ -1,9 +1,17 @@
-import { TextFile } from '../file/text-file.class';
-import { FileSystem } from '../file-system/file-system.class';
-import { FileWriter } from './file-writer.class';
+// Stryker disable all
 
-export class TextFileWriter extends FileWriter<TextFile> {
-  constructor(protected override fileSystem: FileSystem) {
-    super(fileSystem, 'utf-8');
+import { FileSystem } from '../file-system/file-system.class';
+import {
+  writeTextFile,
+  writeTextFiles,
+} from './functions/write-text-file.function';
+
+export class TextFileWriter {
+  readonly writeFile: ReturnType<typeof writeTextFile>;
+  readonly writeFiles: ReturnType<typeof writeTextFiles>;
+
+  constructor(fileSystem: FileSystem) {
+    this.writeFile = writeTextFile(fileSystem);
+    this.writeFiles = writeTextFiles(fileSystem);
   }
 }

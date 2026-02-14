@@ -1,3 +1,4 @@
+import { find } from '@chris.araneo/find';
 import fs, {
   MakeDirectoryOptions,
   NoParamCallback,
@@ -6,8 +7,6 @@ import fs, {
   Stats,
   WriteFileOptions,
 } from 'node:fs';
-
-import find, { AsyncFindStream } from 'find';
 
 // Stryker disable all
 
@@ -62,11 +61,7 @@ export class FileSystem {
     return fs.mkdir(path, options, callback || (() => {}));
   }
 
-  findFile(
-    pattern: string | RegExp,
-    root: string,
-    callback: (files: string[]) => void,
-  ): AsyncFindStream {
-    return find.file(pattern, root, callback);
+  findFile(pattern: string | RegExp, root: string) {
+    return find(String(pattern), { root });
   }
 }

@@ -1,26 +1,12 @@
-import { catchError, map, Observable, of } from 'rxjs';
+// Stryker disable all
 
-import { TextFile } from '../file/text-file.class';
-import { FileReader } from './file-reader.class';
-import { ReadFileError } from './read-file-error.type';
-import { ReadFileResult } from './read-file-result.type';
-import { ReadFileResultStatus } from './read-file-result-status.enum';
+import { FileSystem } from '../file-system/file-system.class';
+import { readTextFile } from './functions/read-text-file.function';
 
-export class TextFileReader extends FileReader<TextFile | ReadFileError> {
-  readFile(path: string): Observable<TextFile | ReadFileError> {
-    return this._readFile(path, 'utf-8').pipe(
-      map((result: ReadFileResult) => {
-        if (result.status === ReadFileResultStatus.Success) {
-          return new TextFile(result.path, result.data, result.modifiedDate);
-        }
-        return result;
-      }),
-      catchError((error: unknown) =>
-        of({
-          status: ReadFileResultStatus.Error,
-          message: error?.toString(),
-        } as ReadFileError),
-      ),
-    );
+export class TextFileReader {
+  readonly readFile: ReturnType<typeof readTextFile>;
+
+  constructor(fileSystem: FileSystem) {
+    this.readFile = readTextFile(fileSystem);
   }
 }

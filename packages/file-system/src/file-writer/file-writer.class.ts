@@ -1,34 +1,24 @@
+// Stryker disable all
+
 import { noop } from 'lodash';
 import { forkJoin, map, Observable } from 'rxjs';
 
 import { File } from '../file/file.class';
 import { FileSystem } from '../file-system/file-system.class';
+import { writeFile } from './functions/write-file.function';
 
 export abstract class FileWriter<T extends File<string>> {
+  readonly writeFile: (file: T) => Observable<void>;
+  readonly writeFiles: (files: T[]) => Observable<void>;
+
   constructor(
     protected fileSystem: FileSystem,
     protected encoding: BufferEncoding,
-  ) {}
+  ) {
+    this.writeFile = (file: T) =>
+      writeFile(fileSystem)(file.getPath(), file.getContent(), encoding);
 
-  writeFile(file: T): Observable<void> {
-    return new Observable((subscriber) => {
-      this.fileSystem.writeFile(
-        file.getPath(),
-        file.getContent(),
-        this.encoding,
-        (error: unknown) => {
-          if (error) {
-            subscriber.error(error);
-          } else {
-            subscriber.next();
-            subscriber.complete();
-          }
-        },
-      );
-    });
-  }
-
-  writeFiles(files: T[]): Observable<void> {
-    return forkJoin(files.map((file) => this.writeFile(file))).pipe(map(noop));
+    this.writeFiles = (files: T[]) =>
+      forkJoin(files.map((file) => this.writeFile(file))).pipe(map(noop));
   }
 }
