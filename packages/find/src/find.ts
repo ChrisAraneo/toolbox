@@ -1,52 +1,8 @@
-import { resolve, normalize } from 'node:path';
-
 import { glob } from 'glob';
-
-type FindOptions = {
-  readonly root?: string;
-  readonly cwd?: string;
-  readonly ignore?: readonly string[];
-  readonly dot?: boolean;
-};
-
-type GlobOptions = {
-  readonly cwd?: string;
-  readonly ignore?: string[];
-  readonly dot: boolean;
-  readonly absolute: boolean;
-};
-
-/**
- * Extracts the root directory from options
- */
-const getRootDir = (options?: FindOptions): string | undefined =>
-  options?.root ?? options?.cwd;
-
-/**
- * Creates glob options from find options
- */
-const createGlobOptions = (options?: FindOptions): GlobOptions => ({
-  cwd: getRootDir(options),
-  ignore: options?.ignore ? [...options.ignore] : undefined,
-  dot: options?.dot ?? false,
-  absolute: false,
-});
-
-/**
- * Creates a path normalizer function based on whether a root directory is provided
- */
-const createPathNormalizer =
-  (rootDir?: string) =>
-  (path: string): string =>
-    rootDir ? normalize(resolve(rootDir, path)) : normalize(path);
-
-/**
- * Normalizes an array of paths
- */
-const normalizePaths =
-  (rootDir?: string) =>
-  (paths: readonly string[]): string[] =>
-    paths.map(createPathNormalizer(rootDir));
+import { FindOptions } from './interfaces/find-options.interface';
+import { createGlobOptions } from './functions/create-glob-options.function';
+import { getRootDir } from './functions/get-root-dir.function';
+import { normalizePaths } from './functions/normalize-paths.function';
 
 /**
  * Find all files and directories matching the provided glob pattern recursively.
