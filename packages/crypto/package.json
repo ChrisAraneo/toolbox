@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/crypto",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Crypto utilities for file encryption and decryption",
   "keywords": [],
   "license": "MIT",

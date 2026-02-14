@@ -1,2 +1,2 @@
-export { encryptAES } from './src/encrypt/internal/encrypt-aes';
-export { decryptAES } from './src/decrypt/internal/decrypt-aes';
+export { encryptBase64File } from './src/encrypt/encrypt-base64-file';
+export { decryptBase64File } from './src/decrypt/decrypt-base64-file';
