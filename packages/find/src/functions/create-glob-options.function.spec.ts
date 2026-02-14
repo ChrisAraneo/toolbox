@@ -2,11 +2,9 @@ import { createGlobOptions } from './create-glob-options.function';
 
 describe('createGlobOptions', () => {
   it('should return default options when options is undefined', () => {
-    const result = createGlobOptions(undefined);
+    const result = createGlobOptions();
 
     expect(result).toEqual({
-      cwd: undefined,
-      ignore: undefined,
       dot: false,
       absolute: false,
     });
@@ -16,34 +14,30 @@ describe('createGlobOptions', () => {
     const result = createGlobOptions({});
 
     expect(result).toEqual({
-      cwd: undefined,
-      ignore: undefined,
       dot: false,
       absolute: false,
     });
   });
 
   it('should use root as cwd when root is provided', () => {
-    const options = { root: 'C:\\projects\\myapp' };
+    const options = { root: String.raw`C:\projects\myapp` };
 
     const result = createGlobOptions(options);
 
     expect(result).toEqual({
-      cwd: 'C:\\projects\\myapp',
-      ignore: undefined,
+      cwd: String.raw`C:\projects\myapp`,
       dot: false,
       absolute: false,
     });
   });
 
   it('should use cwd when cwd is provided and root is not', () => {
-    const options = { cwd: 'C:\\projects\\otherapp' };
+    const options = { cwd: String.raw`C:\projects\otherapp` };
 
     const result = createGlobOptions(options);
 
     expect(result).toEqual({
-      cwd: 'C:\\projects\\otherapp',
-      ignore: undefined,
+      cwd: String.raw`C:\projects\otherapp`,
       dot: false,
       absolute: false,
     });
@@ -51,15 +45,14 @@ describe('createGlobOptions', () => {
 
   it('should prefer root over cwd when both are provided', () => {
     const options = {
-      root: 'C:\\projects\\myapp',
-      cwd: 'C:\\projects\\otherapp',
+      root: String.raw`C:\projects\myapp`,
+      cwd: String.raw`C:\projects\otherapp`,
     };
 
     const result = createGlobOptions(options);
 
     expect(result).toEqual({
-      cwd: 'C:\\projects\\myapp',
-      ignore: undefined,
+      cwd: String.raw`C:\projects\myapp`,
       dot: false,
       absolute: false,
     });
@@ -71,7 +64,6 @@ describe('createGlobOptions', () => {
     const result = createGlobOptions(options);
 
     expect(result).toEqual({
-      cwd: undefined,
       ignore: ['node_modules/**', 'dist/**'],
       dot: false,
       absolute: false,
@@ -94,8 +86,6 @@ describe('createGlobOptions', () => {
     const result = createGlobOptions(options);
 
     expect(result).toEqual({
-      cwd: undefined,
-      ignore: undefined,
       dot: true,
       absolute: false,
     });
@@ -107,8 +97,6 @@ describe('createGlobOptions', () => {
     const result = createGlobOptions(options);
 
     expect(result).toEqual({
-      cwd: undefined,
-      ignore: undefined,
       dot: false,
       absolute: false,
     });
@@ -116,7 +104,7 @@ describe('createGlobOptions', () => {
 
   it('should handle all options together', () => {
     const options = {
-      root: 'C:\\projects\\myapp',
+      root: String.raw`C:\projects\myapp`,
       ignore: ['node_modules/**', '*.log'],
       dot: true,
     };
@@ -124,7 +112,7 @@ describe('createGlobOptions', () => {
     const result = createGlobOptions(options);
 
     expect(result).toEqual({
-      cwd: 'C:\\projects\\myapp',
+      cwd: String.raw`C:\projects\myapp`,
       ignore: ['node_modules/**', '*.log'],
       dot: true,
       absolute: false,
@@ -133,7 +121,7 @@ describe('createGlobOptions', () => {
 
   it('should always set absolute to false', () => {
     const options = {
-      root: 'C:\\projects\\myapp',
+      root: String.raw`C:\projects\myapp`,
       dot: true,
     };
 
@@ -148,7 +136,6 @@ describe('createGlobOptions', () => {
     const result = createGlobOptions(options);
 
     expect(result).toEqual({
-      cwd: undefined,
       ignore: [],
       dot: false,
       absolute: false,
