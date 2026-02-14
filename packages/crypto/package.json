@@ -12,6 +12,8 @@
     "dist/**"
   ],
   "dependencies": {
+    "browserify-aes": "^1.2.0",
+    "lodash": "^4.17.23",
     "rxjs": "^7.8.2"
   }
 }
