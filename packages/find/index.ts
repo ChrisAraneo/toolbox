@@ -1,1 +1,1 @@
-export * from './src/find';
+export { find } from './src/find';
