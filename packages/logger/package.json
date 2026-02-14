@@ -1,6 +1,6 @@
 {
   "name": "@chris.araneo/logger",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Logger that uses Winston under the hood",
   "keywords": [],
   "license": "MIT",
@@ -12,6 +12,6 @@
     "dist/**"
   ],
   "dependencies": {
-    "winston": "^3.18.3"
+    "winston": "^3.19.0"
   }
 }

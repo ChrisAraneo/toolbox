@@ -1,3 +1,5 @@
+// Stryker disable all
+
 import {
   createLogger,
   format,
@@ -8,8 +10,6 @@ import {
 import { LogLevel } from './log-level.type';
 import { Meta } from './meta.type';
 const { combine, timestamp, printf, colorize, prettyPrint, simple } = format;
-
-// Stryker disable all
 
 export class Logger {
   private logger!: WinstonLogger;
