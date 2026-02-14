@@ -1,7 +1,10 @@
-import { Base64File } from '@chris.araneo/file-system';
 import { encryptAES } from './internal/encrypt-aes';
 
-export const encryptBase64File = (file: Base64File, secret: string) => ({
-  path: file.getPath(),
-  content: encryptAES(file.getContent(), secret),
+export const encryptBase64File = (
+  path: string,
+  content: string,
+  secret: string,
+) => ({
+  path,
+  encryptedContent: encryptAES(content, secret),
 });

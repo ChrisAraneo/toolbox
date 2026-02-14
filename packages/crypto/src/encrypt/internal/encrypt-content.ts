@@ -1,4 +1,4 @@
-import { createAesCipher } from "./create-aes-cipher";
+import { createAesCipher } from './create-aes-cipher';
 
 export const encryptContent = (input: ReturnType<typeof createAesCipher>) => ({
   salt: input.salt,
