@@ -7,7 +7,7 @@ import {
 } from '@chris.araneo/file-system';
 import { chain } from 'lodash';
 import { filter, map, Observable } from 'rxjs';
-import { encryptBase64File } from './encrypt-base64-file';
+import { encryptBase64File } from '../encrypt-base64-file';
 
 const createEncryptedContent = (
   path: string,
