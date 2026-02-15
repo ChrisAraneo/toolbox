@@ -1,38 +1,12 @@
+// Stryker disable all
+
 import * as BasicFtp from 'basic-ftp';
-import { from, Observable } from 'rxjs';
+import { uploadDirectory } from './upload-directory/upload-directory';
 
 export class FtpClient {
-  constructor(private readonly client: BasicFtp.Client) {}
+  readonly uploadDirectory: ReturnType<typeof uploadDirectory>;
 
-  uploadDirectory(
-    host: string,
-    user: string,
-    password: string,
-    backupDirectory: string,
-    remoteDirectory: string,
-  ): Observable<void> {
-    return from(
-      new Promise<void>((resolve, reject) => {
-        this.client
-          .access({
-            host,
-            user,
-            password,
-          })
-          .then(() => {
-            this.client
-              .uploadFromDir(backupDirectory, remoteDirectory)
-              .then(() => {
-                resolve();
-              })
-              .catch((error: Error) => {
-                reject(error);
-              });
-          })
-          .catch((error: Error) => {
-            reject(error);
-          });
-      }),
-    );
+  constructor(client: BasicFtp.Client) {
+    this.uploadDirectory = uploadDirectory(client);
   }
 }

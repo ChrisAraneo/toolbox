@@ -1,7 +1,7 @@
 {
   "name": "@chris.araneo/ftp",
-  "version": "0.0.3",
-  "description": "Reactive FTP client abstraction",
+  "version": "0.0.4",
+  "description": "Reactive FTP operations",
   "keywords": [],
   "license": "MIT",
   "author": "Krzysztof Pająk (Chris Araneo) <chris.araneo@gmail.com>",
@@ -12,7 +12,7 @@
     "dist/**"
   ],
   "dependencies": {
-    "basic-ftp": "^5.0.5",
+    "basic-ftp": "^5.1.0",
     "rxjs": "^7.8.2"
   }
 }
