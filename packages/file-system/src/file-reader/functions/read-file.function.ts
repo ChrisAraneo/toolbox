@@ -1,7 +1,7 @@
 import { FileSystem } from 'src/file-system/file-system.class';
 import { createSuccessResult } from './create-success-read-file-result.function';
 import { catchError, from, map } from 'rxjs';
-import { createErrorResult } from './create-error-read-file-result.function';
+import { createErrorResult } from './create-error-result.function';
 import { FILE_CONTENT_READING_ERROR_MESSAGE } from '../consts/file-reader.consts';
 
 export const readFile = (fileSystem: FileSystem) => (path: string) =>
