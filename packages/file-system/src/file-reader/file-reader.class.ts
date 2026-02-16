@@ -2,13 +2,7 @@ import { forkJoin, Observable } from 'rxjs';
 
 import { File } from '../file/file.class';
 import { FileSystem } from '../file-system/file-system.class';
-import {
-  FILE_CONTENT_READING_ERROR_MESSAGE,
-  FILE_METADATA_READING_ERROR_MESSAGE,
-} from './consts/file-reader.consts';
-import { ReadFileResultStatus } from './types/read-file-result-status.enum';
-import { ReadFileError } from './types/read-file-error.type';
-import { ReadFileResult } from './types/read-file-result.type';
+import { ReadFileError } from './types/read-file-error.interface';
 
 export abstract class FileReader<
   T extends File<string | object> | ReadFileError,
@@ -17,47 +11,6 @@ export abstract class FileReader<
 
   readFiles(paths: string[]): Observable<T[]> {
     return forkJoin(paths.map((path: string) => this.readFile(path)));
-  }
-
-  protected _readFile(
-    path: string,
-    encoding: BufferEncoding,
-  ): Observable<ReadFileResult> {
-    return new Observable((subscriber) => {
-      this.fileSystem.stat(path, (error: unknown, stats) => {
-        if (error) {
-          subscriber.next({
-            status: ReadFileResultStatus.Error,
-            message: `${FILE_METADATA_READING_ERROR_MESSAGE} (${path}): ${JSON.stringify(error)}`,
-          });
-          subscriber.complete();
-        } else {
-          this.fileSystem.readFile(
-            path,
-            encoding,
-            (error: unknown, data: string) => {
-              if (error) {
-                subscriber.next({
-                  status: ReadFileResultStatus.Error,
-                  message: `${FILE_CONTENT_READING_ERROR_MESSAGE} (${path}): ${JSON.stringify(
-                    error,
-                  )}`,
-                });
-                subscriber.complete();
-              } else {
-                subscriber.next({
-                  status: ReadFileResultStatus.Success,
-                  path,
-                  data,
-                  modifiedDate: new Date(stats.mtime),
-                });
-                subscriber.complete();
-              }
-            },
-          );
-        }
-      });
-    });
   }
 
   abstract readFile(path: string): Observable<T>;

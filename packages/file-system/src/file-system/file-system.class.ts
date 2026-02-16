@@ -1,14 +1,15 @@
 // Stryker disable all
 
 import { find } from '@chris.araneo/find';
-import fs from 'node:fs';
+import fsPromises from 'fs/promises';
+import fs from 'fs';
 
 export class FileSystem {
-  readdir = fs.readdir;
-  stat = fs.stat;
-  readFile = fs.readFile;
-  writeFile = fs.writeFile;
-  existsSync = fs.existsSync;
-  mkdirSync = fs.mkdir;
-  find = find;
+  readonly readdir = fsPromises.readdir;
+  readonly stat = fsPromises.stat;
+  readonly readFile = fsPromises.readFile;
+  readonly writeFile = fsPromises.writeFile;
+  readonly existsSync = fs.existsSync;
+  readonly mkdir = fsPromises.mkdir;
+  readonly find = find;
 }

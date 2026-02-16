@@ -1,5 +1,5 @@
 import { ReadFileResultStatus } from './read-file-result-status.enum';
-import { ReadFileError } from './read-file-error.type';
+import { ReadFileError } from './read-file-error.interface';
 
 export type ReadFileResult =
   | {

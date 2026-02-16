@@ -1,25 +1,38 @@
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, from, map, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
-import { Base64File } from '../../file/base64-file.class';
 import { FileSystem } from '../../file-system/file-system.class';
 import { ReadFileResultStatus } from '../types/read-file-result-status.enum';
 import {
   FILE_CONTENT_READING_ERROR_MESSAGE,
   FILE_METADATA_READING_ERROR_MESSAGE,
 } from '../consts/file-reader.consts';
-import { ReadFileError } from '../types/read-file-error.type';
-import { ReadFileResult } from '../types/read-file-result.type';
+import { ReadFileError } from '../types/read-file-error.interface';
+import { createErrorResult } from './create-error-read-file-result.function';
+import { createSuccessResult } from './create-success-read-file-result.function';
+import { Base64File } from 'src/file/base64-file.class';
 
-export const readBase64File =
-  (fileSystem: FileSystem) =>
-  (path: string): Observable<Base64File | ReadFileError> => {
-    return readFile(fileSystem, path, 'base64').pipe(
-      map((result: ReadFileResult) => {
-        if (result.status === ReadFileResultStatus.Success) {
-          return new Base64File(result.path, result.data, result.modifiedDate);
-        }
-        return result;
-      }),
+export const readBase64File = (fileSystem: FileSystem) => (path: string) =>
+  from(fileSystem.stat(path))
+    .pipe(
+      catchError((error: unknown) =>
+        createErrorResult(FILE_METADATA_READING_ERROR_MESSAGE, path, error),
+      ),
+      mergeMap(() =>
+        from(fileSystem.readFile(path, 'utf-8')).pipe(
+          map((data) => createSuccessResult(path, data, new Date())),
+          catchError((error: unknown) =>
+            createErrorResult(FILE_CONTENT_READING_ERROR_MESSAGE, path, error),
+          ),
+        ),
+      ),
+    )
+    .pipe(
+      map((result) =>
+        result.status === ReadFileResultStatus.Success
+          ? new Base64File(result.path, result.data, result.modifiedDate)
+          : result,
+      ),
       catchError((error: unknown) =>
         of({
           status: ReadFileResultStatus.Error,
@@ -27,42 +40,3 @@ export const readBase64File =
         } as ReadFileError),
       ),
     );
-  };
-
-function readFile(
-  fileSystem: FileSystem,
-  path: string,
-  encoding: BufferEncoding,
-): Observable<ReadFileResult> {
-  return new Observable((subscriber) => {
-    fileSystem.stat(path, (error: unknown, stats) => {
-      if (error) {
-        subscriber.next({
-          status: ReadFileResultStatus.Error,
-          message: `${FILE_METADATA_READING_ERROR_MESSAGE} (${path}): ${JSON.stringify(error)}`,
-        });
-        subscriber.complete();
-      } else {
-        fileSystem.readFile(path, encoding, (error: unknown, data: string) => {
-          if (error) {
-            subscriber.next({
-              status: ReadFileResultStatus.Error,
-              message: `${FILE_CONTENT_READING_ERROR_MESSAGE} (${path}): ${JSON.stringify(
-                error,
-              )}`,
-            });
-            subscriber.complete();
-          } else {
-            subscriber.next({
-              status: ReadFileResultStatus.Success,
-              path,
-              data,
-              modifiedDate: new Date(stats.mtime),
-            });
-            subscriber.complete();
-          }
-        });
-      }
-    });
-  });
-}

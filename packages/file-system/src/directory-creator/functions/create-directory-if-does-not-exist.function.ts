@@ -17,12 +17,15 @@ const createDirectory = async (
   directory: string,
 ) => {
   logCreatingDirectory(logger, directory);
-  await new Promise<void>((resolve, reject) =>
-    fileSystem.mkdirSync(directory, { recursive: true }, (error, path) =>
-      error || !path ? reject("Can't create directory") : resolve(),
-    ),
-  );
-  logDirectoryCreated(logger);
+
+  return fileSystem
+    .mkdir(directory, { recursive: true })
+    .then(() => {
+      logDirectoryCreated(logger);
+    })
+    .catch((error: unknown) => {
+      throw Error(`Can't create directory: ${error}`);
+    });
 };
 
 const skip = async (logger: Logger) => logDirectoryExists(logger);

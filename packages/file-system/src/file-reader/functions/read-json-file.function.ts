@@ -1,29 +1,43 @@
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, from, map, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
-import { JsonFile } from '../../file/json-file.class';
+import { TextFile } from '../../file/text-file.class';
 import { FileSystem } from '../../file-system/file-system.class';
 import { ReadFileResultStatus } from '../types/read-file-result-status.enum';
 import {
   FILE_CONTENT_READING_ERROR_MESSAGE,
   FILE_METADATA_READING_ERROR_MESSAGE,
 } from '../consts/file-reader.consts';
-import { ReadFileError } from '../types/read-file-error.type';
-import { ReadFileResult } from '../types/read-file-result.type';
+import { ReadFileError } from '../types/read-file-error.interface';
+import { createErrorResult } from './create-error-read-file-result.function';
+import { createSuccessResult } from './create-success-read-file-result.function';
+import { JsonFile } from 'src/file/json-file.class';
 
-export const readJsonFile =
-  (fileSystem: FileSystem) =>
-  (path: string): Observable<JsonFile | ReadFileError> => {
-    return readFile(fileSystem, path, 'utf-8').pipe(
-      map((result: ReadFileResult) => {
-        if (result.status === ReadFileResultStatus.Success) {
-          return new JsonFile(
-            result.path,
-            JSON.parse(result.data),
-            result.modifiedDate,
-          );
-        }
-        return result;
-      }),
+export const readJsonFile = (fileSystem: FileSystem) => (path: string) =>
+  from(fileSystem.stat(path))
+    .pipe(
+      catchError((error: unknown) =>
+        createErrorResult(FILE_METADATA_READING_ERROR_MESSAGE, path, error),
+      ),
+      mergeMap(() =>
+        from(fileSystem.readFile(path, 'utf-8')).pipe(
+          map((data) => createSuccessResult(path, data, new Date())),
+          catchError((error: unknown) =>
+            createErrorResult(FILE_CONTENT_READING_ERROR_MESSAGE, path, error),
+          ),
+        ),
+      ),
+    )
+    .pipe(
+      map((result) =>
+        result.status === ReadFileResultStatus.Success
+          ? new JsonFile(
+              result.path,
+              JSON.parse(result.data),
+              result.modifiedDate,
+            )
+          : result,
+      ),
       catchError((error: unknown) =>
         of({
           status: ReadFileResultStatus.Error,
@@ -31,42 +45,3 @@ export const readJsonFile =
         } as ReadFileError),
       ),
     );
-  };
-
-function readFile(
-  fileSystem: FileSystem,
-  path: string,
-  encoding: BufferEncoding,
-): Observable<ReadFileResult> {
-  return new Observable((subscriber) => {
-    fileSystem.stat(path, (error: unknown, stats) => {
-      if (error) {
-        subscriber.next({
-          status: ReadFileResultStatus.Error,
-          message: `${FILE_METADATA_READING_ERROR_MESSAGE} (${path}): ${JSON.stringify(error)}`,
-        });
-        subscriber.complete();
-      } else {
-        fileSystem.readFile(path, encoding, (error: unknown, data: string) => {
-          if (error) {
-            subscriber.next({
-              status: ReadFileResultStatus.Error,
-              message: `${FILE_CONTENT_READING_ERROR_MESSAGE} (${path}): ${JSON.stringify(
-                error,
-              )}`,
-            });
-            subscriber.complete();
-          } else {
-            subscriber.next({
-              status: ReadFileResultStatus.Success,
-              path,
-              data,
-              modifiedDate: new Date(stats.mtime),
-            });
-            subscriber.complete();
-          }
-        });
-      }
-    });
-  });
-}
