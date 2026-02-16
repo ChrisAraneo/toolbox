@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@chris.araneo/eslint-config": "0.0.111",
+    "@chris.araneo/eslint-config": "0.0.112",
     "@nx/jest": "^22.0.2",
     "@stryker-mutator/jest-runner": "^9.3.0",
     "@stryker-mutator/typescript-checker": "^9.3.0",
