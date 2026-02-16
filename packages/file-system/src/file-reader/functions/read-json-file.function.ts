@@ -2,7 +2,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 
 import { JsonFile } from '../../file/json-file.class';
 import { FileSystem } from '../../file-system/file-system.class';
-import { ReadFileResultStatus } from '../read-file-result-status.enum';
+import { ReadFileResultStatus } from '../types/read-file-result-status.enum';
 import {
   FILE_CONTENT_READING_ERROR_MESSAGE,
   FILE_METADATA_READING_ERROR_MESSAGE,

@@ -1,4 +1,4 @@
-import { ReadFileResultStatus } from '../read-file-result-status.enum';
+import { ReadFileResultStatus } from './read-file-result-status.enum';
 import { ReadFileError } from './read-file-error.type';
 
 export type ReadFileResult =

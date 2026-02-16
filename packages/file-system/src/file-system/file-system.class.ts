@@ -1,67 +1,14 @@
-import { find } from '@chris.araneo/find';
-import fs, {
-  MakeDirectoryOptions,
-  NoParamCallback,
-  PathLike,
-  PathOrFileDescriptor,
-  Stats,
-  WriteFileOptions,
-} from 'node:fs';
-
 // Stryker disable all
 
+import { find } from '@chris.araneo/find';
+import fs from 'node:fs';
+
 export class FileSystem {
-  readdir(
-    path: PathLike,
-    callback: (err: NodeJS.ErrnoException | null, files: string[]) => void,
-  ): void {
-    return fs.readdir(path, callback);
-  }
-
-  stat(
-    path: PathLike,
-    callback: (err: NodeJS.ErrnoException | null, stats: Stats) => void,
-  ): void {
-    return fs.stat(path, callback);
-  }
-
-  readFile(
-    path: PathOrFileDescriptor,
-    options:
-      | ({
-          encoding: BufferEncoding;
-          flag?: string | undefined;
-        } & unknown)
-      | BufferEncoding,
-    callback: (err: NodeJS.ErrnoException | null, data: string) => void,
-  ): void {
-    return fs.readFile(path, options, callback);
-  }
-
-  writeFile(
-    file: PathOrFileDescriptor,
-    data: string | NodeJS.ArrayBufferView,
-    options: WriteFileOptions,
-    callback: NoParamCallback,
-  ): void {
-    return fs.writeFile(file, data, options, callback);
-  }
-
-  existsSync(path: PathLike): boolean {
-    return fs.existsSync(path);
-  }
-
-  mkdirSync(
-    path: PathLike,
-    options?: MakeDirectoryOptions & {
-      recursive: true;
-    },
-    callback?: (err: NodeJS.ErrnoException | null, path?: string) => void,
-  ): void {
-    return fs.mkdir(path, options, callback || (() => {}));
-  }
-
-  findFile(pattern: string | RegExp, root: string) {
-    return find(String(pattern), { root });
-  }
+  readdir = fs.readdir;
+  stat = fs.stat;
+  readFile = fs.readFile;
+  writeFile = fs.writeFile;
+  existsSync = fs.existsSync;
+  mkdirSync = fs.mkdir;
+  find = find;
 }

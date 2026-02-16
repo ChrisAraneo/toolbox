@@ -27,7 +27,7 @@ const createDirectory = async (
 
 const skip = async (logger: Logger) => logDirectoryExists(logger);
 
-export const createIfDoesntExist =
+export const createDirectoryIfDoesNotExist =
   (fileSystem: FileSystem, logger: Logger) => (directory: string) =>
     fileSystem.existsSync(directory)
       ? skip(logger)

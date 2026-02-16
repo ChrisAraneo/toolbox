@@ -6,7 +6,7 @@ import {
   FILE_CONTENT_READING_ERROR_MESSAGE,
   FILE_METADATA_READING_ERROR_MESSAGE,
 } from './consts/file-reader.consts';
-import { ReadFileResultStatus } from './read-file-result-status.enum';
+import { ReadFileResultStatus } from './types/read-file-result-status.enum';
 import { ReadFileError } from './types/read-file-error.type';
 import { ReadFileResult } from './types/read-file-result.type';
 

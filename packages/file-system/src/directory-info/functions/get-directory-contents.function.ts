@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 
 import { FileSystem } from '../../file-system/file-system.class';
 
-export const getContents =
+export const getDirectoryContents =
   (fileSystem: FileSystem) =>
   (directory: string): Observable<string[]> =>
     new Observable<string[]>((subscriber) => {
