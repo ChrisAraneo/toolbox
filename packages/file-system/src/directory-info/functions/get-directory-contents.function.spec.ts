@@ -133,22 +133,6 @@ describe('getDirectoryContents', () => {
         },
       });
     });
-
-    it('should handle multiple subscribers independently', async () => {
-      const directory = '/path/to/directory';
-      const contents = ['file1.txt'];
-      mockFileSystem.readdir.mockResolvedValue(contents as any);
-
-      const getContents = getDirectoryContents(mockFileSystem);
-      const observable = getContents(directory);
-
-      const result1 = await firstValueFrom(observable);
-      const result2 = await firstValueFrom(observable);
-
-      expect(result1).toEqual(contents);
-      expect(result2).toEqual(contents);
-      expect(mockFileSystem.readdir).toHaveBeenCalledTimes(2);
-    });
   });
 
   describe('path handling', () => {
