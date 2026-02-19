@@ -1,9 +1,9 @@
-import * as cryptoModule from 'crypto';
+import * as cryptoModule from 'node:crypto';
 
 import { concatToBase64 } from './concat-to-base64';
 import { createAesCipher } from './create-aes-cipher';
-import { encryptContent } from './encrypt-content';
 import { encryptAES } from './encrypt-aes';
+import { encryptContent } from './encrypt-content';
 
 jest.mock('crypto', () => ({
   randomBytes: jest.fn(),
@@ -23,7 +23,13 @@ describe('encryptAES', () => {
     const scryptSalt = Buffer.alloc(16, 5);
     const key = Buffer.alloc(32, 1);
     const iv = Buffer.alloc(16, 2);
-    const mockCipherObj = { cipher: {}, salt, iv, content: 'data', password: 'pass' };
+    const mockCipherObj = {
+      cipher: {},
+      salt,
+      iv,
+      content: 'data',
+      password: 'pass',
+    };
     const mockEncryptedObj = { salt, iv, encrypted: Buffer.alloc(16, 3) };
     const expectedBase64 = 'expectedBase64==';
 
@@ -53,7 +59,13 @@ describe('encryptAES', () => {
     encryptAES('data', 'pass');
 
     expect(createAesCipher).toHaveBeenCalledWith(
-      expect.objectContaining({ salt, key, iv, content: 'data', password: 'pass' }),
+      expect.objectContaining({
+        salt,
+        key,
+        iv,
+        content: 'data',
+        password: 'pass',
+      }),
     );
   });
 

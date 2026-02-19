@@ -45,7 +45,13 @@ describe('createAesCipher', () => {
 
     (aes.createCipheriv as jest.Mock).mockReturnValue(mockCipher);
 
-    const result = createAesCipher({ key, iv, salt, content: 'c', password: 'p' });
+    const result = createAesCipher({
+      key,
+      iv,
+      salt,
+      content: 'c',
+      password: 'p',
+    });
 
     expect(result.cipher).toBe(mockCipher);
   });
