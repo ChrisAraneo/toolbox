@@ -1,4 +1,7 @@
 {
+  "compilerOptions": {
+    "rootDir": "."
+  },
   "compileOnSave": false,
   "extends": "./tsconfig.base.json",
   "files": [],
