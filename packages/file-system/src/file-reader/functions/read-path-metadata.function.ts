@@ -1,5 +1,5 @@
 import { catchError, from } from 'rxjs';
-import { FileSystem } from 'src/file-system/file-system.class';
+import { FileSystem } from '../../file-system/file-system.class';
 
 import { FILE_METADATA_READING_ERROR_MESSAGE } from '../consts/file-reader.consts';
 import { createErrorResult } from './create-error-result.function';

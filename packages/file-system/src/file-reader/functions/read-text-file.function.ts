@@ -1,6 +1,6 @@
 import { catchError, map, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { TextFile } from 'src/file/text-file.class';
+import { TextFile } from '../../file/text-file.class';
 
 import { FileSystem } from '../../file-system/file-system.class';
 import { ReadFileError } from '../types/read-file-error.interface';

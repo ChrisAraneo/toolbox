@@ -1,6 +1,6 @@
 import { WriteFileOptions } from 'node:fs';
 
-import { FileSystem } from 'index';
+import { FileSystem } from '../../file-system/file-system.class';
 import { Observable } from 'rxjs';
 
 export const writeFile =

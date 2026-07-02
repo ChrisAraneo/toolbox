@@ -1,6 +1,6 @@
 import { catchError, map, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { Base64File } from 'src/file/base64-file.class';
+import { Base64File } from '../../file/base64-file.class';
 
 import { FileSystem } from '../../file-system/file-system.class';
 import { ReadFileError } from '../types/read-file-error.interface';
