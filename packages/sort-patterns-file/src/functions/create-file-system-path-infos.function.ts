@@ -1,7 +1,7 @@
 import { lstatSync } from 'node:fs';
 import { normalize } from 'node:path';
 
-import { FileSystemPathInfo } from 'src/interfaces/file-system-path-info.interface';
+import { FileSystemPathInfo } from '../interfaces/file-system-path-info.interface';
 
 export const createFileSystemPathInfos = (
   paths: string[],

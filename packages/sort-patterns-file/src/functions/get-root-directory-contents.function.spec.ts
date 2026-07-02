@@ -1,5 +1,5 @@
 import { glob } from 'glob';
-import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
+import { FileSystemNode } from '../interfaces/file-system-node.interface';
 
 import { createFileSystemNodeMap } from './create-file-system-node-map.function';
 import { createFileSystemPathInfos } from './create-file-system-path-infos.function';

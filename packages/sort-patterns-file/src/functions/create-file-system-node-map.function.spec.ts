@@ -1,4 +1,4 @@
-import { FileSystemPathInfo } from 'src/interfaces/file-system-path-info.interface';
+import { FileSystemPathInfo } from '../interfaces/file-system-path-info.interface';
 
 import { createFileSystemNodeMap } from './create-file-system-node-map.function';
 

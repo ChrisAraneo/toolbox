@@ -1,4 +1,4 @@
-import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
+import { FileSystemNode } from '../interfaces/file-system-node.interface';
 
 import { createOrganizedFileSystemNodeArray } from './create-organized-file-system-node-array.function';
 import { getSortedKeys } from './get-sorted-keys.function';

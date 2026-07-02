@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash';
-import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
-import { FileSystemPathInfo } from 'src/interfaces/file-system-path-info.interface';
+import { FileSystemNode } from '../interfaces/file-system-node.interface';
+import { FileSystemPathInfo } from '../interfaces/file-system-path-info.interface';
 
 import { getParentDirectory } from './get-parent-directory.function';
 

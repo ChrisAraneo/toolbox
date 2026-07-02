@@ -1,4 +1,4 @@
-import { ExtendedFileSystemNode } from 'src/interfaces/extended-file-system-node.interface';
+import { ExtendedFileSystemNode } from '../interfaces/extended-file-system-node.interface';
 
 import { sortByMatchingDirectories } from './sort-by-matching-directories.function';
 

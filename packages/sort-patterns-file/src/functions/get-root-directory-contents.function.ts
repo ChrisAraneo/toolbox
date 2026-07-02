@@ -1,8 +1,8 @@
 import { glob } from 'glob';
 import { performance } from 'just-performance';
 import { concat, isNull } from 'lodash';
-import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
-import { GetRootDirectoryContentsOptions } from 'src/interfaces/get-root-directory-contents-options.interface';
+import { FileSystemNode } from '../interfaces/file-system-node.interface';
+import { GetRootDirectoryContentsOptions } from '../interfaces/get-root-directory-contents-options.interface';
 
 import { createFileSystemNodeMap } from './create-file-system-node-map.function';
 import { createFileSystemPathInfos } from './create-file-system-path-infos.function';
