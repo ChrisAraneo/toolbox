@@ -19,9 +19,6 @@
       "path": "./packages/health-check"
     },
     {
-      "path": "./packages/ng-perfectionism"
-    },
-    {
       "path": "./packages/email-service"
     },
     {
