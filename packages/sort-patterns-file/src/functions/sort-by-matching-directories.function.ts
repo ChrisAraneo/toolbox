@@ -1,5 +1,4 @@
-import { ExtendedFileSystemNode } from 'src/interfaces/extended-file-system-node.interface';
-
+import { ExtendedFileSystemNode } from '../interfaces/extended-file-system-node.interface';
 import { sortArrayAlphabetically } from './sort-array-alphabetically.function';
 
 export const sortByMatchingDirectories = (
