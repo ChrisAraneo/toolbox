@@ -1,5 +1,6 @@
+import { normalize } from 'node:path';
+
 import { map } from 'lodash';
-import { normalize } from 'path';
 
 /**
  * Normalizes an array of paths

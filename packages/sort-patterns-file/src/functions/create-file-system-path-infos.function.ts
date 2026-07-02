@@ -17,7 +17,7 @@ export const createFileSystemPathInfos = (
       try {
         isFile = lstatSync(path).isFile();
         isDirectory = lstatSync(path).isDirectory();
-      } catch (error: unknown) {
+      } catch {
         // If there is error, we skip the path.
         isFile = false;
         isDirectory = false;
@@ -25,7 +25,7 @@ export const createFileSystemPathInfos = (
 
       return {
         path,
-        isDirectory: isDirectory,
-        isFile: isFile,
+        isDirectory,
+        isFile,
       };
     });

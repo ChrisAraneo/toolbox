@@ -1,5 +1,5 @@
-import { GlobOptions } from '../interfaces/glob-options.interface';
 import { FindOptions } from '../interfaces/find-options.interface';
+import { GlobOptions } from '../interfaces/glob-options.interface';
 import { getRootDir } from './get-root-dir.function';
 
 /**

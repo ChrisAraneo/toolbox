@@ -1,5 +1,6 @@
-import { FileSystem } from 'index';
 import { WriteFileOptions } from 'node:fs';
+
+import { FileSystem } from 'index';
 import { Observable } from 'rxjs';
 
 export const writeFile =
@@ -8,8 +9,8 @@ export const writeFile =
     path: string,
     content: string,
     options: WriteFileOptions,
-  ): Observable<void> => {
-    return new Observable((subscriber) => {
+  ): Observable<void> =>
+    new Observable((subscriber) => {
       fileSystem.writeFile(path, content, options, (error: unknown) =>
         error
           ? subscriber.error(error)
@@ -19,4 +20,3 @@ export const writeFile =
             })(),
       );
     });
-  };

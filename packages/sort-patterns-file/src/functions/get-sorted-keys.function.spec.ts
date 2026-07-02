@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { getSortedKeys } from './get-sorted-keys.function';
 
 describe('getSortedKeys', () => {

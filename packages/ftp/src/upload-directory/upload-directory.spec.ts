@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-
 import * as BasicFtp from 'basic-ftp';
 import { lastValueFrom } from 'rxjs';
 

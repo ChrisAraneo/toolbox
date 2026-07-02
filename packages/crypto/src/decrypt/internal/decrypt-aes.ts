@@ -1,4 +1,5 @@
 import { chain } from 'lodash';
+
 import { bufferToUtf8 } from './buffer-to-utf8';
 import { createAesDecipher } from './create-aes-decipher';
 import { decryptContent } from './decrypt-content';

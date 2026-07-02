@@ -27,7 +27,7 @@ describe('getDirectoryContents', () => {
 
     it('should return empty array for empty directory', async () => {
       const directory = '/path/to/empty';
-      mockFileSystem.readdir.mockResolvedValue([] as any);
+      mockFileSystem.readdir.mockResolvedValue([]);
 
       const getContents = getDirectoryContents(mockFileSystem);
       const result = await firstValueFrom(getContents(directory));

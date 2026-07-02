@@ -1,10 +1,11 @@
 // Stryker disable all
 
 import { glob } from 'glob';
-import { FindOptions } from './interfaces/find-options.interface';
+
 import { createGlobOptions } from './functions/create-glob-options.function';
 import { getRootDir } from './functions/get-root-dir.function';
 import { normalizePaths } from './functions/normalize-paths.function';
+import { FindOptions } from './interfaces/find-options.interface';
 
 /**
  * Find all files and directories matching the provided glob pattern recursively.

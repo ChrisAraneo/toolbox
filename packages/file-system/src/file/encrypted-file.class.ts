@@ -1,3 +1,4 @@
+import { encryptBase64File } from '@chris.araneo/crypto';
 import {
   Base64File,
   FileSystem,
@@ -7,7 +8,6 @@ import {
 } from '@chris.araneo/file-system';
 import { chain } from 'lodash';
 import { filter, map, Observable } from 'rxjs';
-import { encryptBase64File } from '@chris.araneo/crypto';
 
 export class EncryptedFile extends TextFile {
   protected override textFileWriter: TextFileWriter;
@@ -50,29 +50,28 @@ export class EncryptedFile extends TextFile {
       .thru((observable) =>
         observable.pipe(
           filter((result) => result instanceof TextFile),
-          map(
-            (result: TextFile) =>
-              chain(result)
-                .thru((r: TextFile) => ({
-                  path: r.getPath(),
-                  content: r.getContent(),
-                  modifiedDate: r.getModifiedDate(),
-                }))
-                .thru(
-                  ({ path, content, modifiedDate }) =>
-                    new EncryptedFile(
-                      path,
-                      content,
-                      modifiedDate,
-                      '',
-                      fileSystem,
-                    ),
-                )
-                .value() as EncryptedFile,
+          map((result: TextFile) =>
+            chain(result)
+              .thru((r: TextFile) => ({
+                path: r.getPath(),
+                content: r.getContent(),
+                modifiedDate: r.getModifiedDate(),
+              }))
+              .thru(
+                ({ path, content, modifiedDate }) =>
+                  new EncryptedFile(
+                    path,
+                    content,
+                    modifiedDate,
+                    '',
+                    fileSystem,
+                  ),
+              )
+              .value(),
           ),
         ),
       )
-      .value() as Observable<EncryptedFile>;
+      .value();
   }
 
   override writeToFile(): Observable<void> {

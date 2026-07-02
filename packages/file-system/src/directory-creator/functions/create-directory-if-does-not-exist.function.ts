@@ -24,7 +24,7 @@ const createDirectory = async (
       logDirectoryCreated(logger);
     })
     .catch((error: unknown) => {
-      throw Error(`Can't create directory: ${error}`);
+      throw new Error(`Can't create directory: ${error}`);
     });
 };
 

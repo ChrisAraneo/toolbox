@@ -6,7 +6,7 @@ export const getParentDirectory = (path: string): string => {
 
   try {
     isFile = lstatSync(path).isFile();
-  } catch (error: unknown) {
+  } catch {
     // If there is error, we skip the path.
     isFile = false;
   }

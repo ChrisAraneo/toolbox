@@ -5,14 +5,12 @@ export function extendExpectWithToEqualSource(): void {
     toEqualSource(received: SourceFile, expected: SourceFile) {
       if (areSourcesEqual(received, expected)) {
         return {
-          message: () =>
-            `Expected: ${this.utils.printExpected(received.getFullText())}\nReceived: ${this.utils.printReceived(received.getFullText())}`,
+          message: () => `Expected: ${this.utils.printExpected(received.getFullText())}\nReceived: ${this.utils.printReceived(received.getFullText())}`,
           pass: true,
         };
       }
       return {
-        message: () =>
-          `Expected: ${this.utils.printExpected(expected.getFullText())}\nReceived: ${this.utils.printReceived(
+        message: () => `Expected: ${this.utils.printExpected(expected.getFullText())}\nReceived: ${this.utils.printReceived(
             received.getFullText(),
           )}\n\n${this.utils.diff(expected.getFullText(), received.getFullText())}`,
         pass: false,

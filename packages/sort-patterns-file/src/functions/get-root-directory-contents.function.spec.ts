@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable max-statements */
-
 import { glob } from 'glob';
 import { FileSystemNode } from 'src/interfaces/file-system-node.interface';
 

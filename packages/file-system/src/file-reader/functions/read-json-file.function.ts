@@ -1,12 +1,12 @@
 import { catchError, map, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { JsonFile } from 'src/file/json-file.class';
 
 import { FileSystem } from '../../file-system/file-system.class';
-import { ReadFileResultStatus } from '../types/read-file-result-status.enum';
 import { ReadFileError } from '../types/read-file-error.interface';
-import { JsonFile } from 'src/file/json-file.class';
-import { readPathMetadata } from './read-path-metadata.function';
+import { ReadFileResultStatus } from '../types/read-file-result-status.enum';
 import { readFile } from './read-file.function';
+import { readPathMetadata } from './read-path-metadata.function';
 
 export const readJsonFile = (fileSystem: FileSystem) => (path: string) =>
   readPathMetadata(fileSystem)(path)

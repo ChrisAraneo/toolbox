@@ -1,8 +1,10 @@
-import { randomBytes, scryptSync } from 'crypto';
+import { randomBytes, scryptSync } from 'node:crypto';
+
 import { chain } from 'lodash';
+
+import { concatToBase64 } from './concat-to-base64';
 import { createAesCipher } from './create-aes-cipher';
 import { encryptContent } from './encrypt-content';
-import { concatToBase64 } from './concat-to-base64';
 
 export const encryptAES = (content: string, password: string): string =>
   chain({
@@ -15,4 +17,4 @@ export const encryptAES = (content: string, password: string): string =>
     .thru(createAesCipher)
     .thru(encryptContent)
     .thru(concatToBase64)
-    .value() as string;
+    .value();
