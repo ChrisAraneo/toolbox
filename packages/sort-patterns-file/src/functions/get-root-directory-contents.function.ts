@@ -1,9 +1,9 @@
 import { glob } from 'glob';
 import { performance } from 'just-performance';
-import { concat, isNull } from 'lodash';
+import { concat, isNull, map } from 'lodash-es';
+
 import { FileSystemNode } from '../interfaces/file-system-node.interface';
 import { GetRootDirectoryContentsOptions } from '../interfaces/get-root-directory-contents-options.interface';
-
 import { createFileSystemNodeMap } from './create-file-system-node-map.function';
 import { createFileSystemPathInfos } from './create-file-system-path-infos.function';
 import { createOrganizedFileSystemNodeArray } from './create-organized-file-system-node-array.function';
@@ -39,7 +39,7 @@ export const getRootDirectoryContents = async (
   // Stryker restore all
 
   const contents = await glob('**', {
-    ignore: ignoredDirectories.map((directory) => `${directory}/**`),
+    ignore: map(ignoredDirectories, (directory) => `${directory}/**`),
     dot: true,
     dotRelative: true,
   });

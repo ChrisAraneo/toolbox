@@ -1,5 +1,4 @@
 import { ExtendedFileSystemNode } from '../interfaces/extended-file-system-node.interface';
-
 import { sortByMatchingDirectories } from './sort-by-matching-directories.function';
 
 describe('sortByMatchingDirectories', () => {

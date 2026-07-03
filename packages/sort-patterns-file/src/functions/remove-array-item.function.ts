@@ -1,7 +1,9 @@
+import { indexOf, pullAt } from 'lodash-es';
+
 export const removeArrayItem = (array: string[], item: string): void => {
-  const index = array.indexOf(item);
+  const index = indexOf(array, item);
 
   if (index !== -1) {
-    array.splice(index, 1);
+    pullAt(array, index);
   }
 };

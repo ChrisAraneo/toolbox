@@ -1,12 +1,13 @@
 import { lstatSync } from 'node:fs';
 import { normalize } from 'node:path';
 
+import { chain } from 'lodash-es';
+
 import { FileSystemPathInfo } from '../interfaces/file-system-path-info.interface';
 
 export const createFileSystemPathInfos = (
   paths: string[],
-): FileSystemPathInfo[] =>
-  paths
+): FileSystemPathInfo[] => chain(paths)
     .map((path) => path.trim())
     .filter(Boolean)
     .map((path) => normalize(path))
@@ -28,4 +29,5 @@ export const createFileSystemPathInfos = (
         isDirectory,
         isFile,
       };
-    });
+    })
+    .value();

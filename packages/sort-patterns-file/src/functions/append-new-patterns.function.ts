@@ -1,9 +1,11 @@
+import { forEach, includes } from 'lodash-es';
+
 export const appendNewPatterns = (
   targetArray: string[],
   patterns: string[],
 ): void => {
-  patterns.forEach((pattern) => {
-    if (Boolean(pattern) && !targetArray.includes(pattern)) {
+  forEach(patterns, (pattern) => {
+    if (Boolean(pattern) && !includes(targetArray, pattern)) {
       targetArray.push(pattern);
     }
   });

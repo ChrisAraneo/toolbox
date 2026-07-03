@@ -1,8 +1,9 @@
 import { readFile } from 'node:fs';
 import { normalize, sep } from 'node:path';
 
-export const readPatternsFile = async (path: string): Promise<string[]> =>
-  new Promise((resolve, reject) => {
+import { chain } from 'lodash-es';
+
+export const readPatternsFile = async (path: string): Promise<string[]> => new Promise((resolve, reject) => {
     readFile(
       normalize(process.cwd() + sep + path),
       'utf8',
@@ -10,10 +11,10 @@ export const readPatternsFile = async (path: string): Promise<string[]> =>
         if (error) {
           reject(error);
         } else {
-          const parts = data
-            .split('\n')
+          const parts = chain(data.split('\n'))
             .map((part) => part.replaceAll(/[\n\r]/gu, ''))
-            .filter(Boolean);
+            .filter(Boolean)
+            .value();
 
           resolve(parts);
         }

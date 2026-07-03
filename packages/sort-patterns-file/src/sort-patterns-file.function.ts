@@ -1,6 +1,6 @@
 // Stryker disable all
 
-import { isEmpty } from 'lodash';
+import { concat, filter, forEach, includes, isEmpty, map } from 'lodash-es';
 
 import { appendNewPatterns } from './functions/append-new-patterns.function';
 import { getRootDirectoryContents } from './functions/get-root-directory-contents.function';
@@ -51,14 +51,14 @@ export const sortPatternsFile = async (
 
   const patterns = await readPatternsFile(path);
 
-  const extendedNodes: ExtendedFileSystemNode[] = state.nodes.map((node) => ({
+  const extendedNodes: ExtendedFileSystemNode[] = map(state.nodes, (node) => ({
     ...node,
     matchingDirectories: [],
     matchingFiles: [],
   }));
 
-  for (const pattern of patterns) {
-    for (const [index, node] of state.nodes.entries()) {
+  forEach(patterns, (pattern) => {
+    forEach(state.nodes, (node, index) => {
       if (isMatchingDirectory(pattern, node.name)) {
         extendedNodes[index].matchingDirectories.push(pattern);
       }
@@ -66,12 +66,12 @@ export const sortPatternsFile = async (
       if (isMatchingFile(pattern, node.files)) {
         extendedNodes[index].matchingFiles.push(pattern);
       }
-    }
-  }
+    });
+  });
 
   let organizedPatterns: string[] = [];
 
-  for (const node of extendedNodes) {
+  forEach(extendedNodes, (node) => {
     sortByMatchingDirectories(node);
 
     appendNewPatterns(organizedPatterns, node.matchingDirectories);
@@ -79,15 +79,17 @@ export const sortPatternsFile = async (
     sortByMatchingFiles(node);
 
     appendNewPatterns(organizedPatterns, node.matchingFiles);
-  }
+  });
 
-  const nonMatchingPatterns = patterns.filter(
-    (pattern) => Boolean(pattern) && !organizedPatterns.includes(pattern),
+  const nonMatchingPatterns = filter(
+    patterns,
+    (pattern) => Boolean(pattern) && !includes(organizedPatterns, pattern),
   );
 
   sortArrayAlphabetically(nonMatchingPatterns);
 
-  organizedPatterns = [...organizedPatterns, ...nonMatchingPatterns].filter(
+  organizedPatterns = filter(
+    concat(organizedPatterns, nonMatchingPatterns),
     Boolean,
   );
 

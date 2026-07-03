@@ -1,9 +1,9 @@
-import { isUndefined } from 'lodash';
+import { find, isUndefined } from 'lodash-es';
 
 export const isArrayDiff = (a: string[], b: string[]): boolean => {
   if (a.length !== b.length) {
     return true;
   }
 
-  return !isUndefined(a.find((value, index) => value !== b[index]));
+  return !isUndefined(find(a, (value, index) => value !== b[index]));
 };

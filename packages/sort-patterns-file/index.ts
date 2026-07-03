@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import { forEach, map } from 'lodash-es';
+
 import { readGitignore } from './src/functions/read-gitignore.function';
 import { sortPatternsFile } from './src/sort-patterns-file.function';
 
@@ -10,7 +12,7 @@ const ignoredDirectories: string[] = [];
 let isWriteMode = true;
 let isIgnoreMode = false;
 
-process.argv.forEach((value, index) => {
+forEach(process.argv, (value, index) => {
   if (index <= 1) {
     return;
   }
@@ -40,7 +42,7 @@ void (async () => {
   ignoredDirectories.push(...(await readGitignore()));
 
   await Promise.all(
-    files.map(async (file) => {
+    map(files, async (file) => {
       try {
         await sortPatternsFile(file, ignoredDirectories);
       } catch (error: unknown) {

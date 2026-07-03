@@ -1,8 +1,9 @@
 import { readFile } from 'node:fs';
 import { normalize, sep } from 'node:path';
 
-export const readGitignore = async (): Promise<string[]> =>
-  new Promise((resolve) => {
+import { chain } from 'lodash-es';
+
+export const readGitignore = async (): Promise<string[]> => new Promise((resolve) => {
     const gitignorePath = normalize(`${process.cwd() + sep}.gitignore`);
 
     readFile(gitignorePath, 'utf8', (error, data: string) => {
@@ -12,10 +13,10 @@ export const readGitignore = async (): Promise<string[]> =>
         return;
       }
 
-      const entries = data
-        .split('\n')
+      const entries = chain(data.split('\n'))
         .map((line) => line.trim())
-        .filter((line) => line.length > 0 && !line.startsWith('#'));
+        .filter((line) => line.length > 0 && !line.startsWith('#'))
+        .value();
 
       console.log(`Ignoring ${entries.length} entries from .gitignore`);
 

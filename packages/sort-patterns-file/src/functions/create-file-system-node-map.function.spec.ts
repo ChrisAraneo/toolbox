@@ -1,5 +1,4 @@
 import { FileSystemPathInfo } from '../interfaces/file-system-path-info.interface';
-
 import { createFileSystemNodeMap } from './create-file-system-node-map.function';
 
 jest.mock('./get-parent-directory.function', () => ({

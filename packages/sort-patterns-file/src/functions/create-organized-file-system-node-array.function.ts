@@ -1,5 +1,6 @@
-import { FileSystemNode } from '../interfaces/file-system-node.interface';
+import { filter, forEach, map } from 'lodash-es';
 
+import { FileSystemNode } from '../interfaces/file-system-node.interface';
 import { getSortedKeys } from './get-sorted-keys.function';
 
 export const createOrganizedFileSystemNodeArray = (
@@ -9,19 +10,23 @@ export const createOrganizedFileSystemNodeArray = (
 
   const keys = getSortedKeys(directories);
 
-  keys
-    .filter((item) => item !== '.')
-    .forEach((key) => {
+  forEach(
+    filter(keys, (item) => item !== '.'),
+    (key) => {
       const item = directories[key];
 
+      // Left as native Array.prototype.sort: lodash's sortBy does not accept a
+      // Custom comparator (no localeCompare equivalent) and does not mutate
+      // In place, so it isn't a behavior-preserving replacement here.
       item.files.sort((a, b) => a.localeCompare(b));
 
       result.push({
         name: key.trim(),
         parentDirectory: item.parentDirectory?.trim() ?? null,
-        files: item.files.map((file) => file.trim()),
+        files: map(item.files, (file) => file.trim()),
       });
-    });
+    },
+  );
 
   result.push({
     name: '.',

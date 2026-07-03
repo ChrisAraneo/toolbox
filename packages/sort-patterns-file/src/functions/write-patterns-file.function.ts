@@ -1,16 +1,18 @@
 import * as fs from 'node:fs';
 
+import { chain } from 'lodash-es';
+
 export const writePatternsFile = async (
   path: string,
   patterns: string[],
-): Promise<void> =>
-  new Promise((resolve, reject) => {
+): Promise<void> => new Promise((resolve, reject) => {
     fs.writeFile(
       path,
-      `${patterns
+      `${chain(patterns)
         .map((pattern) => pattern.trim())
         .filter(Boolean)
-        .join('\n')}\n`,
+        .join('\n')
+        .value()}\n`,
       'utf8',
       (e) => {
         if (e) {

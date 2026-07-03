@@ -1,2 +1,3 @@
-export const ignoreNodeModules = (patterns: string[]): string[] =>
-  patterns.filter((pattern) => pattern !== 'node_modules');
+import { filter } from 'lodash-es';
+
+export const ignoreNodeModules = (patterns: string[]): string[] => filter(patterns, (pattern) => pattern !== 'node_modules');
