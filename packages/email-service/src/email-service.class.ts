@@ -3,6 +3,7 @@ import { Server } from 'node:http';
 import { Logger } from '@chris.araneo/logger';
 import Express from 'express';
 import { ParamsDictionary, Request, Response } from 'express-serve-static-core';
+import { forEach, keys, omit } from 'lodash-es';
 import fetch from 'make-fetch-happen';
 import Mustache from 'mustache';
 import { ParsedQs } from 'qs';
@@ -16,8 +17,7 @@ export class EmailService {
   constructor(private readonly logger: Logger) {
     this.logger.info('Email Service v0.0.16');
 
-    const env = { ...process.env };
-    delete env.MJ_APIKEY_PRIVATE;
+    const env = omit(process.env, ['MJ_APIKEY_PRIVATE']);
 
     this.logger.debug(`Environmental variables: ${JSON.stringify(env)}`);
   }
@@ -154,7 +154,7 @@ export class EmailService {
       MAILERSEND_TOKEN: '',
     };
 
-    (Object.keys(result) as EnvVarKey[]).forEach((key: EnvVarKey) => {
+    forEach(keys(result), (key) => {
       const value = this.env?.[key];
 
       if (!value) {
@@ -163,7 +163,7 @@ export class EmailService {
         );
       }
 
-      result[key] = value;
+      result[key as EnvVarKey] = value;
     });
 
     return result;
