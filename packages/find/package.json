@@ -12,7 +12,8 @@
     "dist/**"
   ],
   "dependencies": {
-    "glob": "^11.1.0"
+    "glob": "^11.1.0",
+    "lodash-es": "^4.18.1"
   },
   "publishConfig": {
     "access": "public"

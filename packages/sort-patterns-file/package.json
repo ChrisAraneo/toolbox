@@ -17,6 +17,7 @@
   "dependencies": {
     "glob": "^11.1.0",
     "just-performance": "^4.4.0",
+    "lodash-es": "^4.18.1",
     "minimatch": "^10.1.1"
   }
 }
