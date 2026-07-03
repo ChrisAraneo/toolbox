@@ -4,8 +4,14 @@ import process from 'node:process';
 import { Logger } from '@chris.araneo/logger';
 import Express from 'express';
 import { ParamsDictionary, Request, Response } from 'express-serve-static-core';
-import { now } from 'lodash-es';
+import { chain, now } from 'lodash-es';
 import { ParsedQs } from 'qs';
+import { tryCatch } from 'ramda';
+import { match, P } from 'ts-pattern';
+
+const { nonNullable: NON_NULLABLE } = P;
+
+const HTTP_SERVICE_UNAVAILABLE = 503;
 
 export class HealthCheckService {
   private server?: Server;
@@ -13,18 +19,27 @@ export class HealthCheckService {
   constructor(private readonly logger: Logger) {}
 
   listen(endpoint: string, port: number): void {
-    const express = Express();
+    chain(Express())
+      .thru((express) => {
+        express.get(endpoint, (_, response) => this.handleRequest(_, response));
 
-    express.get(endpoint, (_, response) => this.handleRequest(_, response));
+        return express;
+      })
+      .thru((express) => match(this.server)
+          .with(NON_NULLABLE, (server) => {
+            server.closeAllConnections();
+            server.close();
 
-    if (this.server) {
-      this.server.closeAllConnections();
-      this.server.close();
-    }
-
-    this.server = express.listen(port, () => {
-      this.logger.info(`Health check service listening on port ${port}`);
-    });
+            return express;
+          })
+          .otherwise(() => express),
+      )
+      .thru((express) => {
+        this.server = express.listen(port, () => {
+          this.logger.info(`Health check service listening on port ${port}`);
+        });
+      })
+      .value();
   }
 
   handleRequest(
@@ -37,18 +52,22 @@ export class HealthCheckService {
     >,
     response: Response<unknown, Record<string, unknown>>,
   ): void {
-    const healthcheck = {
+    chain<{ uptime: number; message: unknown; timestamp: number }>({
       uptime: process.uptime(),
-      message: 'OK' as string | unknown,
+      message: 'OK',
       timestamp: now(),
-    };
-
-    try {
-      response.send(healthcheck);
-      this.logger.debug(`Health OK`);
-    } catch (error) {
-      healthcheck.message = error;
-      response.status(503).send();
-    }
+    })
+      .thru((healthcheck) => tryCatch(
+          () => {
+            response.send(healthcheck);
+            this.logger.debug(`Health OK`);
+          },
+          (error: unknown) => {
+            healthcheck.message = error;
+            response.status(HTTP_SERVICE_UNAVAILABLE).send();
+          },
+        )(),
+      )
+      .value();
   }
 }
