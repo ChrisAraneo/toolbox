@@ -1,7 +1,7 @@
 import { lstatSync } from 'node:fs';
 import { normalize } from 'node:path';
 
-import { chain } from 'lodash-es';
+import { chain, trim } from 'lodash-es';
 import { tryCatch } from 'ramda';
 
 import { FileSystemPathInfo } from '../interfaces/file-system-path-info.interface';
@@ -19,7 +19,7 @@ export const createFileSystemPathInfos = (
   paths: string[],
 ): FileSystemPathInfo[] =>
   chain(paths)
-    .map((path) => path.trim())
+    .map((path) => trim(path))
     .filter(Boolean)
     .map((path) => normalize(path))
     .map((path) => ({ path, ...toFileStat(path) }))

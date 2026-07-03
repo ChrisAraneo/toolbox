@@ -1,7 +1,7 @@
 import { lstatSync } from 'node:fs';
 import { dirname, sep } from 'node:path';
 
-import { chain, initial } from 'lodash-es';
+import { chain, initial, trim } from 'lodash-es';
 import { tryCatch } from 'ramda';
 import { match } from 'ts-pattern';
 
@@ -19,7 +19,7 @@ const toDirectoryParent = (path: string): string =>
     .thru(initial)
     .thru((parts) => parts.join(sep))
     .thru((joined) => joined || '.')
-    .thru((result) => result.trim())
+    .thru(trim)
     .value();
 
 export const getParentDirectory = (path: string): string =>

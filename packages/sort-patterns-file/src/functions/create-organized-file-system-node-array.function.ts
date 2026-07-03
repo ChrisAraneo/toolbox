@@ -1,4 +1,4 @@
-import { chain, map } from 'lodash-es';
+import { chain, map, trim } from 'lodash-es';
 
 import { FileSystemNode } from '../interfaces/file-system-node.interface';
 import { getSortedKeys } from './get-sorted-keys.function';
@@ -15,9 +15,9 @@ const toOrganizedNode = (
   item.files.sort((a: string, b: string) => a.localeCompare(b));
 
   return {
-    name: key.trim(),
+    name: trim(key),
     parentDirectory: item.parentDirectory?.trim() ?? null,
-    files: map(item.files, (file: string) => file.trim()),
+    files: map(item.files, (file: string) => trim(file)),
   };
 };
 

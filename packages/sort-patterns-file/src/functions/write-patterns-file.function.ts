@@ -1,11 +1,13 @@
 import * as fs from 'node:fs';
 
-import { chain } from 'lodash-es';
+import { chain, trim } from 'lodash-es';
 import { match, P } from 'ts-pattern';
+
+const { not } = P;
 
 const toFileContent = (patterns: string[]): string =>
   `${chain(patterns)
-    .map((pattern: string) => pattern.trim())
+    .map((pattern: string) => trim(pattern))
     .filter(Boolean)
     .join('\n')
     .value()}\n`;
@@ -16,7 +18,7 @@ const settle = (
   error: NodeJS.ErrnoException | null,
 ): void =>
   match(error)
-    .with(P.not(null), (e) => reject(e))
+    .with(not(null), (e) => reject(e))
     .otherwise(() => resolve());
 
 export const writePatternsFile = async (

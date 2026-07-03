@@ -1,4 +1,4 @@
-import { isEmpty, reduce } from 'lodash-es';
+import { assign, isEmpty, reduce, trim } from 'lodash-es';
 import { match } from 'ts-pattern';
 
 import { FileSystemNode } from '../interfaces/file-system-node.interface';
@@ -6,7 +6,7 @@ import { FileSystemPathInfo } from '../interfaces/file-system-path-info.interfac
 import { getParentDirectory } from './get-parent-directory.function';
 
 const toDirectoryEntry = (path: string): FileSystemNode => ({
-  name: path.trim(),
+  name: trim(path),
   parentDirectory: getParentDirectory(path),
   files: [],
 });
@@ -51,6 +51,6 @@ export const createFileSystemNodeMap = (
   reduce<FileSystemPathInfo, Record<string, FileSystemNode>>(
     infos,
     (directories, item) =>
-      Object.assign(directories, toPatch(directories, item)),
+      assign(directories, toPatch(directories, item)),
     {},
   );

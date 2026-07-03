@@ -1,12 +1,14 @@
 import { readFile } from 'node:fs';
 import { normalize, sep } from 'node:path';
 
-import { chain } from 'lodash-es';
+import { chain, trim } from 'lodash-es';
 import { match, P } from 'ts-pattern';
+
+const { not } = P;
 
 const toGitignoreEntries = (data: string): string[] =>
   chain(data.split('\n'))
-    .map((line: string) => line.trim())
+    .map((line: string) => trim(line))
     .filter((line: string) => line.length > 0 && !line.startsWith('#'))
     .value();
 
@@ -16,7 +18,7 @@ const resolveEntries = (
   data: string,
 ): void =>
   match(error)
-    .with(P.not(null), () => resolve([]))
+    .with(not(null), () => resolve([]))
     .otherwise(() => {
       const entries = toGitignoreEntries(data);
 
