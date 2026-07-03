@@ -1,5 +1,6 @@
 import path from 'node:path';
 
+import { includes, initial, last, max } from 'lodash-es';
 import md5 from 'md5';
 
 export abstract class File<T> {
@@ -20,14 +21,13 @@ export abstract class File<T> {
   getFilename(): string {
     const basename = path.basename(this.path);
 
-    if (!basename.includes('.')) {
+    if (!includes(basename, '.')) {
       return basename;
     }
 
     const parts = basename.split('.');
-    parts.pop();
 
-    return parts.join('.');
+    return initial(parts).join('.');
   }
 
   getExtension(): string | null {
@@ -38,7 +38,7 @@ export abstract class File<T> {
       return null;
     }
 
-    return parts.at(-1) ?? null;
+    return last(parts) ?? null;
   }
 
   getContent(): T {
@@ -61,7 +61,7 @@ export abstract class File<T> {
     const basenameIndex = this.path.lastIndexOf(basename);
 
     this.path =
-      this.path.slice(0, Math.max(0, basenameIndex)) +
+      this.path.slice(0, max([0, basenameIndex])) +
       filename +
       (extension ? `.${extension}` : '');
   }

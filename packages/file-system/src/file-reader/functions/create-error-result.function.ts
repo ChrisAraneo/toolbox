@@ -7,8 +7,7 @@ export const createErrorResult = (
   message: string,
   path: string,
   error: unknown,
-): Observable<ReadFileResult> =>
-  of({
+): Observable<ReadFileResult> => of({
     status: ReadFileResultStatus.Error,
     message: `${message} (${path}): ${JSON.stringify(error)}`,
   });

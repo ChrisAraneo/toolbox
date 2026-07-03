@@ -1,3 +1,4 @@
+import { map } from 'lodash-es';
 import { forkJoin, Observable } from 'rxjs';
 
 import { File } from '../file/file.class';
@@ -10,7 +11,7 @@ export abstract class FileReader<
   constructor(protected fileSystem: FileSystem) {}
 
   readFiles(paths: string[]): Observable<T[]> {
-    return forkJoin(paths.map((path: string) => this.readFile(path)));
+    return forkJoin(map(paths, (path: string) => this.readFile(path)));
   }
 
   abstract readFile(path: string): Observable<T>;
