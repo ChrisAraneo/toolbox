@@ -1,9 +1,13 @@
 import { find, isUndefined } from 'lodash-es';
+import { match } from 'ts-pattern';
 
-export const isPatternsFileChanged = (a: string[], b: string[]): boolean => {
-  if (a.length !== b.length) {
-    return true;
-  }
+const hasDifferentLength = ([a, b]: [string[], string[]]): boolean =>
+  a.length !== b.length;
 
-  return !isUndefined(find(a, (value, index) => value !== b[index]));
-};
+const hasDifferentElementAt = ([a, b]: [string[], string[]]): boolean =>
+  !isUndefined(find(a, (value, index) => value !== b[index]));
+
+export const isPatternsFileChanged = (a: string[], b: string[]): boolean =>
+  match([a, b] as [string[], string[]])
+    .when(hasDifferentLength, () => true)
+    .otherwise(hasDifferentElementAt);

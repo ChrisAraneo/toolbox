@@ -1,9 +1,7 @@
-import { indexOf, pullAt } from 'lodash-es';
+import { indexOf, noop, pullAt } from 'lodash-es';
+import { match } from 'ts-pattern';
 
-export const removeArrayItem = (array: string[], item: string): void => {
-  const index = indexOf(array, item);
-
-  if (index !== -1) {
-    pullAt(array, index);
-  }
-};
+export const removeArrayItem = (array: string[], item: string): void =>
+  match(indexOf(array, item))
+    .when((index) => index !== -1, (index) => void pullAt(array, index))
+    .otherwise(noop);

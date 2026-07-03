@@ -1,53 +1,62 @@
 #!/usr/bin/env node
 
-import { forEach, map } from 'lodash-es';
+import { map, noop, reduce } from 'lodash-es';
+import { match, P } from 'ts-pattern';
 
 import { readGitignore } from './src/functions/read-gitignore.function';
 import { sortPatternsFile } from './src/sort-patterns-file.function';
 
-const files: string[] = [];
+interface ArgvState {
+  mode: 'ignore' | 'write';
+  files: string[];
+  ignoredDirectories: string[];
+}
 
-const ignoredDirectories: string[] = [];
+const INITIAL_ARGV_STATE: ArgvState = {
+  mode: 'write',
+  files: [],
+  ignoredDirectories: [],
+};
 
-let isWriteMode = true;
-let isIgnoreMode = false;
+const toArgvState = (state: ArgvState, value: string): ArgvState =>
+  match(value)
+    .with(P.union('-i', '--ignore'), () => ({
+      ...state,
+      mode: 'ignore' as const,
+    }))
+    .with(P.union('-w', '--write'), () => ({
+      ...state,
+      mode: 'write' as const,
+    }))
+    .otherwise(() =>
+      match(state.mode)
+        .with('ignore', () => ({
+          ...state,
+          ignoredDirectories: [...state.ignoredDirectories, value.trim()],
+        }))
+        .otherwise(() => ({ ...state, files: [...state.files, value.trim()] })),
+    );
 
-forEach(process.argv, (value, index) => {
-  if (index <= 1) {
-    return;
-  }
+const parseArgv = (argv: string[]): ArgvState =>
+  reduce(argv.slice(2), toArgvState, INITIAL_ARGV_STATE);
 
-  if (value === '-i' || value === '--ignore') {
-    isIgnoreMode = true;
-    isWriteMode = false;
-
-    return;
-  }
-
-  if (value === '-w' || value === '--write') {
-    isIgnoreMode = false;
-    isWriteMode = true;
-
-    return;
-  }
-
-  if (isIgnoreMode) {
-    ignoredDirectories.push(value.trim());
-  } else if (isWriteMode) {
-    files.push(value.trim());
-  }
-});
+const processFile = (
+  file: string,
+  ignoredDirectories: string[],
+): Promise<void> =>
+  sortPatternsFile(file, ignoredDirectories).then(noop, (error: unknown) =>
+    console.error(`Error: could not process file ${file}`, error),
+  );
 
 void (async () => {
-  ignoredDirectories.push(...(await readGitignore()));
+  const { files, ignoredDirectories } = parseArgv(process.argv);
+
+  const allIgnoredDirectories = [
+    ...ignoredDirectories,
+    ...(await readGitignore()),
+  ];
 
   await Promise.all(
-    map(files, async (file) => {
-      try {
-        await sortPatternsFile(file, ignoredDirectories);
-      } catch (error: unknown) {
-        console.error(`Error: could not process file ${file}`, error);
-      }
-    }),
+    map(files, (file: string) => processFile(file, allIgnoredDirectories)),
   );
 })();

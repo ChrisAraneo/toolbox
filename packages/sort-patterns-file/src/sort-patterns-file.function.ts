@@ -1,6 +1,7 @@
 // Stryker disable all
 
-import { concat, filter, forEach, includes, isEmpty, map } from 'lodash-es';
+import { concat, filter, includes, isEmpty, map, reduce } from 'lodash-es';
+import { match } from 'ts-pattern';
 
 import { appendNewPatterns } from './functions/append-new-patterns.function';
 import { getRootDirectoryContents } from './functions/get-root-directory-contents.function';
@@ -18,93 +19,123 @@ import { writePatternsFile } from './functions/write-patterns-file.function';
 import { ExtendedFileSystemNode } from './interfaces/extended-file-system-node.interface';
 import { FileSystemNode } from './interfaces/file-system-node.interface';
 
-const state = {
-  nodes: [] as FileSystemNode[],
-  ignoredDirectories: [] as string[],
+const state: { nodes: FileSystemNode[]; ignoredDirectories: string[] } = {
+  nodes: [],
+  ignoredDirectories: [],
 };
 
-const updateState = async (
-  nodes: FileSystemNode[],
-  ignoredDirectories: string[],
-): Promise<void> => {
-  state.nodes = nodes;
+const isStateStale = (ignoredDirectories: string[]): boolean =>
+  isEmpty(state.nodes) ||
+  isArrayDiff(state.ignoredDirectories, ignoredDirectories);
+
+const refreshState = async (ignoredDirectories: string[]): Promise<void> => {
+  state.nodes = await getRootDirectoryContents(ignoredDirectories, {
+    withTimeLogging: true,
+    withCache: true,
+  });
   state.ignoredDirectories = ignoredDirectories;
 };
+
+const ensureState = async (ignoredDirectories: string[]): Promise<void> =>
+  match(isStateStale(ignoredDirectories))
+    .with(true, () => refreshState(ignoredDirectories))
+    .otherwise(() => Promise.resolve());
+
+const toExtendedNode = (
+  patterns: string[],
+  node: FileSystemNode,
+): ExtendedFileSystemNode => ({
+  ...node,
+  matchingDirectories: filter(patterns, (pattern: string) =>
+    isMatchingDirectory(pattern, node.name),
+  ),
+  matchingFiles: filter(patterns, (pattern: string) =>
+    isMatchingFile(pattern, node.files),
+  ),
+});
+
+const toMatchedPatterns = (extendedNodes: ExtendedFileSystemNode[]): string[] =>
+  reduce(
+    extendedNodes,
+    (matched: string[], node: ExtendedFileSystemNode) => {
+      sortByMatchingDirectories(node);
+      appendNewPatterns(matched, node.matchingDirectories);
+      sortByMatchingFiles(node);
+      appendNewPatterns(matched, node.matchingFiles);
+
+      return matched;
+    },
+    [] as string[],
+  );
+
+const toNonMatchingPatterns = (
+  patterns: string[],
+  matchedPatterns: string[],
+): string[] => {
+  const nonMatching = filter(
+    patterns,
+    (pattern: string) =>
+      Boolean(pattern) && !includes(matchedPatterns, pattern),
+  );
+
+  sortArrayAlphabetically(nonMatching);
+
+  return nonMatching;
+};
+
+const toOrganizedPatterns = (
+  patterns: string[],
+  extendedNodes: ExtendedFileSystemNode[],
+): string[] => {
+  const matchedPatterns = toMatchedPatterns(extendedNodes);
+
+  return filter(
+    concat(matchedPatterns, toNonMatchingPatterns(patterns, matchedPatterns)),
+    Boolean,
+  );
+};
+
+const logResult = (
+  path: string,
+  startTime: number,
+  wasChanged: boolean,
+): void =>
+  match(wasChanged)
+    .with(true, () => console.log(`${path} ${getTimeDiff(startTime)}ms (changed)`))
+    .otherwise(() =>
+      console.log(
+        `\u001B[90m${path} ${getTimeDiff(startTime)}ms\u001B[0m (unchanged)`,
+      ),
+    );
+
+const applyOrganizedPatterns = async (
+  path: string,
+  patterns: string[],
+  organizedPatterns: string[],
+  startTime: number,
+): Promise<void> =>
+  match(isPatternsFileChanged(ignoreNodeModules(patterns), ignoreNodeModules(organizedPatterns)))
+    .with(true, async () => {
+      await writePatternsFile(path, organizedPatterns);
+      logResult(path, startTime, true);
+    })
+    .otherwise(async () => logResult(path, startTime, false));
 
 export const sortPatternsFile = async (
   path: string,
   ignoredDirectories: string[] = [],
 ): Promise<void> => {
-  if (
-    isEmpty(state.nodes) ||
-    isArrayDiff(state.ignoredDirectories, ignoredDirectories)
-  ) {
-    const updatedNodes = await getRootDirectoryContents(ignoredDirectories, {
-      withTimeLogging: true,
-      withCache: true,
-    });
-
-    await updateState(updatedNodes, ignoredDirectories);
-  }
+  await ensureState(ignoredDirectories);
 
   const startTime = performance.now();
 
   const patterns = await readPatternsFile(path);
 
-  const extendedNodes: ExtendedFileSystemNode[] = map(state.nodes, (node) => ({
-    ...node,
-    matchingDirectories: [],
-    matchingFiles: [],
-  }));
-
-  forEach(patterns, (pattern) => {
-    forEach(state.nodes, (node, index) => {
-      if (isMatchingDirectory(pattern, node.name)) {
-        extendedNodes[index].matchingDirectories.push(pattern);
-      }
-
-      if (isMatchingFile(pattern, node.files)) {
-        extendedNodes[index].matchingFiles.push(pattern);
-      }
-    });
-  });
-
-  let organizedPatterns: string[] = [];
-
-  forEach(extendedNodes, (node) => {
-    sortByMatchingDirectories(node);
-
-    appendNewPatterns(organizedPatterns, node.matchingDirectories);
-
-    sortByMatchingFiles(node);
-
-    appendNewPatterns(organizedPatterns, node.matchingFiles);
-  });
-
-  const nonMatchingPatterns = filter(
-    patterns,
-    (pattern) => Boolean(pattern) && !includes(organizedPatterns, pattern),
+  const extendedNodes = map(state.nodes, (node: FileSystemNode) =>
+    toExtendedNode(patterns, node),
   );
 
-  sortArrayAlphabetically(nonMatchingPatterns);
+  const organizedPatterns = toOrganizedPatterns(patterns, extendedNodes);
 
-  organizedPatterns = filter(
-    concat(organizedPatterns, nonMatchingPatterns),
-    Boolean,
-  );
-
-  if (
-    isPatternsFileChanged(
-      ignoreNodeModules(patterns),
-      ignoreNodeModules(organizedPatterns),
-    )
-  ) {
-    await writePatternsFile(path, organizedPatterns);
-
-    console.log(`${path} ${getTimeDiff(startTime)}ms (changed)`);
-  } else {
-    console.log(
-      `\u001B[90m${path} ${getTimeDiff(startTime)}ms\u001B[0m (unchanged)`,
-    );
-  }
+  await applyOrganizedPatterns(path, patterns, organizedPatterns, startTime);
 };

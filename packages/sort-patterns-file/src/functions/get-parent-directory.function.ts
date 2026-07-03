@@ -1,22 +1,28 @@
 import { lstatSync } from 'node:fs';
 import { dirname, sep } from 'node:path';
 
-export const getParentDirectory = (path: string): string => {
-  let isFile: boolean;
+import { chain, initial } from 'lodash-es';
+import { tryCatch } from 'ramda';
+import { match } from 'ts-pattern';
 
-  try {
-    isFile = lstatSync(path).isFile();
-  } catch {
-    // If there is error, we skip the path.
-    isFile = false;
-  }
+// If there is error, we skip the path.
+const isFilePath = tryCatch(
+  (path: string) => lstatSync(path).isFile(),
+  () => false,
+);
 
-  if (isFile) {
-    return dirname(path) || '.';
-  }
+const toFileParent = (path: string): string => dirname(path) || '.';
 
-  const parts = dirname(path).split(sep);
-  parts.pop();
+const toDirectoryParent = (path: string): string =>
+  chain(dirname(path))
+    .thru((dir) => dir.split(sep))
+    .thru(initial)
+    .thru((parts) => parts.join(sep))
+    .thru((joined) => joined || '.')
+    .thru((result) => result.trim())
+    .value();
 
-  return (parts.join(sep) || '.').trim();
-};
+export const getParentDirectory = (path: string): string =>
+  match(isFilePath(path))
+    .with(true, () => toFileParent(path))
+    .otherwise(() => toDirectoryParent(path));

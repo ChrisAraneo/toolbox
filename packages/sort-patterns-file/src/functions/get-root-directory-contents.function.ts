@@ -1,6 +1,7 @@
 import { glob } from 'glob';
 import { performance } from 'just-performance';
-import { concat, isNull, map } from 'lodash-es';
+import { chain, map, noop } from 'lodash-es';
+import { match } from 'ts-pattern';
 
 import { FileSystemNode } from '../interfaces/file-system-node.interface';
 import { GetRootDirectoryContentsOptions } from '../interfaces/get-root-directory-contents-options.interface';
@@ -14,7 +15,28 @@ const DEFAULT_OPTIONS: GetRootDirectoryContentsOptions = {
   withCache: true,
 };
 
-let nodes: FileSystemNode[] | null = null;
+const cache: { nodes: FileSystemNode[] | null } = { nodes: null };
+
+const logWhen = (enabled: boolean | undefined, message: string): void =>
+  match(Boolean(enabled))
+    .with(true, () => console.log(message))
+    .otherwise(noop);
+
+const readDirectoryContents = async (
+  ignoredDirectories: string[],
+): Promise<FileSystemNode[]> => {
+  const contents = await glob('**', {
+    ignore: map(ignoredDirectories, (directory: string) => `${directory}/**`),
+    dot: true,
+    dotRelative: true,
+  });
+
+  return chain([...contents, ...ignoredDirectories])
+    .thru(createFileSystemPathInfos)
+    .thru(createFileSystemNodeMap)
+    .thru(createOrganizedFileSystemNodeArray)
+    .value();
+};
 
 export const getRootDirectoryContents = async (
   ignoredDirectories: string[],
@@ -23,42 +45,34 @@ export const getRootDirectoryContents = async (
   const startTime = performance.now();
 
   // Stryker disable all
-  if (options.withCache === false) {
-    nodes = null;
-  }
+  cache.nodes = match(options.withCache)
+    .with(false, () => null)
+    .otherwise(() => cache.nodes);
+  // Stryker restore all
 
-  if (!isNull(nodes)) {
-    if (options.withTimeLogging) {
-      console.log(
+  return match(cache.nodes !== null)
+    .with(true, async () => {
+      // Stryker disable all
+      logWhen(
+        options.withTimeLogging,
         `Reading contents of directory and all subdirectories (${getTimeDiff(startTime)}ms) (cached)`,
       );
-    }
+      // Stryker restore all
 
-    return nodes;
-  }
-  // Stryker restore all
+      return cache.nodes as FileSystemNode[];
+    })
+    .otherwise(async () => {
+      const freshNodes = await readDirectoryContents(ignoredDirectories);
 
-  const contents = await glob('**', {
-    ignore: map(ignoredDirectories, (directory) => `${directory}/**`),
-    dot: true,
-    dotRelative: true,
-  });
+      cache.nodes = freshNodes;
 
-  const contentsWithIgnored = concat(contents, ignoredDirectories);
+      // Stryker disable all
+      logWhen(
+        options.withTimeLogging,
+        `Reading contents of directory and all subdirectories (${getTimeDiff(startTime)}ms)`,
+      );
+      // Stryker restore all
 
-  const infos = createFileSystemPathInfos(contentsWithIgnored);
-
-  const directoryMap = createFileSystemNodeMap(infos);
-
-  nodes = createOrganizedFileSystemNodeArray(directoryMap);
-
-  // Stryker disable all
-  if (options.withTimeLogging) {
-    console.log(
-      `Reading contents of directory and all subdirectories (${getTimeDiff(startTime)}ms)`,
-    );
-  }
-  // Stryker restore all
-
-  return nodes;
+      return freshNodes;
+    });
 };
