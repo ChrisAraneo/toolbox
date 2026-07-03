@@ -1,5 +1,7 @@
 // Stryker disable all
 
+import { chain, head, noop } from 'lodash-es';
+import { match, P } from 'ts-pattern';
 import {
   createLogger,
   format,
@@ -10,6 +12,7 @@ import {
 import { LogLevel } from './log-level.type';
 import { Meta } from './meta.type';
 const { combine, timestamp, printf, colorize, prettyPrint, simple } = format;
+const { when } = P;
 
 export class Logger {
   private logger!: WinstonLogger;
@@ -18,11 +21,13 @@ export class Logger {
     private logLevel: LogLevel = 'info',
     private readonly areWarningsIgnored = true,
   ) {
-    if (this.areWarningsIgnored) {
-      this.ignoreWarnings();
-    }
-
-    this.initialize();
+    chain(this.areWarningsIgnored)
+      .thru((ignored) => match(ignored)
+          .with(true, () => this.ignoreWarnings())
+          .otherwise(noop),
+      )
+      .thru(() => this.initialize())
+      .value();
   }
 
   debug(message: string, ...meta: Meta[]): void {
@@ -42,8 +47,12 @@ export class Logger {
   }
 
   setLogLevel(logLevel: LogLevel = 'info'): void {
-    this.logLevel = logLevel;
-    this.initialize();
+    chain(logLevel)
+      .thru((level) => {
+        this.logLevel = level;
+      })
+      .thru(() => this.initialize())
+      .value();
   }
 
   private initialize(): void {
@@ -56,25 +65,30 @@ export class Logger {
         prettyPrint(),
         format.splat(),
         simple(),
-        printf((msg) => {
-          const { message } = msg;
-          const splat = msg[Symbol.for('splat')];
-          const iso = new Date().toISOString();
-          const parts = iso.split('.');
-
-          return colorize().colorize(
-            msg.level,
-            `[${parts[0].replace('T', ' ')}] [${msg.level.toLocaleUpperCase()}] - ${message}${
-              splat ? ` ${JSON.stringify(splat)}` : ''
-            }`,
-          );
-        }),
+        printf((msg) => chain({
+            message: msg.message,
+            splat: msg[Symbol.for('splat')],
+            timePart: head(new Date().toISOString().split('.'))?.replace(
+              'T',
+              ' ',
+            ),
+          })
+            .thru(
+              ({ message, splat, timePart }) => `[${timePart}] [${msg.level.toLocaleUpperCase()}] - ${message}${match(
+                  splat,
+                )
+                  .with(when(Boolean), (value) => ` ${JSON.stringify(value)}`)
+                  .otherwise(() => '')}`,
+            )
+            .thru((line) => colorize().colorize(msg.level, line))
+            .value(),
+        ),
       ),
       transports: [new transports.Console()],
     });
   }
 
   private ignoreWarnings(): void {
-    console.warn = (): undefined => {};
+    console.warn = noop;
   }
 }
