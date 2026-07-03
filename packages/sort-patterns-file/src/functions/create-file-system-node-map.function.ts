@@ -6,7 +6,8 @@ import { getParentDirectory } from './get-parent-directory.function';
 
 export const createFileSystemNodeMap = (
   infos: FileSystemPathInfo[],
-): Record<string, FileSystemNode> => reduce<FileSystemPathInfo, Record<string, FileSystemNode>>(
+): Record<string, FileSystemNode> =>
+  reduce<FileSystemPathInfo, Record<string, FileSystemNode>>(
     infos,
     (directories, item) => {
       const parentDirectory = getParentDirectory(item.path);

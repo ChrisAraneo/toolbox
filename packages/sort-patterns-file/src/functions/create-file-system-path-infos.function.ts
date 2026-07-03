@@ -7,7 +7,8 @@ import { FileSystemPathInfo } from '../interfaces/file-system-path-info.interfac
 
 export const createFileSystemPathInfos = (
   paths: string[],
-): FileSystemPathInfo[] => chain(paths)
+): FileSystemPathInfo[] =>
+  chain(paths)
     .map((path) => path.trim())
     .filter(Boolean)
     .map((path) => normalize(path))

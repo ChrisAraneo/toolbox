@@ -3,7 +3,8 @@ import { normalize, sep } from 'node:path';
 
 import { chain } from 'lodash-es';
 
-export const readGitignore = async (): Promise<string[]> => new Promise((resolve) => {
+export const readGitignore = async (): Promise<string[]> =>
+  new Promise((resolve) => {
     const gitignorePath = normalize(`${process.cwd() + sep}.gitignore`);
 
     readFile(gitignorePath, 'utf8', (error, data: string) => {

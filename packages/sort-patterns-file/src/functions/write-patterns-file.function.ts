@@ -5,7 +5,8 @@ import { chain } from 'lodash-es';
 export const writePatternsFile = async (
   path: string,
   patterns: string[],
-): Promise<void> => new Promise((resolve, reject) => {
+): Promise<void> =>
+  new Promise((resolve, reject) => {
     fs.writeFile(
       path,
       `${chain(patterns)
