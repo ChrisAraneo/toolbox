@@ -28,15 +28,18 @@ const EMPTY_ENV_VARS: Record<EnvVarKey, string> = {
 };
 
 // eslint-disable-next-line unicorn/prefer-native-coercion-functions -- Boolean() alone is not a type predicate; narrowing to `string` requires this shape.
-const isNonEmptyString = (value: string | undefined): value is string => Boolean(value);
+const isNonEmptyString = (value: string | undefined): value is string =>
+  Boolean(value);
 
-const mergeError = (previous: unknown, next: unknown): unknown => next ?? previous;
+const mergeError = (previous: unknown, next: unknown): unknown =>
+  next ?? previous;
 
 const captureError = <T>(
   tryer: () => T,
   fallback: T,
   onError?: (error: unknown) => void,
-): { value: T; error: unknown } => tryCatch(
+): { value: T; error: unknown } =>
+  tryCatch(
     (): { value: T; error: unknown } => ({ value: tryer(), error: null }),
     (error: unknown): { value: T; error: unknown } => {
       onError?.(error);
@@ -120,7 +123,8 @@ export class EmailService {
 
         return express;
       })
-      .thru((express) => match(this.server)
+      .thru((express) =>
+        match(this.server)
           .with(NON_NULLABLE, (server) => {
             server.closeAllConnections();
             server.close();
@@ -150,11 +154,15 @@ export class EmailService {
     const envVars = this.getEnvironmentVariablesOrThrow();
 
     chain(renderTemplates(envVars, request.body))
-      .thru(({ text, html, error }) => buildEmailBody(envVars, text, html, error, this.logger),
+      .thru(({ text, html, error }) =>
+        buildEmailBody(envVars, text, html, error, this.logger),
       )
-      .thru(({ body, error }) => match(error)
+      .thru(({ body, error }) =>
+        match(error)
           .with(when(Boolean), (err) => this.reportError(err))
-          .otherwise(() => this.sendEmail(body, envVars.MAILERSEND_TOKEN, response)),
+          .otherwise(() =>
+            this.sendEmail(body, envVars.MAILERSEND_TOKEN, response),
+          ),
       )
       .value();
   }
@@ -200,7 +208,8 @@ export class EmailService {
 
         return env;
       })
-      .thru((env) => reduce(
+      .thru((env) =>
+        reduce(
           keys(EMPTY_ENV_VARS),
           (accumulator, key) => ({
             ...accumulator,

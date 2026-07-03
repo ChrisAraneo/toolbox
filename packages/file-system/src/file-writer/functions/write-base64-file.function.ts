@@ -8,12 +8,15 @@ import { FileSystem } from '../../file-system/file-system.class';
 const { when } = P;
 
 export const writeBase64File =
-  (fileSystem: FileSystem) => (file: Base64File): Observable<void> => new Observable((subscriber) => {
+  (fileSystem: FileSystem) =>
+  (file: Base64File): Observable<void> =>
+    new Observable((subscriber) => {
       fileSystem.writeFile(
         file.getPath(),
         file.getContent(),
         'base64',
-        (error: unknown) => match(error)
+        (error: unknown) =>
+          match(error)
             .with(when(Boolean), (err) => subscriber.error(err))
             .otherwise(() => {
               subscriber.next();
@@ -23,6 +26,8 @@ export const writeBase64File =
     });
 
 export const writeBase64Files =
-  (fileSystem: FileSystem) => (files: Base64File[]): Observable<void> => forkJoin(files.map((file) => writeBase64File(fileSystem)(file))).pipe(
+  (fileSystem: FileSystem) =>
+  (files: Base64File[]): Observable<void> =>
+    forkJoin(files.map((file) => writeBase64File(fileSystem)(file))).pipe(
       map(noop),
     );

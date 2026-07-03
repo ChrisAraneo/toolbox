@@ -25,7 +25,8 @@ export class HealthCheckService {
 
         return express;
       })
-      .thru((express) => match(this.server)
+      .thru((express) =>
+        match(this.server)
           .with(NON_NULLABLE, (server) => {
             server.closeAllConnections();
             server.close();
@@ -57,7 +58,8 @@ export class HealthCheckService {
       message: 'OK',
       timestamp: now(),
     })
-      .thru((healthcheck) => tryCatch(
+      .thru((healthcheck) =>
+        tryCatch(
           () => {
             response.send(healthcheck);
             this.logger.debug(`Health OK`);

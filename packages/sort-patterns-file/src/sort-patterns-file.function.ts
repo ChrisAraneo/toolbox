@@ -101,7 +101,9 @@ const logResult = (
   wasChanged: boolean,
 ): void =>
   match(wasChanged)
-    .with(true, () => console.log(`${path} ${getTimeDiff(startTime)}ms (changed)`))
+    .with(true, () =>
+      console.log(`${path} ${getTimeDiff(startTime)}ms (changed)`),
+    )
     .otherwise(() =>
       console.log(
         `\u001B[90m${path} ${getTimeDiff(startTime)}ms\u001B[0m (unchanged)`,
@@ -114,7 +116,12 @@ const applyOrganizedPatterns = async (
   organizedPatterns: string[],
   startTime: number,
 ): Promise<void> =>
-  match(isPatternsFileChanged(ignoreNodeModules(patterns), ignoreNodeModules(organizedPatterns)))
+  match(
+    isPatternsFileChanged(
+      ignoreNodeModules(patterns),
+      ignoreNodeModules(organizedPatterns),
+    ),
+  )
     .with(true, async () => {
       await writePatternsFile(path, organizedPatterns);
       logResult(path, startTime, true);

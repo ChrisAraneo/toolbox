@@ -5,7 +5,8 @@ import { match, P } from 'ts-pattern';
 
 const { when } = P;
 
-const toRootPrefix = (rootDir?: string): string => match(rootDir)
+const toRootPrefix = (rootDir?: string): string =>
+  match(rootDir)
     .with(when(Boolean), (dir) => `${dir}/`)
     .otherwise(() => '');
 
@@ -13,4 +14,6 @@ const toRootPrefix = (rootDir?: string): string => match(rootDir)
  * Normalizes an array of paths
  */
 export const normalizePaths =
-  (rootDir?: string) => (paths: readonly string[]): string[] => map(paths, (path) => normalize(`${toRootPrefix(rootDir)}${path}`));
+  (rootDir?: string) =>
+  (paths: readonly string[]): string[] =>
+    map(paths, (path) => normalize(`${toRootPrefix(rootDir)}${path}`));

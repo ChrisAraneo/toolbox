@@ -3,11 +3,14 @@ import { match } from 'ts-pattern';
 
 import { FileSystem } from '../../file-system/file-system.class';
 
-const logDirectoryExists = (logger: Logger) => logger.debug('Directory already exists');
+const logDirectoryExists = (logger: Logger) =>
+  logger.debug('Directory already exists');
 
-const logCreatingDirectory = (logger: Logger, directory: string) => logger.debug(`Creating directory: '${directory}'`);
+const logCreatingDirectory = (logger: Logger, directory: string) =>
+  logger.debug(`Creating directory: '${directory}'`);
 
-const logDirectoryCreated = (logger: Logger) => logger.debug('Created directory');
+const logDirectoryCreated = (logger: Logger) =>
+  logger.debug('Created directory');
 
 const createDirectory = async (
   fileSystem: FileSystem,

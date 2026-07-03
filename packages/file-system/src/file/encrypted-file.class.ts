@@ -47,16 +47,19 @@ export class EncryptedFile extends TextFile {
   ): Observable<EncryptedFile> {
     return chain(new TextFileReader(fileSystem))
       .thru((reader) => reader.readFile(path))
-      .thru((observable) => observable.pipe(
+      .thru((observable) =>
+        observable.pipe(
           filter((result) => result instanceof TextFile),
-          map((result: TextFile) => chain(result)
+          map((result: TextFile) =>
+            chain(result)
               .thru((r: TextFile) => ({
                 path: r.getPath(),
                 content: r.getContent(),
                 modifiedDate: r.getModifiedDate(),
               }))
               .thru(
-                ({ path, content, modifiedDate }) => new EncryptedFile(
+                ({ path, content, modifiedDate }) =>
+                  new EncryptedFile(
                     path,
                     content,
                     modifiedDate,

@@ -22,7 +22,8 @@ export class Logger {
     private readonly areWarningsIgnored = true,
   ) {
     chain(this.areWarningsIgnored)
-      .thru((ignored) => match(ignored)
+      .thru((ignored) =>
+        match(ignored)
           .with(true, () => this.ignoreWarnings())
           .otherwise(noop),
       )
@@ -65,7 +66,8 @@ export class Logger {
         prettyPrint(),
         format.splat(),
         simple(),
-        printf((msg) => chain({
+        printf((msg) =>
+          chain({
             message: msg.message,
             splat: msg[Symbol.for('splat')],
             timePart: head(new Date().toISOString().split('.'))?.replace(
@@ -74,7 +76,8 @@ export class Logger {
             ),
           })
             .thru(
-              ({ message, splat, timePart }) => `[${timePart}] [${msg.level.toLocaleUpperCase()}] - ${message}${match(
+              ({ message, splat, timePart }) =>
+                `[${timePart}] [${msg.level.toLocaleUpperCase()}] - ${message}${match(
                   splat,
                 )
                   .with(when(Boolean), (value) => ` ${JSON.stringify(value)}`)

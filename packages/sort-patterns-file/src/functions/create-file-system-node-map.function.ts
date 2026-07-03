@@ -50,7 +50,6 @@ export const createFileSystemNodeMap = (
 ): Record<string, FileSystemNode> =>
   reduce<FileSystemPathInfo, Record<string, FileSystemNode>>(
     infos,
-    (directories, item) =>
-      assign(directories, toPatch(directories, item)),
+    (directories, item) => assign(directories, toPatch(directories, item)),
     {},
   );

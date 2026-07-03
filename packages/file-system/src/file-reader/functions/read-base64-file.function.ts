@@ -9,20 +9,21 @@ import { ReadFileResultStatus } from '../types/read-file-result-status.enum';
 import { readFile } from './read-file.function';
 import { readPathMetadata } from './read-path-metadata.function';
 
-export const readBase64File = (fileSystem: FileSystem) => (path: string) => readPathMetadata(fileSystem)(path)
+export const readBase64File = (fileSystem: FileSystem) => (path: string) =>
+  readPathMetadata(fileSystem)(path)
     .pipe(mergeMap(() => readFile(fileSystem)(path)))
     .pipe(
       map((result) =>
         match(result)
-          .with({ status: ReadFileResultStatus.Success }, (success) => new Base64File(
-              success.path,
-              success.data,
-              success.modifiedDate,
-            ),
+          .with(
+            { status: ReadFileResultStatus.Success },
+            (success) =>
+              new Base64File(success.path, success.data, success.modifiedDate),
           )
           .otherwise(() => result),
       ),
-      catchError((error: unknown) => of({
+      catchError((error: unknown) =>
+        of({
           status: ReadFileResultStatus.Error,
           message: error?.toString(),
         } as ReadFileError),

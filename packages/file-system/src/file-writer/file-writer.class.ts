@@ -15,8 +15,10 @@ export abstract class FileWriter<T extends File<string>> {
     protected fileSystem: FileSystem,
     protected encoding: BufferEncoding,
   ) {
-    this.writeFile = (file: T) => writeFile(fileSystem)(file.getPath(), file.getContent(), encoding);
+    this.writeFile = (file: T) =>
+      writeFile(fileSystem)(file.getPath(), file.getContent(), encoding);
 
-    this.writeFiles = (files: T[]) => forkJoin(files.map((file) => this.writeFile(file))).pipe(map(noop));
+    this.writeFiles = (files: T[]) =>
+      forkJoin(files.map((file) => this.writeFile(file))).pipe(map(noop));
   }
 }
