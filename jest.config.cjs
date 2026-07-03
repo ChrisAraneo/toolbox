@@ -7,6 +7,7 @@ module.exports = {
   coveragePathIgnorePatterns: ['jest.config.js', '/node_modules/', '/dist/'],
   moduleNameMapper: {
     '^@chris.araneo/(.*)$': '<rootDir>/packages/$1/',
+    '^lodash-es$': 'lodash',
   },
   modulePathIgnorePatterns: ['dist', '.stryker-tmp'],
 };
