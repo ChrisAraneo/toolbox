@@ -1,5 +1,6 @@
 import { catchError, map, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { match } from 'ts-pattern';
 
 import { TextFile } from '../../file/text-file.class';
 import { FileSystem } from '../../file-system/file-system.class';
@@ -11,9 +12,15 @@ import { readPathMetadata } from './read-path-metadata.function';
 export const readTextFile = (fileSystem: FileSystem) => (path: string) => readPathMetadata(fileSystem)(path)
     .pipe(mergeMap(() => readFile(fileSystem)(path)))
     .pipe(
-      map((result) => (result.status === ReadFileResultStatus.Success
-          ? new TextFile(result.path, result.data, result.modifiedDate)
-          : result),
+      map((result) =>
+        match(result)
+          .with({ status: ReadFileResultStatus.Success }, (success) => new TextFile(
+              success.path,
+              success.data,
+              success.modifiedDate,
+            ),
+          )
+          .otherwise(() => result),
       ),
       catchError((error: unknown) => of({
           status: ReadFileResultStatus.Error,

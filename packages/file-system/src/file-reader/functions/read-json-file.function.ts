@@ -1,5 +1,6 @@
 import { catchError, map, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { match } from 'ts-pattern';
 
 import { JsonFile } from '../../file/json-file.class';
 import { FileSystem } from '../../file-system/file-system.class';
@@ -11,13 +12,15 @@ import { readPathMetadata } from './read-path-metadata.function';
 export const readJsonFile = (fileSystem: FileSystem) => (path: string) => readPathMetadata(fileSystem)(path)
     .pipe(mergeMap(() => readFile(fileSystem)(path)))
     .pipe(
-      map((result) => (result.status === ReadFileResultStatus.Success
-          ? new JsonFile(
-              result.path,
-              JSON.parse(result.data),
-              result.modifiedDate,
-            )
-          : result),
+      map((result) =>
+        match(result)
+          .with({ status: ReadFileResultStatus.Success }, (success) => new JsonFile(
+              success.path,
+              JSON.parse(success.data),
+              success.modifiedDate,
+            ),
+          )
+          .otherwise(() => result),
       ),
       catchError((error: unknown) => of({
           status: ReadFileResultStatus.Error,

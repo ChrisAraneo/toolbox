@@ -2,6 +2,9 @@ import path from 'node:path';
 
 import { includes, initial, last, max } from 'lodash-es';
 import md5 from 'md5';
+import { match, P } from 'ts-pattern';
+
+const { when } = P;
 
 export abstract class File<T> {
   private hashValue!: string;
@@ -21,24 +24,23 @@ export abstract class File<T> {
   getFilename(): string {
     const basename = path.basename(this.path);
 
-    if (!includes(basename, '.')) {
-      return basename;
-    }
-
-    const parts = basename.split('.');
-
-    return initial(parts).join('.');
+    return match(basename)
+      .with(
+        when((value: string) => includes(value, '.')),
+        (value) => initial(value.split('.')).join('.'),
+      )
+      .otherwise((value) => value);
   }
 
   getExtension(): string | null {
-    const basename = path.basename(this.path);
-    const parts = basename.split('.');
+    const parts = path.basename(this.path).split('.');
 
-    if (parts.length < 2) {
-      return null;
-    }
-
-    return last(parts) ?? null;
+    return match(parts)
+      .with(
+        when((value: string[]) => value.length < 2),
+        () => null,
+      )
+      .otherwise((value) => last(value) ?? null);
   }
 
   getContent(): T {
@@ -59,11 +61,12 @@ export abstract class File<T> {
   ): void {
     const basename = path.basename(this.path);
     const basenameIndex = this.path.lastIndexOf(basename);
+    const extensionSuffix = match(extension)
+      .with(when(Boolean), (value) => `.${value}`)
+      .otherwise(() => '');
 
     this.path =
-      this.path.slice(0, max([0, basenameIndex])) +
-      filename +
-      (extension ? `.${extension}` : '');
+      this.path.slice(0, max([0, basenameIndex])) + filename + extensionSuffix;
   }
 
   setPath(path: string): void {

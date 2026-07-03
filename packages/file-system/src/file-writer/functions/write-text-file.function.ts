@@ -1,8 +1,11 @@
 import { noop } from 'lodash-es';
 import { forkJoin, map, Observable } from 'rxjs';
+import { match, P } from 'ts-pattern';
 
 import { TextFile } from '../../file/text-file.class';
 import { FileSystem } from '../../file-system/file-system.class';
+
+const { when } = P;
 
 export const writeTextFile =
   (fileSystem: FileSystem) => (file: TextFile): Observable<void> => new Observable((subscriber) => {
@@ -10,14 +13,12 @@ export const writeTextFile =
         file.getPath(),
         file.getContent(),
         'utf-8',
-        (error: unknown) => {
-          if (error) {
-            subscriber.error(error);
-          } else {
-            subscriber.next();
-            subscriber.complete();
-          }
-        },
+        (error: unknown) => match(error)
+            .with(when(Boolean), (err) => subscriber.error(err))
+            .otherwise(() => {
+              subscriber.next();
+              subscriber.complete();
+            }),
       );
     });
 

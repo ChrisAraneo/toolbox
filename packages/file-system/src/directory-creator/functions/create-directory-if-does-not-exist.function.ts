@@ -1,4 +1,5 @@
 import { Logger } from '@chris.araneo/logger';
+import { match } from 'ts-pattern';
 
 import { FileSystem } from '../../file-system/file-system.class';
 
@@ -28,6 +29,7 @@ const createDirectory = async (
 const skip = async (logger: Logger) => logDirectoryExists(logger);
 
 export const createDirectoryIfDoesNotExist =
-  (fileSystem: FileSystem, logger: Logger) => (directory: string) => (fileSystem.existsSync(directory)
-      ? skip(logger)
-      : createDirectory(fileSystem, logger, directory));
+  (fileSystem: FileSystem, logger: Logger) => (directory: string) =>
+    match(fileSystem.existsSync(directory))
+      .with(true, () => skip(logger))
+      .otherwise(() => createDirectory(fileSystem, logger, directory));
