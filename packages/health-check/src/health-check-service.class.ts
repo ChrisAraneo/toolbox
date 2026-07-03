@@ -4,6 +4,7 @@ import process from 'node:process';
 import { Logger } from '@chris.araneo/logger';
 import Express from 'express';
 import { ParamsDictionary, Request, Response } from 'express-serve-static-core';
+import { now } from 'lodash-es';
 import { ParsedQs } from 'qs';
 
 export class HealthCheckService {
@@ -39,7 +40,7 @@ export class HealthCheckService {
     const healthcheck = {
       uptime: process.uptime(),
       message: 'OK' as string | unknown,
-      timestamp: Date.now(),
+      timestamp: now(),
     };
 
     try {
